@@ -2,52 +2,55 @@
 __pycache__/
 *.py[cod]
 *.pyo
-*.pyd
-*.pyc
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Pytest cache
+.pytest_cache/
+
+# Byte-compiled / optimized / DLL files
+*.so
+
+# Eel / web build artifacts (if any)
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 .Python
 env/
 venv/
-ENV/
-.venv/
-build/
-dist/
-*.egg-info/
-.eggs/
-.pytest_cache/
-.mypy_cache/
-.coverage
-coverage.xml
-htmlcov/
 
-# Virtual environment directories
-venv/
-ENV/
-env/
-.env
-
-# Editor and OS files
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# OS
 .DS_Store
 Thumbs.db
-
-# Node
-node_modules/
 
 # Logs
 *.log
 
-# Runtime
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Sensitive files
+# Configs
 .env
-secrets/
-
-# Static build artifacts
-/web/node_modules/
+configs/*.txt
+!configs/example.txt
