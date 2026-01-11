@@ -1,6 +1,5 @@
 import eel
 import os
-import json
 import traceback
 
 from .generate import generate_full_config
@@ -40,47 +39,42 @@ def process_text(
     Головна функція для генерації конфігурації Cisco роутера
     Викликається з JavaScript через eel
     """
-    # Нормалізація вхідних параметрів — приводимо до списків
-    def _ensure_list(val):
-        if val is None:
-            return []
-        if isinstance(val, (list, tuple)):
-            return list(val)
-        if isinstance(val, str):
-            # Спробуємо розпізнати JSON-рядок, інакше розділити комами
-            try:
-                parsed = json.loads(val)
-                return _ensure_list(parsed)
-            except Exception:
-                if ',' in val:
-                    return [s.strip() for s in val.split(',') if s.strip()]
-                return [val]
-        if isinstance(val, (int, float, bool)):
-            return [val]
-        try:
-            return list(val)
-        except Exception:
-            return [val]
-
-    dn_list = _ensure_list(dn_list)
-    interfaces = _ensure_list(interfaces)
-    networks = _ensure_list(networks)
-    no_shutdown_interfaces = _ensure_list(no_shutdown_interfaces)
-
+    # Захист від None
+    if dn_list is None:
+        dn_list = []
+    if interfaces is None:
+        interfaces = []
+    if networks is None:
+        networks = []
+    if no_shutdown_interfaces is None:
+        no_shutdown_interfaces = []
     # Мінімальна перевірка
     if not interfaces:
         return "❌ Помилка: не передано жодного інтерфейсу"
 
-    # Перевірка відповідності довжин
-    if len(networks) != len(interfaces):
-        return (
-            f"❌ кількість мереж ({len(networks)}) не відповідає "
-            f"кількості інтерфейсів ({len(interfaces)})"
-        )
+    # Нормалізація/валідація `networks` на випадок некоректних типів,
+    # які можуть надійти з інтерфейсу (наприклад число або одиночний tuple).
+    if isinstance(networks, int):
+        if networks < 0:
+            return "❌ Некоректна кількість мереж"
+        networks = [("192.168.1.1", "255.255.255.0")] * networks
 
-    # Якщо networks не передали — заповнюємо дефолтними значеннями
+    if isinstance(networks, tuple):
+        networks = [networks]
+
+    # Якщо `networks` не передали — заповнюємо дефолтними значеннями
     if not networks and interfaces:
         networks = [("192.168.1.1", "255.255.255.0")] * len(interfaces)
+
+    # Перевірка відповідності довжин
+    try:
+        if len(networks) != len(interfaces):
+            return (
+                f"❌ кількість мереж ({len(networks)}) не відповідає "
+                f"кількості інтерфейсів ({len(interfaces)})"
+            )
+    except TypeError:
+        return "❌ Некоректний формат параметра `networks` — очікується список мереж"
 
     # Базова валідація для OSPF
     # Підтримка короткого імені параметра `proto` в тестах
