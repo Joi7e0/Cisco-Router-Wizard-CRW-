@@ -18,10 +18,27 @@ class TestProcessText(unittest.TestCase):
             from backend.main import process_text
             # Прив'язуємо як staticmethod, щоб при доступі через екземпляр функція не ставала методом
             cls.process_text = staticmethod(process_text)
+        cls._outputs = []
+
+    @classmethod
+    def tearDownClass(cls):
+        # Наприкінці тестів виводимо згенеровані конфіги для зручного огляду
+        if not cls._outputs:
+            return
+        print("\n\n=== Generated configs from tests ===")
+        for name, out in cls._outputs:
+            print(f"\n--- {name} ---\n")
+            print(out)
+        print("\n=== End generated configs ===\n")
+
+    def call_process(self, **kwargs):
+        res = self.process_text(**kwargs)
+        self.__class__._outputs.append((self._testMethodName, res))
+        return res
 
     def test_basic_configuration_no_routing(self):
         """Перевірка базової конфігурації з кількома інтерфейсами без протоколу"""
-        result = self.process_text(
+        result = self.call_process(
             hostname="Test-R1",
             interfaces=["GigabitEthernet0/0", "GigabitEthernet0/1"],
             networks=[
@@ -40,7 +57,7 @@ class TestProcessText(unittest.TestCase):
 
     def test_ospf_with_router_id(self):
         """Перевірка OSPF з коректним router-id"""
-        result = self.process_text(
+        result = self.call_process(
             proto="OSPF",
             router_id="1.1.1.1",
             interfaces=["Gi0/0", "Gi0/1"],
@@ -56,7 +73,7 @@ class TestProcessText(unittest.TestCase):
 
     def test_ospf_missing_router_id_error(self):
         """Повинна повернутися помилка при OSPF без router-id"""
-        result = self.process_text(
+        result = self.call_process(
             proto="OSPF",
             router_id="",
             interfaces=["Gi0/0"],
@@ -67,7 +84,7 @@ class TestProcessText(unittest.TestCase):
 
     def test_networks_length_mismatch(self):
         """Перевірка захисту від невідповідності довжин interfaces та networks"""
-        result = self.process_text(
+        result = self.call_process(
             interfaces=["Gi0/0", "Gi0/1", "Gi0/2"],
             networks=[("10.0.0.1", "255.255.255.0"), ("20.0.0.1", "255.255.255.0")]
         )
@@ -81,7 +98,7 @@ class TestProcessText(unittest.TestCase):
 
     def test_telephony_basic(self):
         """Перевірка генерації telephony-service з двома dn"""
-        result = self.process_text(
+        result = self.call_process(
             telephony_enabled=True,
             dn_list=[
                 {"number": "1001", "user": "alice"},
@@ -99,7 +116,7 @@ class TestProcessText(unittest.TestCase):
 
     def test_dhcp_configuration(self):
         """Перевірка DHCP пулу з excluded адресами"""
-        result = self.process_text(
+        result = self.call_process(
             dhcp_network="192.168.50.0",
             dhcp_mask="255.255.255.0",
             dhcp_gateway="192.168.50.1",
@@ -115,7 +132,7 @@ class TestProcessText(unittest.TestCase):
 
     def test_ssh_security_block(self):
         """Перевірка блоку безпеки з SSH"""
-        result = self.process_text(
+        result = self.call_process(
             enable_ssh=True,
             enable_secret="MySuperSecret123",
             console_password="consolepass",

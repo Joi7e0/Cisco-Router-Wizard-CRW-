@@ -1,5 +1,3 @@
-// main.js
-
 const MAX_INTERFACES = 3;
 let interfaceCounter = 0;
 

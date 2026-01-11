@@ -1,5 +1,6 @@
 import eel
 import os
+import json
 import traceback
 
 from .generate import generate_full_config
@@ -39,15 +40,32 @@ def process_text(
     Головна функція для генерації конфігурації Cisco роутера
     Викликається з JavaScript через eel
     """
-    # Захист від None
-    if dn_list is None:
-        dn_list = []
-    if interfaces is None:
-        interfaces = []
-    if networks is None:
-        networks = []
-    if no_shutdown_interfaces is None:
-        no_shutdown_interfaces = []
+    # Нормалізація вхідних параметрів — приводимо до списків
+    def _ensure_list(val):
+        if val is None:
+            return []
+        if isinstance(val, (list, tuple)):
+            return list(val)
+        if isinstance(val, str):
+            # Спробуємо розпізнати JSON-рядок, інакше розділити комами
+            try:
+                parsed = json.loads(val)
+                return _ensure_list(parsed)
+            except Exception:
+                if ',' in val:
+                    return [s.strip() for s in val.split(',') if s.strip()]
+                return [val]
+        if isinstance(val, (int, float, bool)):
+            return [val]
+        try:
+            return list(val)
+        except Exception:
+            return [val]
+
+    dn_list = _ensure_list(dn_list)
+    interfaces = _ensure_list(interfaces)
+    networks = _ensure_list(networks)
+    no_shutdown_interfaces = _ensure_list(no_shutdown_interfaces)
 
     # Мінімальна перевірка
     if not interfaces:
