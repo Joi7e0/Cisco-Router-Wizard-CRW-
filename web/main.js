@@ -213,26 +213,28 @@ async function sendToPython() {
 
     try {
         const res = await eel.process_text(
-            routingProtocol,
-            routerId,
-            ipMulticast,
-            telephonyEnabled,
-            dnList,
-            enableSSH,
-            hostname,
-            enableSecret,
-            consolePassword,
-            vtyPassword,
-            dhcpNetwork,
-            dhcpMask,
-            dhcpGateway,
-            dhcpDns,
-            interfaces,
-            noShutdownList,
-            3,                    // max_ephones
-            3,                    // max_dn
-            "10.0.0.1",           // ip source-address telephony
-            "1 to 3",             // auto assign range
+            routingProtocol,            // routing_protocol
+            "",                       // proto (left empty)
+            routerId,                  // router_id
+            ipMulticast,               // ip_multicast
+            telephonyEnabled,          // telephony_enabled
+            dnList,                    // dn_list
+            enableSSH,                 // enable_ssh
+            hostname,                  // hostname
+            enableSecret,              // enable_secret
+            consolePassword,           // console_password
+            vtyPassword,               // vty_password
+            dhcpNetwork,               // dhcp_network
+            dhcpMask,                  // dhcp_mask
+            dhcpGateway,               // dhcp_gateway
+            dhcpDns,                   // dhcp_dns
+            interfaces,                // interfaces
+            networks,                  // networks
+            noShutdownList,            // no_shutdown_interfaces
+            3,                         // max_ephones
+            3,                         // max_dn
+            "10.0.0.1",              // ip source-address telephony
+            "1 to 3",                // auto assign range
             ["10.0.0.1", "10.0.0.10"]  // dhcp excluded
         )();
 

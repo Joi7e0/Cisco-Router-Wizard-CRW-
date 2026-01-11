@@ -48,21 +48,33 @@ def process_text(
         networks = []
     if no_shutdown_interfaces is None:
         no_shutdown_interfaces = []
-
     # Мінімальна перевірка
     if not interfaces:
         return "❌ Помилка: не передано жодного інтерфейсу"
 
-    # Перевірка відповідності довжин
-    if len(networks) != len(interfaces):
-        return (
-            f"❌ кількість мереж ({len(networks)}) не відповідає "
-            f"кількості інтерфейсів ({len(interfaces)})"
-        )
+    # Нормалізація/валідація `networks` на випадок некоректних типів,
+    # які можуть надійти з інтерфейсу (наприклад число або одиночний tuple).
+    if isinstance(networks, int):
+        if networks < 0:
+            return "❌ Некоректна кількість мереж"
+        networks = [("192.168.1.1", "255.255.255.0")] * networks
 
-    # Якщо networks не передали — заповнюємо дефолтними значеннями
+    if isinstance(networks, tuple):
+        networks = [networks]
+
+    # Якщо `networks` не передали — заповнюємо дефолтними значеннями
     if not networks and interfaces:
         networks = [("192.168.1.1", "255.255.255.0")] * len(interfaces)
+
+    # Перевірка відповідності довжин
+    try:
+        if len(networks) != len(interfaces):
+            return (
+                f"❌ кількість мереж ({len(networks)}) не відповідає "
+                f"кількості інтерфейсів ({len(interfaces)})"
+            )
+    except TypeError:
+        return "❌ Некоректний формат параметра `networks` — очікується список мереж"
 
     # Базова валідація для OSPF
     # Підтримка короткого імені параметра `proto` в тестах
