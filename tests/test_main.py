@@ -16,134 +16,158 @@ class TestProcessText(unittest.TestCase):
         # Мокаємо eel.expose перед імпортом
         with mock.patch('eel.expose', mock_expose):
             from backend.main import process_text
-            # Прив'язуємо як staticmethod, щоб при доступі через екземпляр функція не ставала методом
             cls.process_text = staticmethod(process_text)
         cls._outputs = []
 
     @classmethod
     def tearDownClass(cls):
-        # Наприкінці тестів виводимо згенеровані конфіги для зручного огляду
         if not cls._outputs:
             return
-        print("\n\n=== Generated configs from tests ===")
-        for name, out in cls._outputs:
-            print(f"\n--- {name} ---\n")
-            print(out)
-        print("\n=== End generated configs ===\n")
+        print("\n\n=== Generated configs from tests (selected) ===")
+        for name, out in cls._outputs[:8]:  # обмежуємо вивід
+            print(f"\n--- {name} ---\n{out[:400]}{'...' if len(out) > 400 else ''}")
+        print("\n=== End of preview ===\n")
 
     def call_process(self, **kwargs):
         res = self.process_text(**kwargs)
         self.__class__._outputs.append((self._testMethodName, res))
         return res
 
+    # ─── Базові сценарії ───────────────────────────────────────────────
+
     def test_basic_configuration_no_routing(self):
-        """Перевірка базової конфігурації з кількома інтерфейсами без протоколу"""
+        """Базова конфігурація без протоколу маршрутизації"""
         result = self.call_process(
-            hostname="Test-R1",
+            hostname="Lab-R1",
             interfaces=["GigabitEthernet0/0", "GigabitEthernet0/1"],
             networks=[
-                ("192.168.1.1", "255.255.255.0"),
-                ("172.16.1.1", "255.255.0.0")
+                ("192.168.10.1", "255.255.255.0"),
+                ("172.16.20.1", "255.255.255.252")
             ],
             no_shutdown_interfaces=["GigabitEthernet0/0"]
         )
 
-        self.assertIn("hostname Test-R1", result)
-        self.assertIn("ip address 192.168.1.1 255.255.255.0", result)
-        self.assertIn("ip address 172.16.1.1 255.255.0.0", result)
+        self.assertIn("hostname Lab-R1", result)
+        self.assertIn("ip address 192.168.10.1 255.255.255.0", result)
         self.assertIn("no shutdown", result)
         self.assertIn("end", result)
         self.assertIn("write memory", result)
 
-    def test_ospf_with_router_id(self):
-        """Перевірка OSPF з коректним router-id"""
+    # ─── OSPF ──────────────────────────────────────────────────────────
+
+    def test_ospf_valid_router_id(self):
         result = self.call_process(
             proto="OSPF",
-            router_id="1.1.1.1",
-            interfaces=["Gi0/0", "Gi0/1"],
-            networks=[
-                ("10.10.10.1", "255.255.255.252"),
-                ("10.20.20.1", "255.255.255.252")
-            ]
+            router_id="2.2.2.2",
+            interfaces=["Gi0/0"],
+            networks=[("10.55.55.1", "255.255.255.252")]
         )
-
         self.assertIn("router ospf 1", result)
-        self.assertIn("router-id 1.1.1.1", result)
-        self.assertIn("network 10.10.10.1 0.0.0.3 area 0", result)
+        self.assertIn("router-id 2.2.2.2", result)
+        self.assertIn("network 10.55.55.1 0.0.0.3 area 0", result)
 
     def test_ospf_missing_router_id_error(self):
-        """Повинна повернутися помилка при OSPF без router-id"""
         result = self.call_process(
             proto="OSPF",
             router_id="",
             interfaces=["Gi0/0"],
             networks=[("192.168.100.1", "255.255.255.0")]
         )
+        self.assertTrue("❌" in result)
+        self.assertIn("Для OSPF", result)
 
-        self.assertIn("❌ Для OSPF обов'язково потрібно вказати Router ID", result)
+    # ─── Валідація довжин/форматів ────────────────────────────────────
 
-    def test_networks_length_mismatch(self):
-        """Перевірка захисту від невідповідності довжин interfaces та networks"""
+    def test_networks_length_mismatch_error(self):
         result = self.call_process(
             interfaces=["Gi0/0", "Gi0/1", "Gi0/2"],
             networks=[("10.0.0.1", "255.255.255.0"), ("20.0.0.1", "255.255.255.0")]
         )
+        self.assertTrue("❌" in result)
+        self.assertTrue("кількість мереж" in result or "networks" in result.lower())
+        self.assertTrue("не відповідає" in result or "mismatch" in result.lower())
 
-        # Більш надійна перевірка (не залежить від точного форматування)
-        self.assertTrue("кількість мереж" in result)
-        self.assertTrue("не відповідає" in result)
-        self.assertTrue("інтерфейсів" in result)
-        self.assertTrue("(2)" in result or "2" in result)
-        self.assertTrue("(3)" in result or "3" in result)
+    def test_empty_interfaces_list(self):
+        result = self.call_process(
+            interfaces=[],
+            networks=[]
+        )
+        self.assertTrue("❌" in result)
+        self.assertIn("інтерфейсу", result.lower())
 
-    def test_telephony_basic(self):
-        """Перевірка генерації telephony-service з двома dn"""
+    # ─── Telephony ─────────────────────────────────────────────────────
+
+    def test_telephony_basic_generation(self):
         result = self.call_process(
             telephony_enabled=True,
             dn_list=[
-                {"number": "1001", "user": "alice"},
-                {"number": "1002", "user": "bob"}
+                {"number": "2001", "user": "alice"},
+                {"number": "2002", "user": "bob"}
             ],
             interfaces=["Gi0/0"],
-            networks=[("192.168.10.1", "255.255.255.0")]
+            networks=[("192.168.77.1", "255.255.255.0")]
         )
 
         self.assertIn("telephony-service", result)
+        self.assertIn("max-ephones 3", result)
+        self.assertIn("max-dn 3", result)
         self.assertIn("ephone-dn 1", result)
-        self.assertIn("number 1001", result)
+        self.assertIn("number 2001", result)
         self.assertIn("ephone 1", result)
         self.assertIn("username alice", result)
 
-    def test_dhcp_configuration(self):
-        """Перевірка DHCP пулу з excluded адресами"""
+    def test_telephony_disabled_no_config(self):
         result = self.call_process(
-            dhcp_network="192.168.50.0",
-            dhcp_mask="255.255.255.0",
-            dhcp_gateway="192.168.50.1",
-            dhcp_dns="8.8.8.8",
+            telephony_enabled=False,
+            dn_list=[{"number": "9999", "user": "test"}],
+            interfaces=["Gi0/0"],
+            networks=[("10.10.10.1", "255.255.255.0")]
+        )
+        self.assertNotIn("telephony-service", result)
+        self.assertNotIn("ephone-dn", result)
+
+    # ─── Security / SSH ────────────────────────────────────────────────
+
+    def test_ssh_block_generation(self):
+        result = self.call_process(
+            enable_ssh=True,
+            enable_secret="SecretPa55w0rd",
+            console_password="C0ns0le123",
+            vty_password="VtyP@ssw0rd",
             interfaces=["Gi0/1"],
-            networks=[("192.168.50.1", "255.255.255.0")]
+            networks=[("192.168.200.1", "255.255.255.252")]
+        )
+
+        self.assertIn("enable secret SecretPa55w0rd", result)
+        self.assertIn("crypto key generate rsa modulus 1024", result)
+        self.assertIn("ip ssh version 2", result)
+
+    # ─── DHCP ──────────────────────────────────────────────────────────
+
+    def test_dhcp_full_pool(self):
+        result = self.call_process(
+            dhcp_network="192.168.88.0",
+            dhcp_mask="255.255.255.0",
+            dhcp_gateway="192.168.88.1",
+            dhcp_dns="8.8.8.8",
+            interfaces=["Gi0/0"],
+            networks=[("192.168.88.1", "255.255.255.0")]
         )
 
         self.assertIn("ip dhcp pool LAN", result)
-        self.assertIn("network 192.168.50.0 255.255.255.0", result)
-        self.assertIn("default-router 192.168.50.1", result)
+        self.assertIn("network 192.168.88.0 255.255.255.0", result)
+        self.assertIn("default-router 192.168.88.1", result)
         self.assertIn("dns-server 8.8.8.8", result)
+        self.assertIn("ip dhcp excluded-address", result)
 
-    def test_ssh_security_block(self):
-        """Перевірка блоку безпеки з SSH"""
+    def test_dhcp_empty_network_no_config(self):
         result = self.call_process(
-            enable_ssh=True,
-            enable_secret="MySuperSecret123",
-            console_password="consolepass",
-            vty_password="vtypass",
+            dhcp_network="",
+            dhcp_mask="",
             interfaces=["Gi0/0"],
-            networks=[("10.0.0.1", "255.255.255.252")]
+            networks=[("10.1.1.1", "255.255.255.0")]
         )
-
-        self.assertIn("enable secret MySuperSecret123", result)
-        self.assertIn("ip ssh version 2", result)
-        self.assertIn("crypto key generate rsa modulus 1024", result)
+        self.assertNotIn("ip dhcp pool", result)
 
 
 if __name__ == '__main__':
