@@ -1,5 +1,3 @@
-# backend/generate.py
-
 from .protocols import generate_protocol_config
 
 

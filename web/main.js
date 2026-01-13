@@ -1,5 +1,3 @@
-// main.js
-
 const MAX_INTERFACES = 3;
 let interfaceCounter = 0;
 
@@ -168,8 +166,8 @@ function autoFillForm() {
     document.getElementById("ssh").checked = true;
     document.querySelector('input[placeholder="Router"]').value = "MyRouter";
     document.querySelector('input[placeholder="type"]').value = "cisco123";
-    document.querySelectorAll('input[placeholder="******"]')[0].value = "consolepass";
-    document.querySelectorAll('input[placeholder="******"]')[1].value = "vtypass";
+    document.querySelectorAll('input[placeholder="******"]')[0].value = "consolepass1";
+    document.querySelectorAll('input[placeholder="******"]')[1].value = "vtypass1";
 
     // DHCP
     document.getElementById("dhcp-network").value = "192.168.10.0";
@@ -180,19 +178,113 @@ function autoFillForm() {
     alert("Форма заповнена типовими тестовими значеннями!");
 }
 
-// Головна функція відправки в Python
+// Головна функція відправки в Python з розширеною клієнтською валідацією
 async function sendToPython() {
     const { interfaces, networks, noShutdownList } = getInterfacesData();
 
+    // ───────────────────────────────────────────────
+    // 1. Перевірка наявності хоча б одного інтерфейсу
+    // ───────────────────────────────────────────────
     if (interfaces.length === 0) {
-        alert("Додайте хоча б один інтерфейс з назвою та IP/маскою!");
+        alert("❌ Додайте хоча б один інтерфейс!");
         return;
     }
 
+    // Перевіряємо, що кожен інтерфейс має IP та маску
+    for (let i = 0; i < interfaces.length; i++) {
+        if (!interfaces[i] || !networks[i][0] || !networks[i][1]) {
+            alert(`❌ Інтерфейс #${i + 1} неповний!\nВкажіть назву, IP-адресу та маску.`);
+            return;
+        }
+    }
+
+    // ───────────────────────────────────────────────
+    // 2. Вибір протоколу та Router ID (для OSPF)
+    // ───────────────────────────────────────────────
     const routingProtocol = document.querySelector('input[name="routing-protocol"]:checked')?.value || "";
     const routerId = document.getElementById("router-id").value.trim();
-    const ipMulticast = document.getElementById("multicast-checkbox").checked;
 
+    if (routingProtocol === "OSPF") {
+        if (!routerId) {
+            alert("❌ Для OSPF обов'язково потрібно вказати Router ID!");
+            document.getElementById("router-id").focus();
+            return;
+        }
+
+        // Простий regex для IPv4
+        const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        if (!ipv4Regex.test(routerId)) {
+            alert("❌ Некоректний формат Router ID!\nОчікується валідна IPv4-адреса (наприклад: 1.1.1.1)");
+            document.getElementById("router-id").focus();
+            return;
+        }
+
+        if (routerId === "0.0.0.0") {
+            alert("❌ Router ID не може бути 0.0.0.0!");
+            document.getElementById("router-id").focus();
+            return;
+        }
+    }
+
+    // ───────────────────────────────────────────────
+    // 3. Перевірка паролів (якщо заповнені)
+    // ───────────────────────────────────────────────
+    const hostname = document.querySelector('input[placeholder="Router"]').value.trim();
+    const enableSecret = document.querySelector('input[placeholder="type"]').value.trim();
+    const consolePass = document.querySelectorAll('input[placeholder="******"]')[0]?.value.trim() || "";
+    const vtyPass = document.querySelectorAll('input[placeholder="******"]')[1]?.value.trim() || "";
+
+    const passwordFields = [
+        { value: enableSecret, name: "Enable secret" },
+        { value: consolePass, name: "Console password" },
+        { value: vtyPass, name: "VTY password" }
+    ];
+
+    for (const field of passwordFields) {
+        if (field.value && field.value.length > 0) {
+            if (field.value.length < 8) {
+                alert(`❌ ${field.name} занадто короткий!\nМінімум 8 символів.`);
+                return;
+            }
+            if (!/[A-Za-z]/.test(field.value) || !/\d/.test(field.value)) {
+                alert(`❌ ${field.name} повинен містити хоча б одну літеру та одну цифру!`);
+                return;
+            }
+        }
+    }
+
+    // ───────────────────────────────────────────────
+    // 4. Базова перевірка DHCP (якщо заповнено)
+    // ───────────────────────────────────────────────
+    const dhcpNetwork = document.getElementById("dhcp-network").value.trim();
+    const dhcpMask = document.getElementById("dhcp-mask").value.trim();
+    const dhcpGateway = document.getElementById("dhcp-gateway").value.trim();
+
+    if (dhcpNetwork && dhcpMask) {
+        const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+        if (!ipv4Regex.test(dhcpNetwork)) {
+            alert("❌ Некоректний формат DHCP Network!");
+            document.getElementById("dhcp-network").focus();
+            return;
+        }
+
+        if (!ipv4Regex.test(dhcpMask)) {
+            alert("❌ Некоректний формат DHCP Subnet Mask!");
+            document.getElementById("dhcp-mask").focus();
+            return;
+        }
+
+        if (dhcpGateway && !ipv4Regex.test(dhcpGateway)) {
+            alert("❌ Некоректний формат Default Gateway для DHCP!");
+            document.getElementById("dhcp-gateway").focus();
+            return;
+        }
+    }
+
+    // ───────────────────────────────────────────────
+    // Якщо всі перевірки пройдено — відправляємо на бекенд
+    // ───────────────────────────────────────────────
     const telephonyEnabled = document.getElementById("telephony-checkbox").checked;
     const dnList = [
         { number: document.getElementById("dn1-number").value.trim(), user: document.getElementById("dn1-user").value.trim() },
@@ -201,50 +293,42 @@ async function sendToPython() {
     ];
 
     const enableSSH = document.getElementById("ssh").checked;
-    const hostname = document.querySelector('input[placeholder="Router"]').value.trim();
-    const enableSecret = document.querySelector('input[placeholder="type"]').value.trim();
-    const consolePassword = document.querySelectorAll('input[placeholder="******"]')[0].value.trim();
-    const vtyPassword = document.querySelectorAll('input[placeholder="******"]')[1].value.trim();
-
-    const dhcpNetwork = document.getElementById("dhcp-network").value.trim();
-    const dhcpMask = document.getElementById("dhcp-mask").value.trim();
-    const dhcpGateway = document.getElementById("dhcp-gateway").value.trim();
-    const dhcpDns = document.getElementById("dhcp-dns").value.trim();
+    const ipMulticast = document.getElementById("multicast-checkbox").checked;
 
     try {
         const res = await eel.process_text(
-            routingProtocol,            // routing_protocol
-            "",                       // proto (left empty)
-            routerId,                  // router_id
-            ipMulticast,               // ip_multicast
-            telephonyEnabled,          // telephony_enabled
-            dnList,                    // dn_list
-            enableSSH,                 // enable_ssh
-            hostname,                  // hostname
-            enableSecret,              // enable_secret
-            consolePassword,           // console_password
-            vtyPassword,               // vty_password
-            dhcpNetwork,               // dhcp_network
-            dhcpMask,                  // dhcp_mask
-            dhcpGateway,               // dhcp_gateway
-            dhcpDns,                   // dhcp_dns
-            interfaces,                // interfaces
-            networks,                  // networks
-            noShutdownList,            // no_shutdown_interfaces
-            3,                         // max_ephones
-            3,                         // max_dn
+            routingProtocol,
+            "",                       // proto (залишаємо для сумісності)
+            routerId,
+            ipMulticast,
+            telephonyEnabled,
+            dnList,
+            enableSSH,
+            hostname,
+            enableSecret,
+            consolePass,
+            vtyPass,
+            dhcpNetwork,
+            dhcpMask,
+            dhcpGateway,
+            document.getElementById("dhcp-dns").value.trim(),
+            interfaces,
+            networks,
+            noShutdownList,
+            3,                        // max_ephones
+            3,                        // max_dn
             "10.0.0.1",              // ip source-address telephony
             "1 to 3",                // auto assign range
-            ["10.0.0.1", "10.0.0.10"]  // dhcp excluded
+            ["10.0.0.1", "10.0.0.10"] // dhcp excluded
         )();
 
         const responseDiv = document.getElementById("response");
         responseDiv.innerText = res;
         responseDiv.style.color = res.startsWith("❌") ? "#ff6b6b" : "#00ffcc";
     } catch (err) {
-        console.error("Помилка:", err);
+        console.error("Помилка генерації:", err);
         document.getElementById("response").innerText = 
-            "❌ Виникла помилка при генерації конфігурації\n" + err.message;
+            "❌ Критична помилка при генерації конфігурації\n" + err.message;
         document.getElementById("response").style.color = "#ff6b6b";
     }
 }

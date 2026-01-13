@@ -1,22 +1,24 @@
-﻿# tests/test_main.py
-import unittest
+﻿import unittest
 from unittest import mock
 
-
-# Мок для eel.expose — просто повертаємо функцію без змін
 def mock_expose(func):
     return func
 
-
+# Забезпечуємо наявність мінімального stub-модуля `eel` перед імпортом backend.main
 class TestProcessText(unittest.TestCase):
-    """Тести основної функції генерації конфігурації process_text"""
 
     @classmethod
     def setUpClass(cls):
-        # Мокаємо eel.expose перед імпортом
-        with mock.patch('eel.expose', mock_expose):
-            from backend.main import process_text
-            cls.process_text = staticmethod(process_text)
+        # Забезпечуємо наявність мінімального stub-модуля `eel` перед імпортом backend.main
+        import sys, types
+        if 'eel' not in sys.modules:
+            eel_stub = types.SimpleNamespace(init=lambda *a, **k: None,
+                                            expose=lambda f: f,
+                                            start=lambda *a, **k: None)
+            sys.modules['eel'] = eel_stub
+
+        from backend.main import process_text
+        cls.process_text = staticmethod(process_text)
         cls._outputs = []
 
     @classmethod
@@ -33,10 +35,8 @@ class TestProcessText(unittest.TestCase):
         self.__class__._outputs.append((self._testMethodName, res))
         return res
 
-    # ─── Базові сценарії ───────────────────────────────────────────────
-
+    #Базові сценарії 
     def test_basic_configuration_no_routing(self):
-        """Базова конфігурація без протоколу маршрутизації"""
         result = self.call_process(
             hostname="Lab-R1",
             interfaces=["GigabitEthernet0/0", "GigabitEthernet0/1"],
@@ -53,8 +53,7 @@ class TestProcessText(unittest.TestCase):
         self.assertIn("end", result)
         self.assertIn("write memory", result)
 
-    # ─── OSPF ──────────────────────────────────────────────────────────
-
+    #OSPF 
     def test_ospf_valid_router_id(self):
         result = self.call_process(
             proto="OSPF",
@@ -76,7 +75,7 @@ class TestProcessText(unittest.TestCase):
         self.assertTrue("❌" in result)
         self.assertIn("Для OSPF", result)
 
-    # ─── Валідація довжин/форматів ────────────────────────────────────
+    #Валідація довжин/форматів
 
     def test_networks_length_mismatch_error(self):
         result = self.call_process(
@@ -95,8 +94,7 @@ class TestProcessText(unittest.TestCase):
         self.assertTrue("❌" in result)
         self.assertIn("інтерфейсу", result.lower())
 
-    # ─── Telephony ─────────────────────────────────────────────────────
-
+    #Telephony 
     def test_telephony_basic_generation(self):
         result = self.call_process(
             telephony_enabled=True,
@@ -126,8 +124,7 @@ class TestProcessText(unittest.TestCase):
         self.assertNotIn("telephony-service", result)
         self.assertNotIn("ephone-dn", result)
 
-    # ─── Security / SSH ────────────────────────────────────────────────
-
+    #Security / SSH
     def test_ssh_block_generation(self):
         result = self.call_process(
             enable_ssh=True,
@@ -142,8 +139,7 @@ class TestProcessText(unittest.TestCase):
         self.assertIn("crypto key generate rsa modulus 1024", result)
         self.assertIn("ip ssh version 2", result)
 
-    # ─── DHCP ──────────────────────────────────────────────────────────
-
+    #DHCP 
     def test_dhcp_full_pool(self):
         result = self.call_process(
             dhcp_network="192.168.88.0",
