@@ -1,9 +1,7 @@
+# backend/protocols.py
+# Генерація конфігурації протоколів маршрутизації
 def _mask_to_wildcard(mask: str) -> str:
-    """Convert subnet mask like '255.255.255.252' to wildcard '0.0.0.3'.
 
-    This function is defensive: it validates input and returns a fallback
-    value of '0.0.0.0' on error while logging the problem.
-    """
     try:
         if not isinstance(mask, str):
             raise TypeError(f"Mask must be str, got {type(mask)}")
@@ -27,13 +25,8 @@ def _mask_to_wildcard(mask: str) -> str:
         print(f"Error in _mask_to_wildcard: {e}")
         return "0.0.0.0"
 
-
+# Генерація конфігурації протоколу маршрутизації
 def generate_protocol_config(protocol: str, router_id: str, networks: list[tuple[str, str]]) -> list[str]:
-    """Генерація конфігурації для протоколу маршрутизації.
-
-    Функція більш стійка до некоректних вхідних даних — логирує помилки
-    і вставляє коментарі у конфіг у разі проблем з окремими мережами.
-    """
     try:
         if not isinstance(protocol, str) or not isinstance(router_id, str):
             raise TypeError("Protocol and router_id must be strings")

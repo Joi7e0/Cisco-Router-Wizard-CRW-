@@ -35,10 +35,6 @@ def process_text(
     auto_assign_range: str = "1 to 3",
     dhcp_excluded: tuple = ("10.0.0.1", "10.0.0.10")
 ) -> str:
-    """
-    Головна функція для генерації конфігурації Cisco роутера
-    Викликається з JavaScript через eel
-    """
     try:
         # Захист від None
         if dn_list is None:

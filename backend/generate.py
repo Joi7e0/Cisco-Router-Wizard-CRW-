@@ -1,14 +1,12 @@
 from .protocols import generate_protocol_config
 
-
+# Генерація конфігурації інтерфейсів
 def generate_interface_config(
     interfaces: list[str],
     networks: list[tuple[str, str]],
     no_shutdown_interfaces: list[str] = None
 ) -> list[str]:
-    """
-    Генерація команд для налаштування інтерфейсів
-    """
+
     if no_shutdown_interfaces is None:
         no_shutdown_interfaces = []
 
@@ -21,14 +19,13 @@ def generate_interface_config(
         cfg.append(" exit")
     return cfg
 
-
+# Генерація базової конфігурації з hostname та інтерфейсами
 def generate_base_config(
     hostname: str,
     interfaces: list[str],
     networks: list[tuple[str, str]],
     no_shutdown_interfaces: list[str] = None
 ) -> list[str]:
-    """Базова частина конфігурації + інтерфейси"""
     cfg = [
         "enable",
         "configure terminal",
@@ -37,7 +34,6 @@ def generate_base_config(
     ]
     cfg.extend(generate_interface_config(interfaces, networks, no_shutdown_interfaces))
     return cfg
-
 
 def generate_multicast_config(ip_multicast: bool, interfaces: list[str]) -> list[str]:
     """Конфігурація multicast, якщо увімкнено"""
@@ -53,7 +49,7 @@ def generate_multicast_config(ip_multicast: bool, interfaces: list[str]) -> list
         ])
     return cfg
 
-
+# Генерація конфігурації телефонії
 def generate_telephony_config(
     telephony_enabled: bool,
     dn_list: list[dict],
@@ -62,7 +58,6 @@ def generate_telephony_config(
     ip_source_address: str = "10.0.0.1",
     auto_assign_range: str = "1 to 3"
 ) -> list[str]:
-    """Конфігурація telephony-service та ephone-dn/ephone"""
     if not telephony_enabled:
         return []
 
@@ -99,14 +94,13 @@ def generate_telephony_config(
 
     return cfg
 
-
+# Генерація конфігурації безпеки (SSH, паролі)
 def generate_security_config(
     enable_ssh: bool,
     enable_secret: str,
     console_password: str,
     vty_password: str
 ) -> list[str]:
-    """Безпека: паролі, enable secret, SSH"""
     cfg = ["!"]
 
     if enable_secret:
@@ -140,7 +134,7 @@ def generate_security_config(
 
     return cfg
 
-
+# Генерація конфігурації DHCP
 def generate_dhcp_config(
     dhcp_network: str,
     dhcp_mask: str,
@@ -148,7 +142,6 @@ def generate_dhcp_config(
     dhcp_dns: str,
     excluded: tuple[str, str] = ("10.0.0.1", "10.0.0.10")
 ) -> list[str]:
-    """Налаштування DHCP-сервера"""
     if not dhcp_network or not dhcp_mask:
         return []
 
@@ -169,7 +162,7 @@ def generate_dhcp_config(
 
     return cfg
 
-
+# Збірка повної конфігурації
 def generate_full_config(
     hostname: str,
     interfaces: list[str],

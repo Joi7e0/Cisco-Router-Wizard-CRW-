@@ -1,10 +1,8 @@
 import ipaddress
 import re
 
+# Загальна валідація рядкових полів (без специфіки IP/масок)
 def validate_general(value: str) -> str:
-    """Загальна перевірка: пробіли та дозволені символи для IP/масок.
-    Прибрано arbitrary перевірки на довжину (7-18), бо вони не обґрунтовані reqs (R1.13/R1.14)
-    і дублюють validate_ip/validate_mask."""
     if not isinstance(value, str):
         return "❌ Error: Value must be a string."
 
@@ -17,8 +15,8 @@ def validate_general(value: str) -> str:
 
     return ""
 
+# Валідація IP-адреси
 def validate_ip(ip: str) -> str:
-    """Валідація IP-адреси."""
     try:
         if not isinstance(ip, str):
             raise TypeError(f"IP must be str, got {type(ip)}")
@@ -37,8 +35,8 @@ def validate_ip(ip: str) -> str:
         print(f"Validate IP error: {e}")
         return f"❌ Error: Неправильний формат IP-адреси '{ip}'."
 
+# Валідація маски підмережі
 def validate_mask(mask: str) -> str:
-    """Валідація маски підмережі."""
     try:
         if not isinstance(mask, str):
             raise TypeError(f"Mask must be str, got {type(mask)}")
@@ -48,8 +46,8 @@ def validate_mask(mask: str) -> str:
         print(f"Validate mask error: {e}")
         return f"❌ Error: Неправильний формат маски '{mask}'."
 
+# Валідація Router ID залежно від протоколу маршрутизації
 def validate_router_id(router_id: str, routing_protocol: str) -> str:
-    """Валідація Router ID (R1.16)."""
     try:
         if not isinstance(routing_protocol, str):
             raise TypeError("routing_protocol must be a string")
@@ -71,8 +69,8 @@ def validate_router_id(router_id: str, routing_protocol: str) -> str:
         print(f"Validate router_id error: {e}")
         return f"❌ Error: Некоректний Router ID: {router_id}"
 
+# Валідація паролів
 def validate_password(password: str, field_name: str) -> str:
-    """Валідація паролів (R1.17)."""
     if not password:
         return f"❌ Error: {field_name} не може бути порожнім."
     if len(password) < 8 or len(password) > 32:
@@ -81,8 +79,8 @@ def validate_password(password: str, field_name: str) -> str:
         return f"❌ Error: {field_name} повинен містити мінімум 1 цифру та 1 літеру."
     return ""
 
+# Валідація DHCP налаштувань
 def validate_dhcp(dhcp_network: str, dhcp_mask: str, dhcp_gateway: str, dhcp_dns: str) -> str:
-    """Валідація DHCP (R1.18)."""
     if dhcp_network and dhcp_mask:
         error = validate_ip(dhcp_network) or validate_mask(dhcp_mask)
         if error:
@@ -97,11 +95,11 @@ def validate_dhcp(dhcp_network: str, dhcp_mask: str, dhcp_gateway: str, dhcp_dns
         return validate_ip(dhcp_dns)
     return ""
 
+# Головна функція валідації всіх вхідних даних
 def validate_inputs(ip: str, mask: str, ip1: str, mask1: str, ip2: str, mask2: str,
                     routing_protocol: str = "", router_id: str = "",
                     enable_secret: str = "", console_password: str = "", vty_password: str = "",
                     dhcp_network: str = "", dhcp_mask: str = "", dhcp_gateway: str = "", dhcp_dns: str = "") -> str:
-    """Комплексна валідація всіх обов'язкових полів (розширена)."""
     try:
         if not all([ip, mask, ip1, mask1, ip2, mask2]):
             return "❌ Error: Будь ласка, заповніть усі поля IP та маски."
