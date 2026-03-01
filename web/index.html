@@ -1,130 +1,296 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Cisco Router Wizard</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-    <link rel="stylesheet" href="style-home.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cisco Configuration Setup Wizard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <noscript>Javascript is not accessible</noscript>
+    <div class="wizard-container">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="logo-section">
+                <img src="photo/crw-logo.jpg" alt="CRW Logo">
+                <div class="title-section">
+                    <h1>Cisco Router Wizard</h1>
+                </div>
+            </div>
+            <!-- Close button removed -->
+        </header>
 
-  <div class="container">
-    <h1 class="title has-text-centered">Cisco Router Wizard</h1>  
+        <!-- Stepper -->
+        <nav class="stepper-container">
+            <div class="stepper" id="wizard-stepper">
+                <div class="stepper-progress" id="stepper-progress"></div>
+                <div class="step active" data-step="1">
+                    <div class="step-circle" id="circle-1"><img src="photo/account-settings.jpg"></div>
+                    <div class="step-label">Account</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-circle" id="circle-2"><img src="photo/basic-settings.jpg"></div>
+                    <div class="step-label">Basic</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-circle" id="circle-3"><img src="photo/site-profile.jpg"></div>
+                    <div class="step-label">Site Profile</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-circle" id="circle-4"><img src="photo/switch-wide-settings.jpg"></div>
+                    <div class="step-label">DHCP & Telephony</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-circle" id="circle-5"><img src="photo/port-settings.jpg"></div>
+                    <div class="step-label">Advanced</div>
+                </div>
+                <div class="step" data-step="6">
+                    <div class="step-circle" id="circle-6"><img src="photo/summary.jpg"></div>
+                    <div class="step-label">Summary</div>
+                </div>
+            </div>
+        </nav>
 
-<!-- Step 1. Інтерфейси (динамічні) -->
-<h3>Step 1. Налаштування інтерфейсів</h3>
-<div class="box" id="interfaces-container">
-  <div id="interfaces-list"></div>
-  <div style="margin-top: 20px; text-align: center;">
-    <button type="button" class="button is-info" onclick="addInterfaceField()">+ Додати інтерфейс</button>
-  </div>
-</div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <section class="form-area" id="wizard-content">
 
-  <!-- Step 2. Routing Protocol -->
-  <h3>Step 2. Routing Protocol</h3>
-  <div class="box">
-    <label><input type="radio" name="routing-protocol" value="OSPF"> OSPF</label>
-    <label><input type="radio" name="routing-protocol" value="RIP"> RIP</label>
-    <label><input type="radio" name="routing-protocol" value="EIGRP"> EIGRP</label>
-    <label><input type="radio" name="routing-protocol" value="BGP"> BGP</label>
-    <label><input type="radio" name="routing-protocol" value="IS-IS"> IS-IS</label>
+                <!-- Step 1: Account Settings (Security) -->
+                <div class="step-content active" id="step-1">
+                    <h2 class="step-title">Security Configuration</h2>
+                    <div class="form-group">
+                        <label for="hostname">Hostname*</label>
+                        <input type="text" id="hostname" placeholder="Router" value="R1">
+                    </div>
+                    <div class="form-group">
+                        <label for="enable_secret">Enable Secret*</label>
+                        <input type="password" id="enable_secret" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label for="console_password">Console Password*</label>
+                        <input type="password" id="console_password" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label for="vty_password">VTY Password*</label>
+                        <input type="password" id="vty_password" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label class="toggle-group">
+                            <div class="switch">
+                                <input type="checkbox" id="enable_ssh">
+                                <span class="slider"></span>
+                            </div>
+                            <span class="toggle-label">Enable SSH</span>
+                        </label>
+                    </div>
+                </div>
 
-    <div id="ospf-options" class="hidden">
-      <label>Router ID:</label>
-      <input type="text" id="router-id" placeholder="1.1.1.1">
+                <!-- Step 2: Basic Settings (Interfaces) -->
+                <div class="step-content" id="step-2">
+                    <h2 class="step-title">Interface Settings</h2>
+                    <div id="interfaces-list">
+                        <!-- Interfaces will be added here dynamically -->
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button type="button" class="btn btn-secondary" onclick="addInterfaceField()">+ Add
+                            Interface</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Site Profile (Routing) -->
+                <div class="step-content" id="step-3">
+                    <h2 class="step-title">Routing Protocol & Multicast</h2>
+                    <div class="form-group">
+                        <label>Routing Protocol</label>
+                        <div style="display: flex; gap: 20px; margin-top: 10px;">
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="routing-protocol" value="OSPF"> OSPF
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="routing-protocol" value="RIP"> RIP
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="routing-protocol" value="EIGRP"> EIGRP
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="routing-protocol" value="Static"> Static
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="routing-protocol" value="None" checked> None
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="ospf-options" class="hidden" style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label for="router-id">Router ID</label>
+                            <input type="text" id="router-id" placeholder="1.1.1.1">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label>Multicast Routing</label>
+                        <label class="toggle-group">
+                            <div class="switch">
+                                <input type="checkbox" id="multicast-checkbox">
+                                <span class="slider"></span>
+                            </div>
+                            <span class="toggle-label">Enable IP Multicast Routing</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Step 4: DHCP & Telephony -->
+                <div class="step-content" id="step-4">
+                    <h2 class="step-title">DHCP Server & Telephony</h2>
+                    <h3>DHCP Server</h3>
+                    <div class="form-group">
+                        <label for="dhcp-network">Network</label>
+                        <input type="text" id="dhcp-network" placeholder="192.168.10.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="dhcp-mask">Subnet Mask</label>
+                        <input type="text" id="dhcp-mask" placeholder="255.255.255.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="dhcp-gateway">Default Gateway</label>
+                        <input type="text" id="dhcp-gateway" placeholder="192.168.10.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="dhcp-dns">DNS Server</label>
+                        <input type="text" id="dhcp-dns" placeholder="8.8.8.8">
+                    </div>
+
+                    <h3 style="margin-top: 25px;">Telephony Service</h3>
+                    <div class="form-group">
+                        <label class="toggle-group">
+                            <div class="switch">
+                                <input type="checkbox" id="telephony-checkbox">
+                                <span class="slider"></span>
+                            </div>
+                            <span class="toggle-label">Enable Telephony Service</span>
+                        </label>
+                    </div>
+                    <div id="telephony-options">
+                        <div class="form-group">
+                            <label>DN 1 (Number/Name)</label>
+                            <input type="text" id="dn1-number" placeholder="100"
+                                style="width: 80px; flex: 0 0 auto; margin-right: 10px;">
+                            <input type="text" id="dn1-user" placeholder="User 1">
+                        </div>
+                        <div class="form-group">
+                            <label>DN 2</label>
+                            <input type="text" id="dn2-number" placeholder="101"
+                                style="width: 80px; flex: 0 0 auto; margin-right: 10px;">
+                            <input type="text" id="dn2-user" placeholder="User 2">
+                        </div>
+                        <div class="form-group">
+                            <label>DN 3</label>
+                            <input type="text" id="dn3-number" placeholder="102"
+                                style="width: 80px; flex: 0 0 auto; margin-right: 10px;">
+                            <input type="text" id="dn3-user" placeholder="User 3">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Advanced (NAT & SNMP) -->
+                <div class="step-content" id="step-5">
+                    <h2 class="step-title">NAT & Monitoring</h2>
+                    <h3>NAT Overload</h3>
+                    <div class="form-group">
+                        <label>Inside Interface</label>
+                        <input type="text" id="nat-inside" placeholder="GigabitEthernet0/0">
+                    </div>
+                    <div class="form-group">
+                        <label>Outside Interface</label>
+                        <input type="text" id="nat-outside" placeholder="GigabitEthernet0/1">
+                    </div>
+
+                    <h3 style="margin-top: 25px;">SNMP Monitoring</h3>
+                    <div class="form-group">
+                        <label for="snmp-community">Community String</label>
+                        <input type="text" id="snmp-community" placeholder="public">
+                    </div>
+                    <div class="form-group">
+                        <label class="toggle-group">
+                            <div class="switch">
+                                <input type="checkbox" id="snmp-enabled">
+                                <span class="slider"></span>
+                            </div>
+                            <span class="toggle-label">Enable SNMP</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Step 6: Summary -->
+                <div class="step-content" id="step-6">
+                    <h2 class="step-title">Summary & Generation</h2>
+                    <p>Configuration is ready to be generated. Review your settings and click "Generate".</p>
+
+                    <div style="margin-top: 30px;">
+                        <button class="btn btn-primary" style="width: 100%; padding: 15px;"
+                            onclick="sendToPython()">GENERATE CONFIGURATION</button>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--cisco-blue); margin-bottom: 10px; padding-bottom: 5px;">
+                            <h3 style="color: var(--cisco-blue); border-bottom: none; margin: 0; padding: 0;">IOS
+                                Configuration Commands:</h3>
+                            <button id="download-btn" class="btn btn-secondary hidden"
+                                style="padding: 5px 15px; font-size: 0.8rem;" onclick="downloadCommands()">Download
+                                .txt</button>
+                        </div>
+                        <div id="response"
+                            style="background: #f4f4f4; padding: 20px; font-family: monospace; white-space: pre-wrap; border: 1px solid #ccc; max-height: 400px; overflow-y: auto;">
+                            <!-- Result will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Help Panel -->
+            <aside class="info-area">
+                <div class="info-tabs">
+                    <div class="tab active" onclick="switchTab('device-info')">DEVICE INFO</div>
+                    <div class="tab" onclick="switchTab('help-tips')">HELP AND TIPS</div>
+                </div>
+                <div class="info-content" id="info-tab-content">
+                    <div id="device-info-pane">
+                        <p style="font-weight: bold; margin-bottom: 15px;">Hardware and Software Details
+                        </p>
+                        <ul style="list-style: none; font-size: 0.85rem;">
+                            <li><strong>Platform Type:</strong> C4331</li>
+                            <li><strong>IOS Version:</strong> 17.3.3</li>
+                            <li><strong>Interfaces:</strong> 3 GE Ports</li>
+                        </ul>
+                    </div>
+                    <div id="help-tips-pane" class="hidden">
+                        <p>Select settings to configure your Cisco router. Follow the steps sequentially.</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <footer class="bottom-bar">
+            <button class="btn btn-secondary" id="back-btn" onclick="prevStep()" disabled>&lt; Previous Step</button>
+            <div>
+                <button class="btn btn-secondary" onclick="autoFillForm()">Auto Fill</button>
+                <button class="btn btn-primary" id="next-btn" onclick="nextStep()">Next Step &gt;</button>
+            </div>
+        </footer>
     </div>
-  </div>
 
-    <!-- Step 3. IP Multicast-Routing -->
-    <h3>Step 3. IP Multicast-Routing</h3>
-    <div class="box">
-    <label>
-        <input type="checkbox" id="multicast-checkbox"> Enable IP Multicast Routing
-    </label>
-    </div>
-
-<!-- Step 4. Telephony-Service -->
-<h3>Step 4. Telephony-Service</h3>
-<div class="box">
-  <label><input type="checkbox" id="telephony-checkbox"> Enable Telephony Service</label>
-  <br><br>
-  <p>ephone-dn 1:
-    <input type="text" id="dn1-number" placeholder="100">
-    <input type="text" id="dn1-user" placeholder="user">
-  </p>
-  <p>ephone-dn 2:
-    <input type="text" id="dn2-number" placeholder="101">
-    <input type="text" id="dn2-user" placeholder="user">
-  </p>
-  <p>ephone-dn 3:
-    <input type="text" id="dn3-number" placeholder="102">
-    <input type="text" id="dn3-user" placeholder="user">
-  </p>
-</div>
-
-<!-- Step 5. Security Configuration -->
-<h3>Step 5. Security Configuration</h3>
-<div class="box">
-      <label><input type="checkbox" id="ssh"> Enable SSH</label>
-        <br><br>
-      <p>Hostname
-        <input type="text" placeholder="Router">
-      </p>
-      <p>Enable secret
-        <input type="password" placeholder="type">
-      </p>
-      <p>Console password
-        <input type="password" placeholder="******">
-      </p>
-      <p>VTY password
-        <input type="password" placeholder="******">
-      </p>
-
-</div>
-
-<!-- Step 6. DHCP Server Configuration -->
-<h3>Step 6. DHCP Server Configuration</h3>
-<div class="box">
-  <p><strong>Network:</strong> <input type="text" id="dhcp-network" placeholder="192.168.10.0"></p>
-  <p><strong>Subnet Mask:</strong> <input type="text" id="dhcp-mask" placeholder="255.255.255.0"></p>
-  <p><strong>Default Gateway:</strong> <input type="text" id="dhcp-gateway" placeholder="192.168.10.1"></p>
-  <p><strong>DNS Server:</strong> <input type="text" id="dhcp-dns" placeholder="8.8.8.8"></p>
-</div>
-
-
-<!-- Step 7. NAT Configuration -->
-<h3>Step 7. NAT Configuration</h3>
-<div class="box">
-  <p><strong>Inside interface:</strong>  <input type="text" placeholder="GigabitEthernet0/0"></p>
-  <p><strong>Outside interface:</strong> <input type="text" placeholder="GigabitEthernet0/1"></p>
-  <p><strong>Access-list for NAT:</strong><input type="text" placeholder="10 permit 192.168.10.0 0.0.0.255"></p>
-  <button>Enable NAT Overload</button>
-</div>
-
-    <!-- Step 8. SNMP & Monitoring -->
-    <h3>Step 8. SNMP & Monitoring</h3>
-    <div class="box">
-      <p>Community String:
-        <input type="text" placeholder="public">
-      </p>
-      <p>Contact:
-        <input type="text" placeholder="admin@example.com">
-      </p>
-      <p>Location:
-        <input type="text" placeholder="Server Room">
-      </p>
-      <label><input type="checkbox"> Enable SNMP</label>
-    </div>
-
-    <!-- Step 9. Save or Export -->
-<h3>Step 9. Save or Export Configuration</h3>
-<button onclick="autoFillForm()">Auto Fill Form</button>  <!-- Нова кнопка -->
-<button onclick="sendToPython()">Згенерувати</button>
-<h3 style="margin-top: 40px; color: #00ffcc;">Команди для налаштування Router:</h3>
-<div id="response"></div>
-
-  <script type="text/javascript" src="/eel.js"></script>
-  <script src="main.js"></script>
+    <!-- Eel and Scripts -->
+    <script type="text/javascript" src="/eel.js"></script>
+    <script src="main.js"></script>
 </body>
+
 </html>

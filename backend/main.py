@@ -161,10 +161,10 @@ if __name__ == "__main__":
     for mode in ["edge", "chrome", None]:
         try:
             eel.start(
-                "home.html",
+                "index.html",
                 size=window_size,
                 mode=mode,
-                port=0,           # автоматичний порт
+                port=0,           
                 block=True
             )
             break
