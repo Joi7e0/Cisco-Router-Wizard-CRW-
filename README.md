@@ -39,8 +39,6 @@ pip install -r requirements.txt
 
 ```powershell
 py -3 -m backend.main
-# або, якщо python в PATH:
-python -m backend.main
 ```
 
 Якщо ви запускаєте `backend/main.py` безпосередньо в IDE, переконайтеся, що робоча директорія — корінь проєкту, або запускайте модуль як `-m backend.main`.
