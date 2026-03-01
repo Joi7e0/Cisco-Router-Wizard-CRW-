@@ -58,12 +58,14 @@ def validate_router_id(router_id: str, routing_protocol: str) -> str:
             error = validate_ip(router_id)
             if error:
                 return error
-            if router_id == "0.0.0.0":
-                return "❌ Error: Router ID не може бути 0.0.0.0."
+            if router_id == "0.0.0.0" or router_id == "255.255.255.255":
+                return f"❌ Error: Router ID не може бути {router_id}."
         elif router_id:  # Опціонально для інших, але якщо вказано — валідне
             error = validate_ip(router_id)
             if error:
                 return error
+            if router_id == "0.0.0.0" or router_id == "255.255.255.255":
+                return f"❌ Error: Router ID не може бути {router_id}."
         return ""
     except (ValueError, TypeError) as e:
         print(f"Validate router_id error: {e}")
@@ -71,6 +73,8 @@ def validate_router_id(router_id: str, routing_protocol: str) -> str:
 
 # Валідація паролів
 def validate_password(password: str, field_name: str) -> str:
+    if not isinstance(password, str):
+        return f"❌ Error: {field_name} повинен бути рядком."
     if not password:
         return f"❌ Error: {field_name} не може бути порожнім."
     if len(password) < 8 or len(password) > 32:
@@ -96,42 +100,40 @@ def validate_dhcp(dhcp_network: str, dhcp_mask: str, dhcp_gateway: str, dhcp_dns
     return ""
 
 # Головна функція валідації всіх вхідних даних
-def validate_inputs(ip: str, mask: str, ip1: str, mask1: str, ip2: str, mask2: str,
+def validate_inputs(networks: list,
                     routing_protocol: str = "", router_id: str = "",
                     enable_secret: str = "", console_password: str = "", vty_password: str = "",
                     dhcp_network: str = "", dhcp_mask: str = "", dhcp_gateway: str = "", dhcp_dns: str = "") -> str:
     try:
-        if not all([ip, mask, ip1, mask1, ip2, mask2]):
-            return "❌ Error: Будь ласка, заповніть усі поля IP та маски."
+        if not networks:
+            return "❌ Error: Будь ласка, вкажіть хоча б одну мережу (IP та маску)."
         
-        for value in [ip, mask, ip1, mask1, ip2, mask2]:
-            error = validate_general(value)
-            if error:
-                return error
+        for item in networks:
+            if not isinstance(item, (tuple, list)) or len(item) != 2:
+                continue
+            ip, mask = item
+            if not ip or not mask:
+                return "❌ Error: Будь ласка, заповніть усі поля IP та маски."
+            
+            error = validate_general(ip) or validate_general(mask)
+            if error: return error
+            
+            error = validate_ip(ip) or validate_mask(mask)
+            if error: return error
         
-        for ip_val in [ip, ip1, ip2]:
-            error = validate_ip(ip_val)
-            if error:
-                return error
-        
-        for mask_val in [mask, mask1, mask2]:
-            error = validate_mask(mask_val)
-            if error:
-                return error
-        
-        # Нова: Валідація router_id
+        # Валідація router_id
         error = validate_router_id(router_id, routing_protocol)
         if error:
             return error
         
-        # Нова: Валідація паролів
+        # Валідація паролів
         for pwd, name in [(enable_secret, "Enable secret"), (console_password, "Console password"), (vty_password, "VTY password")]:
             if pwd:  # Якщо вказано
                 error = validate_password(pwd, name)
                 if error:
                     return error
         
-        # Нова: Валідація DHCP
+        # Валідація DHCP
         error = validate_dhcp(dhcp_network, dhcp_mask, dhcp_gateway, dhcp_dns)
         if error:
             return error

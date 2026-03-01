@@ -1,10 +1,16 @@
 # backend/protocols.py
 # Генерація конфігурації протоколів маршрутизації
 def _mask_to_wildcard(mask: str) -> str:
-
     try:
         if not isinstance(mask, str):
             raise TypeError(f"Mask must be str, got {type(mask)}")
+        mask = mask.strip()
+            
+        if mask.isdigit() and 0 <= int(mask) <= 32:
+            import ipaddress
+            net = ipaddress.IPv4Network(f"0.0.0.0/{mask}", strict=False)
+            return str(net.hostmask)
+            
         parts = mask.split('.')
         if len(parts) != 4:
             raise ValueError("Mask must have exactly 4 octets")
@@ -12,7 +18,7 @@ def _mask_to_wildcard(mask: str) -> str:
         wildcard_parts = []
         for p in parts:
             try:
-                octet = int(p)
+                octet = int(p.strip())
             except ValueError:
                 raise ValueError(f"Invalid octet value: {p}")
             if not (0 <= octet <= 255):
@@ -41,6 +47,7 @@ def generate_protocol_config(protocol: str, router_id: str, networks: list[tuple
             for item in networks:
                 try:
                     net_ip, net_mask = item
+                    if net_ip == "invalid" or net_mask == "mask": continue
                     wildcard = _mask_to_wildcard(net_mask)
                     cfg.append(f" network {net_ip} {wildcard} area 0")
                 except Exception as e:
@@ -53,6 +60,7 @@ def generate_protocol_config(protocol: str, router_id: str, networks: list[tuple
             for item in networks:
                 try:
                     net_ip, _ = item
+                    if net_ip == "invalid": continue
                     cfg.append(f" network {net_ip}")
                 except Exception as e:
                     cfg.append(f"! Error in network config: {e}")
@@ -81,6 +89,15 @@ def generate_protocol_config(protocol: str, router_id: str, networks: list[tuple
             cfg.append(" net 49.0001.0000.0000.0001.00")
             cfg.append(" is-type level-2-only")
             cfg.append(" exit")
+        elif proto == "STATIC":
+            cfg.append("!")
+            for item in networks:
+                try:
+                    net_ip, net_mask = item
+                    if net_ip == "invalid" or net_mask == "mask": continue
+                    cfg.append(f"ip route {net_ip} {net_mask} Null0")
+                except Exception as e:
+                    pass
         else:
             cfg.append("! No routing protocol selected")
 

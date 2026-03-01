@@ -2,7 +2,12 @@ import eel
 import os
 import traceback
 
-from .generate import generate_full_config
+try:
+    from .generate import generate_full_config
+    from .validate import validate_inputs
+except ImportError:
+    from generate import generate_full_config
+    from validate import validate_inputs
 
 
 # Ініціалізація eel
@@ -88,8 +93,22 @@ def process_text(
         if not isinstance(routing_protocol, str):
             routing_protocol = str(routing_protocol)
 
-        if routing_protocol.upper() == "OSPF" and not str(router_id).strip():
-            return "❌ Для OSPF обов'язково потрібно вказати Router ID"
+        # Комлексна валідація вхідних даних
+        validation_error = validate_inputs(
+            networks=networks,
+            routing_protocol=routing_protocol.strip(),
+            router_id=str(router_id).strip() if router_id else "",
+            enable_secret=str(enable_secret).strip() if enable_secret else "",
+            console_password=str(console_password).strip() if console_password else "",
+            vty_password=str(vty_password).strip() if vty_password else "",
+            dhcp_network=str(dhcp_network).strip() if dhcp_network else "",
+            dhcp_mask=str(dhcp_mask).strip() if dhcp_mask else "",
+            dhcp_gateway=str(dhcp_gateway).strip() if dhcp_gateway else "",
+            dhcp_dns=str(dhcp_dns).strip() if dhcp_dns else ""
+        )
+        
+        if validation_error:
+            return validation_error
 
         # Виклик генерації конфігурації
         try:

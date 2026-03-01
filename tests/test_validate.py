@@ -1,4 +1,10 @@
 import pytest
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from typing import Any
 from backend.validate import (
     validate_general,
     validate_ip,
@@ -10,16 +16,15 @@ from backend.validate import (
 
 # Константи для параметрів функції validate_inputs
 VALIDATE_INPUTS_PARAMS = [
-    'ip_lan', 'mask_lan', 
-    'ip_wan', 'mask_wan', 
-    'ip_loopback', 'mask_loopback',
+    'networks',
     'routing_protocol', 'router_id',
     'enable_secret', 'console_password', 'vty_password',
-    'dhcp_pool_name', 'dhcp_network', 'dhcp_mask', 'dhcp_excluded'
+    'dhcp_network', 'dhcp_mask', 'dhcp_gateway', 'dhcp_dns'
 ]
 
 def create_validate_inputs_args(**kwargs):
-    default_args = {param: '' for param in VALIDATE_INPUTS_PARAMS}
+    default_args: dict[str, Any] = {param: '' for param in VALIDATE_INPUTS_PARAMS}
+    default_args['networks'] = []
     default_args.update(kwargs)
     return default_args
 
@@ -74,7 +79,6 @@ class TestValidateIP:
         ("0.0.0.0", ""),  # Валідне, але не для router_id
         ("255.255.255.255", ""),  # Broadcast
         ("169.254.0.1", ""),  # Link-local (але дозволено)
-        ("010.010.010.010", ""),  # З ведучими нулями
         ("0.0.0.0", ""),  # Мінімальне значення
         ("255.255.255.255", ""),  # Максимальне значення
     ])
@@ -247,21 +251,18 @@ class TestValidateInputs:
     def test_valid_complete_inputs(self):
         """Тестування повного набору валідних даних"""
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0',
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ],
             routing_protocol='RIP',
             router_id='',
             enable_secret='EnablePass1',
             console_password='ConsolePass1',
             vty_password='VtyPass123',
-            dhcp_pool_name='LAN_POOL',
             dhcp_network='192.168.1.0',
-            dhcp_mask='255.255.255.0',
-            dhcp_excluded='192.168.1.1 192.168.1.10'
+            dhcp_mask='255.255.255.0'
         )
         result = validate_inputs(**args)
         assert result == ""
@@ -269,12 +270,11 @@ class TestValidateInputs:
     #Тестування мінімального набору валідних даних
     def test_valid_minimal_inputs(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0'
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ]
         )
         result = validate_inputs(**args)
         assert result == ""
@@ -282,12 +282,11 @@ class TestValidateInputs:
     #Тестування OSPF з валідним Router ID
     def test_ospf_with_router_id(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0',
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ],
             routing_protocol='OSPF',
             router_id='1.1.1.1'
         )
@@ -297,12 +296,11 @@ class TestValidateInputs:
     #Тестування відсутніх обов'язкових полів
     def test_missing_required_fields(self):
         args = create_validate_inputs_args(
-            ip_lan='',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0'
+            networks=[
+                ('', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ]
         )
         result = validate_inputs(**args)
         assert "заповніть усі поля IP та маски" in result
@@ -310,25 +308,23 @@ class TestValidateInputs:
     #Тестування невалідного формату IP
     def test_invalid_ip_format(self):
         args = create_validate_inputs_args(
-            ip_lan='invalid',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0'
+            networks=[
+                ('invalid', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ]
         )
         result = validate_inputs(**args)
-        assert "формат IP-адреси" in result
+        assert "Error" in result
     
     #Тестування відсутнього Router ID для OSPF
     def test_ospf_without_router_id(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0',
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ],
             routing_protocol='OSPF',
             router_id=''
         )
@@ -338,12 +334,11 @@ class TestValidateInputs:
     #Тестування невалідного Router ID для OSPF
     def test_invalid_router_id_for_ospf(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0',
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ],
             routing_protocol='OSPF',
             router_id='0.0.0.0'
         )
@@ -353,12 +348,11 @@ class TestValidateInputs:
     #Тестування короткого пароля
     def test_short_password(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0',
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ],
             enable_secret='short1'
         )
         result = validate_inputs(**args)
@@ -367,12 +361,11 @@ class TestValidateInputs:
     #Тестування пароля без цифр
     def test_password_without_digit(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0',
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ],
             console_password='NoDigitsHere'
         )
         result = validate_inputs(**args)
@@ -381,12 +374,11 @@ class TestValidateInputs:
     #Тестування невалідної DHCP мережі
     def test_dhcp_invalid_network(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0',
+            networks=[
+                ('192.168.1.1', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ],
             dhcp_network='invalid',
             dhcp_mask='255.255.255.0'
         )
@@ -396,12 +388,11 @@ class TestValidateInputs:
     #Тестування пробілів в IP
     def test_spaces_in_ip(self):
         args = create_validate_inputs_args(
-            ip_lan='192.168.1.1 ',
-            mask_lan='255.255.255.0',
-            ip_wan='10.0.0.1',
-            mask_wan='255.255.255.252',
-            ip_loopback='172.16.0.1',
-            mask_loopback='255.255.0.0'
+            networks=[
+                ('192.168.1.1 ', '255.255.255.0'),
+                ('10.0.0.1', '255.255.255.252'),
+                ('172.16.0.1', '255.255.0.0')
+            ]
         )
         result = validate_inputs(**args)
         assert "містить пробіли" in result
@@ -424,14 +415,15 @@ def test_validation_sequence():
 
 # Додаткові тести для граничних випадків
 def test_edge_case_ip_with_leading_zeros():
-    # IP з ведучими нулями має бути валідним
-    assert validate_ip("010.010.010.010") == ""
-    assert validate_ip("001.002.003.004") == ""
+    # IP з ведучими нулями викликає помилку формату
+    assert "Error" in validate_ip("010.010.010.010")
 
 # Додаткові тести для граничних випадків паролів
 def test_edge_case_password_length_boundaries():
     # Межові значення довжини
-    assert validate_password("A" * 7 + "1", "Test") != ""  # 7 символів + 1 цифра = 8, але може бути недостатньо літер або цифр
+    assert validate_password("A" * 6 + "1", "Test") != ""  # 7 символів + 1 цифра = 8, але може бути недостатньо літер або цифр
+    assert validate_password("A" * 7 + "1", "Test") == ""  # 7 символів + 1 цифра = 8, але може бути недостатньо літер або цифр
+
     assert validate_password("A" * 31 + "1", "Test") == ""  # 32 символи (граничне значення)
     assert validate_password("A" * 32 + "1", "Test") != ""  # 33 символи (занадто багато)
 

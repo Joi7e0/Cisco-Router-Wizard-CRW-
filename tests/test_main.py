@@ -9,8 +9,10 @@ class TestProcessText(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Забезпечуємо наявність мінімального stub-модуля `eel` перед імпортом backend.main
-        import sys, types
+        import sys, types, os
+        # Додаємо корінь проекту в sys.path
+        sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+        
         if 'eel' not in sys.modules:
             eel_stub = types.SimpleNamespace(init=lambda *a, **k: None,
                                             expose=lambda f: f,
@@ -27,7 +29,8 @@ class TestProcessText(unittest.TestCase):
             return
         print("\n\n=== Generated configs from tests (selected) ===")
         for name, out in cls._outputs[:8]:  # обмежуємо вивід
-            print(f"\n--- {name} ---\n{out[:400]}{'...' if len(out) > 400 else ''}")
+            safe_out = out.replace("❌", "[X]")
+            print(f"\n--- {name} ---\n{safe_out[:400]}{'...' if len(safe_out) > 400 else ''}")
         print("\n=== End of preview ===\n")
 
     def call_process(self, **kwargs):
