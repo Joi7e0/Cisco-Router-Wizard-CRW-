@@ -40,7 +40,8 @@ def process_text(
     max_dn: int = 3,
     ip_source_address: str = "10.0.0.1",
     auto_assign_range: str = "1 to 3",
-    dhcp_excluded: tuple = ("10.0.0.1", "10.0.0.10")
+    dhcp_excluded: tuple = ("10.0.0.1", "10.0.0.10"),
+    routing_config: dict = None
 ) -> str:
     try:
         # Захист від None
@@ -146,7 +147,8 @@ def process_text(
                 max_dn=int(max_dn),
                 ip_source_address=ip_source_address.strip(),
                 auto_assign_range=auto_assign_range.strip(),
-                dhcp_excluded=tuple(dhcp_excluded)
+                dhcp_excluded=tuple(dhcp_excluded),
+                routing_config=routing_config
             )
 
             return "\n".join(config_lines)

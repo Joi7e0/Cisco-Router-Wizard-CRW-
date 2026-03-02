@@ -7,7 +7,8 @@ def generate_interface_config(
     interfaces: list[str],
     networks: list[tuple[str, str]],
     no_shutdown_interfaces: list[str] = None,
-    descriptions: list[str] = None
+    descriptions: list[str] = None,
+    routing_config: dict = None
 ) -> list[str]:
 
     if no_shutdown_interfaces is None:
@@ -25,6 +26,13 @@ def generate_interface_config(
         cfg.append(f" ip address {ip} {mask}")
         if intf in no_shutdown_interfaces:
             cfg.append(" no shutdown")
+        
+        # IS-IS Participation
+        if routing_config and routing_config.get("protocol") == "IS-IS":
+            participating = routing_config.get("participatingInterfaces", [])
+            if intf in participating:
+                cfg.append(" ip router isis")
+                
         cfg.append(" exit")
     return cfg
 
@@ -34,7 +42,8 @@ def generate_base_config(
     interfaces: list[str],
     networks: list[tuple[str, str]],
     no_shutdown_interfaces: list[str] = None,
-    descriptions: list[str] = None
+    descriptions: list[str] = None,
+    routing_config: dict = None
 ) -> list[str]:
     cfg = [
         "enable",
@@ -42,7 +51,7 @@ def generate_base_config(
         f"hostname {hostname or 'R1'}",
         "!"
     ]
-    cfg.extend(generate_interface_config(interfaces, networks, no_shutdown_interfaces, descriptions))
+    cfg.extend(generate_interface_config(interfaces, networks, no_shutdown_interfaces, descriptions, routing_config))
     return cfg
 
 def generate_multicast_config(ip_multicast: bool, interfaces: list[str]) -> list[str]:
@@ -254,7 +263,9 @@ def generate_full_config(
     max_dn: int = 3,
     ip_source_address: str = "10.0.0.1",
     auto_assign_range: str = "1 to 3",
-    dhcp_excluded: tuple[str, str] = ("10.0.0.1", "10.0.0.10")
+    dhcp_excluded: tuple[str, str] = ("10.0.0.1", "10.0.0.10"),
+    no_auto_summary: bool = True,
+    routing_config: dict = None
 ) -> list[str]:
     """
     Збирає всю конфігурацію разом
@@ -266,13 +277,13 @@ def generate_full_config(
     config = []
 
     # 1. Базова частина + інтерфейси
-    config.extend(generate_base_config(hostname, interfaces, networks, no_shutdown_interfaces, descriptions))
+    config.extend(generate_base_config(hostname, interfaces, networks, no_shutdown_interfaces, descriptions, routing_config))
 
     # 2. Multicast (якщо потрібно)
     config.extend(generate_multicast_config(ip_multicast, interfaces))
 
     # 3. Протокол маршрутизації
-    config.extend(generate_protocol_config(routing_protocol, router_id, networks))
+    config.extend(generate_protocol_config(routing_protocol, router_id, networks, no_auto_summary, routing_config))
 
     # 4. Telephony
     config.extend(generate_telephony_config(

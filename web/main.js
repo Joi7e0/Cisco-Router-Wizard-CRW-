@@ -7,7 +7,14 @@ let currentStep = 1;
 function updateStepUI() {
     // Update step visibility
     document.querySelectorAll('.step-content').forEach(step => {
-        step.classList.toggle('active', parseInt(step.id.split('-')[1]) === currentStep);
+        const stepNum = parseInt(step.id.split('-')[1]);
+        const isActive = stepNum === currentStep;
+        step.classList.toggle('active', isActive);
+
+        // Initialize Step 3 data when it becomes active
+        if (isActive && stepNum === 3) {
+            updateISISInterfaceChecklist();
+        }
     });
 
     // Update stepper visibility and icons
@@ -305,6 +312,98 @@ function autoFillForm() {
     alert("Default values populated!");
 }
 
+// --- Routing Protocol Selection (Enterprise Refactor) ---
+let staticRoutes = [];
+
+function selectProtocol(protocolName) {
+    // Update hidden radio for compatibility
+    const oldRadio = document.getElementById(`radio-${protocolName}`);
+    if (oldRadio) oldRadio.checked = true;
+
+    // Update active state of buttons
+    document.querySelectorAll('.protocol-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `btn-${protocolName}`);
+    });
+
+    // Switch Panes
+    document.querySelectorAll('.protocol-pane').forEach(pane => {
+        pane.classList.add('hidden');
+    });
+
+    const activePane = document.getElementById(`pane-${protocolName}`);
+    if (activePane) {
+        activePane.classList.remove('hidden');
+    }
+
+    // Special logic for specific protocols
+    if (protocolName === 'IS-IS') {
+        updateISISInterfaceChecklist();
+    }
+}
+
+// Static Routes logic removed as per simplification request
+
+// Dynamic Checklist for IS-IS (Participation)
+function updateISISInterfaceChecklist() {
+    const container = document.getElementById("isis-interfaces-checklist");
+    if (!container) return;
+
+    const { interfaces } = getInterfacesData();
+    if (interfaces.length === 0) {
+        container.innerHTML = '<p style="color: #999; font-style: italic; font-size: 0.8rem;">Add interfaces in Step 2 first...</p>';
+        return;
+    }
+
+    container.innerHTML = interfaces.map((inf, index) => `
+        <div class="checklist-item">
+            <label class="checkbox-container">
+                <input type="checkbox" class="isis-participation-check" value="${inf}">
+                <span class="checkmark"></span>
+                <span class="label-text" style="font-size: 0.85rem;">${inf}</span>
+            </label>
+        </div>
+    `).join('');
+}
+
+// Smart Wildcard Calculation
+function calculateWildcard(maskOrCidr) {
+    if (!maskOrCidr) return "";
+
+    // Check if it's CIDR (/24)
+    if (maskOrCidr.includes('/')) {
+        const promo = maskOrCidr.split('/')[1];
+        const cidr = parseInt(promo);
+        if (isNaN(cidr)) return "Invalid CIDR";
+
+        // Calculate Wildcard for CIDR
+        let bits = (0xFFFFFFFF << (32 - cidr)) >>> 0;
+        let wildcard = (~bits) >>> 0;
+
+        return [
+            (wildcard >> 24) & 0xFF,
+            (wildcard >> 16) & 0xFF,
+            (wildcard >> 8) & 0xFF,
+            wildcard & 0xFF
+        ].join('.');
+    }
+
+    // Check if it's Subnet Mask
+    const parts = maskOrCidr.split('.');
+    if (parts.length === 4) {
+        return parts.map(p => 255 - parseInt(p)).join('.');
+    }
+
+    return "";
+}
+
+// --- Standalone Multicast Toggle ---
+function toggleMulticastInSidebar() {
+    const checkbox = document.getElementById("multicast-checkbox");
+    if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+    }
+}
+
 // --- GENERATE ---
 async function sendToPython() {
     const { interfaces, networks, descriptions, noShutdownList } = getInterfacesData();
@@ -315,8 +414,39 @@ async function sendToPython() {
         return;
     }
 
-    const routingProtocol = document.querySelector('input[name="routing-protocol"]:checked')?.value || "";
-    const routerId = document.getElementById("router-id").value.trim();
+    // Collect Routing Configuration
+    const routingProtocol = document.querySelector('input[name="routing-protocol"]:checked')?.value || "None";
+    const routingConfig = {
+        protocol: routingProtocol,
+        networks: networks,
+        staticRoutes: [],
+        routerId: document.getElementById("router-id")?.value.trim() ||
+            document.getElementById("bgp-router-id")?.value.trim() || "",
+        ripNoAuto: document.getElementById("rip-no-auto")?.checked || false,
+        eigrpAs: document.getElementById("eigrp-as")?.value.trim() || "100",
+        eigrpNoAuto: document.getElementById("eigrp-no-auto")?.checked || false,
+        ospfProcessId: document.getElementById("ospf-process-id")?.value.trim() || "1",
+        ospfArea: document.getElementById("ospf-area")?.value.trim() || "0",
+        bgpLocalAs: document.getElementById("bgp-local-as")?.value.trim() || "65000",
+        bgpNeighborIp: document.getElementById("bgp-neighbor-ip")?.value.trim() || "",
+        bgpRemoteAs: document.getElementById("bgp-remote-as")?.value.trim() || "",
+        isisAreaId: document.getElementById("isis-area-id")?.value.trim() || "49.0001",
+        isisSystemId: document.getElementById("isis-system-id")?.value.trim() || "0000.0000.0001.00",
+        isisRouterType: document.getElementById("isis-type")?.value || "level-1-2",
+        participatingInterfaces: Array.from(document.querySelectorAll(".isis-participation-check:checked")).map(el => el.value)
+    };
+
+    // Collect simplified Static Route
+    const sDest = document.getElementById("static-dest")?.value.trim();
+    const sMask = document.getElementById("static-mask")?.value.trim();
+    const sNext = document.getElementById("static-next-hop")?.value.trim();
+    if (sDest && sMask) {
+        routingConfig.staticRoutes.push({
+            dest: sDest,
+            mask: sMask,
+            nextHop: sNext
+        });
+    }
 
     const hostname = document.getElementById("hostname").value.trim();
     const enableSecret = document.getElementById("enable_secret").value.trim();
@@ -342,8 +472,8 @@ async function sendToPython() {
     try {
         const res = await eel.process_text(
             routingProtocol,
-            "",
-            routerId,
+            "", // Legacy argument
+            routingConfig.routerId || "", // Legacy position
             ipMulticast,
             telephonyEnabled,
             dnList,
@@ -360,7 +490,13 @@ async function sendToPython() {
             interfaces,
             networks,
             noShutdownList,
-            descriptions
+            descriptions,
+            3, // max_ephones
+            3, // max_dn
+            "10.0.0.1", // ip_source
+            "1 to 3", // auto_assign
+            ["10.0.0.1", "10.0.0.10"], // dhcp_excluded
+            routingConfig // Send the whole config object as the last argument
         )();
 
         const responseDiv = document.getElementById("response");
@@ -404,4 +540,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Start with 0 interfaces as per request
     document.getElementById("interfaces-list").innerHTML = "";
     updateStepUI();
+
+    // Default to Static on load
+    selectProtocol('Static');
 });

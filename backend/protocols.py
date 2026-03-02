@@ -1,107 +1,160 @@
 # backend/protocols.py
 # Генерація конфігурації протоколів маршрутизації
+
 def _mask_to_wildcard(mask: str) -> str:
     try:
-        if not isinstance(mask, str):
-            raise TypeError(f"Mask must be str, got {type(mask)}")
+        if not mask or not isinstance(mask, str):
+            return "0.0.0.255"
         mask = mask.strip()
-            
-        if mask.isdigit() and 0 <= int(mask) <= 32:
-            import ipaddress
-            net = ipaddress.IPv4Network(f"0.0.0.0/{mask}", strict=False)
-            return str(net.hostmask)
-            
+        
+        # Якщо це префікс (н-д, 24)
+        if mask.isdigit() or (mask.startswith('/') and mask[1:].isdigit()):
+            cidr_str = mask[1:] if mask.startswith('/') else mask
+            cidr = int(cidr_str)
+            if 0 <= cidr <= 32:
+                host_bits = (1 << (32 - cidr)) - 1
+                return f"{(host_bits >> 24) & 0xFF}.{(host_bits >> 16) & 0xFF}.{(host_bits >> 8) & 0xFF}.{host_bits & 0xFF}"
+        
+        # Якщо це повноцінна маска (н-д, 255.255.255.0)
         parts = mask.split('.')
-        if len(parts) != 4:
-            raise ValueError("Mask must have exactly 4 octets")
+        if len(parts) == 4:
+            return ".".join(str(255 - int(p)) for p in parts)
+            
+        return "0.0.0.255"
+    except Exception:
+        return "0.0.0.255"
 
-        wildcard_parts = []
-        for p in parts:
-            try:
-                octet = int(p.strip())
-            except ValueError:
-                raise ValueError(f"Invalid octet value: {p}")
-            if not (0 <= octet <= 255):
-                raise ValueError(f"Octet out of range: {octet}")
-            wildcard_parts.append(str(255 - octet))
-
-        return '.'.join(wildcard_parts)
-    except (ValueError, TypeError) as e:
-        # Log to stdout for test visibility; in production consider using logging
-        print(f"Error in _mask_to_wildcard: {e}")
-        return "0.0.0.0"
-
-# Генерація конфігурації протоколу маршрутизації
-def generate_protocol_config(protocol: str, router_id: str, networks: list[tuple[str, str]]) -> list[str]:
+def _cidr_to_mask(cidr: int) -> str:
     try:
-        if not isinstance(protocol, str) or not isinstance(router_id, str):
-            raise TypeError("Protocol and router_id must be strings")
+        if not (0 <= cidr <= 32):
+            return "255.255.255.0"
+        mask_bits = (0xFFFFFFFF << (32 - cidr)) & 0xFFFFFFFF
+        return f"{(mask_bits >> 24) & 0xFF}.{(mask_bits >> 16) & 0xFF}.{(mask_bits >> 8) & 0xFF}.{mask_bits & 0xFF}"
+    except Exception:
+        return "255.255.255.0"
 
-        proto = protocol.upper().strip()
-        cfg = []
+def generate_protocol_config(
+    protocol: str,
+    router_id: str,
+    networks: list,
+    no_auto_summary: bool = True,
+    routing_config: dict = None
+) -> list[str]:
+    """
+    Генерує команди для протоколів маршрутизації
+    """
+    if not protocol or protocol.upper() == "NONE":
+        return []
 
-        if proto == "OSPF":
-            cfg.append("!")
-            cfg.append("router ospf 1")
-            cfg.append(f" router-id {router_id}")
-            for item in networks:
-                try:
-                    net_ip, net_mask = item
-                    if net_ip == "invalid" or net_mask == "mask": continue
-                    wildcard = _mask_to_wildcard(net_mask)
-                    cfg.append(f" network {net_ip} {wildcard} area 0")
-                except Exception as e:
-                    cfg.append(f"! Error in network config: {e}")
-            cfg.append(" exit")
-        elif proto == "RIP":
-            cfg.append("!")
-            cfg.append("router rip")
-            cfg.append(" version 2")
-            for item in networks:
-                try:
-                    net_ip, _ = item
-                    if net_ip == "invalid": continue
-                    cfg.append(f" network {net_ip}")
-                except Exception as e:
-                    cfg.append(f"! Error in network config: {e}")
-            cfg.append(" no auto-summary")
-            cfg.append(" exit")
-        elif proto == "EIGRP":
-            cfg.append("!")
-            cfg.append("router eigrp 100")
-            for item in networks:
-                try:
-                    net_ip, _ = item
-                    cfg.append(f" network {net_ip}")
-                except Exception as e:
-                    cfg.append(f"! Error in network config: {e}")
-            cfg.append(" no auto-summary")
-            cfg.append(" exit")
-        elif proto == "BGP":
-            cfg.append("!")
-            cfg.append("router bgp 65000")
-            cfg.append(" bgp log-neighbor-changes")
-            cfg.append(" neighbor 1.1.1.2 remote-as 65001")
-            cfg.append(" exit")
-        elif proto == "IS-IS":
-            cfg.append("!")
-            cfg.append("router isis")
-            cfg.append(" net 49.0001.0000.0000.0001.00")
-            cfg.append(" is-type level-2-only")
-            cfg.append(" exit")
-        elif proto == "STATIC":
-            cfg.append("!")
-            for item in networks:
-                try:
-                    net_ip, net_mask = item
-                    if net_ip == "invalid" or net_mask == "mask": continue
-                    cfg.append(f"ip route {net_ip} {net_mask} Null0")
-                except Exception as e:
-                    pass
-        else:
-            cfg.append("! No routing protocol selected")
+    proto = protocol.upper().strip()
+    cfg = []
+    rc = routing_config or {}
 
-        return cfg
-    except (TypeError, ValueError) as e:
-        print(f"Error in generate_protocol_config: {e}")
-        return ["! Routing protocol error: Invalid input"]
+    if proto == "STATIC":
+        routes = rc.get("staticRoutes", [])
+        if routes:
+            cfg.append("!")
+            for r in routes:
+                dest = r.get("dest")
+                mask = r.get("mask", "")
+                next_hop = r.get("nextHop", "")
+                intf = r.get("interface", "")
+                ad = r.get("ad", "")
+                metric = r.get("metric", "")
+                
+                # Convert prefix to mask if needed
+                if mask.isdigit() or mask.startswith('/'):
+                    m_val = mask[1:] if mask.startswith('/') else mask
+                    mask_final = _cidr_to_mask(int(m_val))
+                else:
+                    mask_final = mask or "255.255.255.0"
+                
+                cmd = f"ip route {dest} {mask_final}"
+                if next_hop: cmd += f" {next_hop}"
+                if intf: cmd += f" {intf}"
+                if ad: cmd += f" {ad}"
+                if metric: cmd += f" {metric}" # Metric in static is usually AD but keeping it
+                cfg.append(cmd)
+
+    elif proto == "RIP":
+        cfg.append("!")
+        cfg.append("router rip")
+        cfg.append(" version 2")
+        for item in networks:
+            net_ip = item[0] if isinstance(item, (list, tuple)) else item
+            if net_ip and net_ip != "invalid":
+                cfg.append(f"  network {net_ip}")
+        if rc.get("noAutoSummary", no_auto_summary):
+            cfg.append("  no auto-summary")
+        cfg.append(" exit")
+
+    elif proto == "OSPF":
+        pid = rc.get("processId", "1")
+        area = rc.get("area", "0")
+        rid = rc.get("routerId") or router_id
+        
+        cfg.append("!")
+        cfg.append(f"router ospf {pid}")
+        if rid:
+            cfg.append(f"  router-id {rid}")
+            
+        # OSPF Networks are now handled differently or removed from UI but keeping for backend consistency
+        for item in networks:
+            net_ip = item[0] if isinstance(item, (list, tuple)) else item
+            net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) > 1 else "24"
+            if net_ip and net_ip != "invalid":
+                wildcard = _mask_to_wildcard(net_mask)
+                cfg.append(f"  network {net_ip} {wildcard} area {area}")
+        cfg.append(" exit")
+
+    elif proto == "EIGRP":
+        asn = rc.get("asNumber", "100")
+        no_auto = rc.get("noAutoSummary", True)
+        
+        cfg.append("!")
+        cfg.append(f"router eigrp {asn}")
+        for item in networks:
+            net_ip = item[0] if isinstance(item, (list, tuple)) else item
+            if net_ip and net_ip != "invalid":
+                cfg.append(f"  network {net_ip}")
+        if no_auto:
+            cfg.append("  no auto-summary")
+        cfg.append(" exit")
+
+    elif proto == "BGP":
+        local_as = rc.get("localAs", "65001")
+        rid = rc.get("routerId") or router_id
+        neighbor = rc.get("neighborIp")
+        remote_as = rc.get("remoteAs")
+        
+        cfg.append("!")
+        cfg.append(f"router bgp {local_as}")
+        if rid:
+            cfg.append(f"  bgp router-id {rid}")
+        if neighbor and remote_as:
+            cfg.append(f"  neighbor {neighbor} remote-as {remote_as}")
+            
+        for item in networks:
+            net_ip = item[0] if isinstance(item, (list, tuple)) else item
+            net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) > 1 else "24"
+            if net_ip and net_ip != "invalid":
+                if net_mask.isdigit():
+                    mask = _cidr_to_mask(int(net_mask))
+                    cfg.append(f"  network {net_ip} mask {mask}")
+                else:
+                    cfg.append(f"  network {net_ip} mask {net_mask}")
+        cfg.append(" exit")
+
+    elif proto == "IS-IS":
+        area_id = rc.get("areaId", "49.0001")
+        system_id = rc.get("systemId", "0000.0000.0001")
+        r_type = rc.get("routerType", "level-1-2")
+        
+        cfg.append("!")
+        cfg.append("router isis")
+        cfg.append(f"  net {area_id}.{system_id}.00")
+        cfg.append(f"  is-type {r_type}")
+        cfg.append("  no auto-summary")
+        cfg.append(" exit")
+
+    return cfg
