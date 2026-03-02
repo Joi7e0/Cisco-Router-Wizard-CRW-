@@ -27,6 +27,7 @@ def process_text(
     enable_secret: str = "",
     console_password: str = "",
     vty_password: str = "",
+    password_encryption_type: str = "7",
     dhcp_network: str = "",
     dhcp_mask: str = "",
     dhcp_gateway: str = "",
@@ -34,6 +35,7 @@ def process_text(
     interfaces: list = None,
     networks: list = None,
     no_shutdown_interfaces: list = None,
+    descriptions: list = None,
     max_ephones: int = 3,
     max_dn: int = 3,
     ip_source_address: str = "10.0.0.1",
@@ -50,6 +52,8 @@ def process_text(
             networks = []
         if no_shutdown_interfaces is None:
             no_shutdown_interfaces = []
+        if descriptions is None:
+            descriptions = []
 
         # Мінімальна перевірка
         if not interfaces:
@@ -110,6 +114,12 @@ def process_text(
         if validation_error:
             return validation_error
 
+        # Safeguard for max_ephones/max_dn receiving lists due to argument shifts
+        if isinstance(max_ephones, list):
+            max_ephones = 3
+        if isinstance(max_dn, list):
+            max_dn = 3
+
         # Виклик генерації конфігурації
         try:
             config_lines = generate_full_config(
@@ -125,11 +135,13 @@ def process_text(
                 enable_secret=enable_secret.strip(),
                 console_password=console_password.strip(),
                 vty_password=vty_password.strip(),
+                password_encryption_type=str(password_encryption_type).strip(),
                 dhcp_network=dhcp_network.strip(),
                 dhcp_mask=dhcp_mask.strip(),
                 dhcp_gateway=dhcp_gateway.strip(),
                 dhcp_dns=dhcp_dns.strip(),
                 no_shutdown_interfaces=[str(i).strip() for i in no_shutdown_interfaces],
+                descriptions=[str(d).strip() for d in descriptions],
                 max_ephones=int(max_ephones),
                 max_dn=int(max_dn),
                 ip_source_address=ip_source_address.strip(),

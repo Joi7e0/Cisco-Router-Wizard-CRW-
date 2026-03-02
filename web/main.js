@@ -99,9 +99,32 @@ function switchTab(tabId) {
     document.getElementById('help-tips-pane').classList.toggle('hidden', tabId !== 'help-tips');
 }
 
+// --- PASSWORD ENCRYPTION LOGIC ---
+
+function updateEncryptionSecurityBadge() {
+    const select = document.getElementById('password_encryption_type');
+    const badge = document.getElementById('encryption_security_badge');
+    if (!select || !badge) return;
+
+    const val = parseInt(select.value);
+
+    badge.className = 'security-badge'; // Reset classes
+
+    if (val <= 4) {
+        badge.classList.add('sec-low');
+        badge.textContent = 'low';
+    } else if (val <= 7) {
+        badge.classList.add('sec-medium');
+        badge.textContent = 'medium';
+    } else {
+        badge.classList.add('sec-high');
+        badge.textContent = 'high';
+    }
+}
+
 // --- INTERFACES LOGIC ---
 
-function createInterfaceField(name = "", ip = "", mask = "", noShutdown = false, index = 0) {
+function createInterfaceField(name = "", ip = "", mask = "", description = "", noShutdown = false, index = 0) {
     const container = document.createElement("div");
     container.className = "interface-item";
 
@@ -114,21 +137,26 @@ function createInterfaceField(name = "", ip = "", mask = "", noShutdown = false,
         <div style="display: flex; flex-wrap: wrap; gap: 12px;">
             <div style="flex: 1; min-width: 200px;">
                 <label>Name</label><br>
-                <input type="text" class="interface-name" value="${name}" placeholder="GigabitEthernet0/0" style="width: 100%;">
+                <input type="text" class="interface-name interface-input" value="${name}" placeholder="GigabitEthernet0/0" style="width: 100%;">
             </div>
 
             <div style="flex: 1; min-width: 150px;">
                 <label>IP Address</label><br>
-                <input type="text" class="interface-ip" value="${ip}" placeholder="192.168.1.1" style="width: 100%;">
+                <input type="text" class="interface-ip interface-input" value="${ip}" placeholder="192.168.1.1" style="width: 100%;">
             </div>
 
             <div style="flex: 1; min-width: 150px;">
                 <label>Subnet Mask</label><br>
-                <input type="text" class="interface-mask" value="${mask}" placeholder="255.255.255.0" style="width: 100%;">
+                <input type="text" class="interface-mask interface-input" value="${mask}" placeholder="255.255.255.0" style="width: 100%;">
             </div>
         </div>
 
         <div style="margin-top: 15px;">
+            <label>Description</label><br>
+            <input type="text" class="interface-description interface-input" value="${description}" placeholder="Connection to...">
+        </div>
+
+        <div style="margin-top: 5px;">
             <label class="toggle-group">
                 <div class="switch">
                     <input type="checkbox" class="interface-no-shutdown" ${noShutdown ? 'checked' : ''}>
@@ -175,7 +203,7 @@ function updateAddButtonState() {
     }
 }
 
-function addInterfaceField(name = "", ip = "", mask = "", noShutdown = false) {
+function addInterfaceField(name = "", ip = "", mask = "", description = "", noShutdown = false) {
     const currentCount = document.querySelectorAll(".interface-item").length;
 
     if (currentCount >= MAX_INTERFACES) {
@@ -184,7 +212,7 @@ function addInterfaceField(name = "", ip = "", mask = "", noShutdown = false) {
     }
 
     const list = document.getElementById("interfaces-list");
-    const field = createInterfaceField(name, ip, mask, noShutdown, currentCount);
+    const field = createInterfaceField(name, ip, mask, description, noShutdown, currentCount);
     list.appendChild(field);
 
     updateAddButtonState();
@@ -194,21 +222,23 @@ function initDefaultInterfaces() {
     interfaceCounter = 0;
     document.getElementById("interfaces-list").innerHTML = "";
 
-    addInterfaceField("GigabitEthernet0/0", "192.168.1.1", "255.255.255.0", true);
-    addInterfaceField("GigabitEthernet0/1", "172.16.0.1", "255.255.0.0", false);
-    addInterfaceField("GigabitEthernet0/2", "10.0.0.1", "255.255.255.252", true);
+    addInterfaceField("GigabitEthernet0/0", "192.168.1.1", "255.255.255.0", "Local LAN", true);
+    addInterfaceField("GigabitEthernet0/1", "172.16.0.1", "255.255.0.0", "WAN Connection", false);
+    addInterfaceField("GigabitEthernet0/2", "10.0.0.1", "255.255.255.252", "Point-to-Point Link", true);
 }
 
 function getInterfacesData() {
     const fields = document.querySelectorAll(".interface-item");
     const interfaces = [];
     const networks = [];
+    const descriptions = [];
     const noShutdownList = [];
 
     fields.forEach(field => {
         const name = field.querySelector(".interface-name").value.trim();
         const ip = field.querySelector(".interface-ip").value.trim();
         const mask = field.querySelector(".interface-mask").value.trim();
+        const description = field.querySelector(".interface-description").value.trim();
         const noShutdown = field.querySelector(".interface-no-shutdown").checked;
 
         if (name && (ip || mask)) {
@@ -216,13 +246,14 @@ function getInterfacesData() {
             const finalIp = ip || "192.168.1.1";
             const finalMask = mask || "255.255.255.0";
             networks.push([finalIp, finalMask]);
+            descriptions.push(description);
             if (noShutdown) {
                 noShutdownList.push(name);
             }
         }
     });
 
-    return { interfaces, networks, noShutdownList };
+    return { interfaces, networks, descriptions, noShutdownList };
 }
 
 // --- OSPF Logic ---
@@ -243,6 +274,8 @@ function autoFillForm() {
     document.getElementById("enable_secret").value = "Cisco123!";
     document.getElementById("console_password").value = "Console123!";
     document.getElementById("vty_password").value = "VtyPass123!";
+    document.getElementById("password_encryption_type").value = "5";
+    updateEncryptionSecurityBadge();
     document.getElementById("enable_ssh").checked = true;
 
     const ospfRadio = document.querySelector('input[name="routing-protocol"][value="OSPF"]');
@@ -274,7 +307,7 @@ function autoFillForm() {
 
 // --- GENERATE ---
 async function sendToPython() {
-    const { interfaces, networks, noShutdownList } = getInterfacesData();
+    const { interfaces, networks, descriptions, noShutdownList } = getInterfacesData();
 
     if (interfaces.length === 0) {
         alert("❌ Please add at least one interface!");
@@ -289,6 +322,7 @@ async function sendToPython() {
     const enableSecret = document.getElementById("enable_secret").value.trim();
     const consolePass = document.getElementById("console_password").value.trim();
     const vtyPass = document.getElementById("vty_password").value.trim();
+    const encryptionType = document.getElementById("password_encryption_type").value;
 
     const telephonyEnabled = document.getElementById("telephony-checkbox").checked;
     const dnList = [
@@ -318,13 +352,15 @@ async function sendToPython() {
             enableSecret,
             consolePass,
             vtyPass,
+            encryptionType,
             dhcpNetwork,
             dhcpMask,
             dhcpGateway,
             dhcpDns,
             interfaces,
             networks,
-            noShutdownList
+            noShutdownList,
+            descriptions
         )();
 
         const responseDiv = document.getElementById("response");

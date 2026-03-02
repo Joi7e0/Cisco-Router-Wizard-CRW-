@@ -81,6 +81,18 @@
                         <input type="password" id="vty_password" placeholder="••••••••">
                     </div>
                     <div class="form-group">
+                        <label for="password_encryption_type">Password Encryption Type</label>
+                        <select id="password_encryption_type" class="form-control"
+                            onchange="updateEncryptionSecurityBadge()">
+                            <option value="0" class="sec-low">Type 0 - None</option>
+                            <option value="5" class="sec-medium" selected>type 5 - MD5</option>
+                            <option value="7" class="sec-medium">Type 7 - vigenère</option>
+                            <option value="8" class="sec-high">Type 8 - sha-256</option>
+                            <option value="9" class="sec-high">Type 9 - scrypt</option>
+                        </select>
+                        <div id="encryption_security_badge" class="security-badge sec-medium">medium</div>
+                    </div>
+                    <div class="form-group">
                         <label class="toggle-group">
                             <div class="switch">
                                 <input type="checkbox" id="enable_ssh">

@@ -132,6 +132,7 @@ class TestProcessText(unittest.TestCase):
         result = self.call_process(
             enable_ssh=True,
             enable_secret="SecretPa55w0rd",
+            password_encryption_type="5",
             console_password="C0ns0le123",
             vty_password="VtyP@ssw0rd",
             interfaces=["Gi0/1"],
@@ -141,6 +142,56 @@ class TestProcessText(unittest.TestCase):
         self.assertIn("enable secret SecretPa55w0rd", result)
         self.assertIn("crypto key generate rsa modulus 1024", result)
         self.assertIn("ip ssh version 2", result)
+
+    def test_encryption_type_0_plain(self):
+        result = self.call_process(
+            enable_secret="Secret123",
+            password_encryption_type="0",
+            interfaces=["Gi0/0"],
+            networks=[("192.168.1.1", "255.255.255.0")]
+        )
+        self.assertIn("enable password Secret123", result)
+        self.assertNotIn("service password-encryption", result)
+
+    def test_encryption_type_7_vigenere(self):
+        result = self.call_process(
+            enable_secret="Secret123!",
+            console_password="ConsolePassword123",
+            password_encryption_type="7",
+            interfaces=["Gi0/0"],
+            networks=[("192.168.1.1", "255.255.255.0")]
+        )
+        self.assertIn("service password-encryption", result)
+        self.assertIn("enable password 7", result)
+        self.assertIn("line console 0", result)
+        self.assertIn("password 7", result)
+
+    def test_encryption_type_5_md5(self):
+        result = self.call_process(
+            enable_secret="Secret123",
+            password_encryption_type="5",
+            interfaces=["Gi0/0"],
+            networks=[("192.168.1.1", "255.255.255.0")]
+        )
+        self.assertIn("enable secret 5", result)
+
+    def test_encryption_type_8_sha256(self):
+        result = self.call_process(
+            enable_secret="Secret123",
+            password_encryption_type="8",
+            interfaces=["Gi0/0"],
+            networks=[("192.168.1.1", "255.255.255.0")]
+        )
+        self.assertIn("enable secret 8", result)
+
+    def test_encryption_type_9_scrypt(self):
+        result = self.call_process(
+            enable_secret="Secret123",
+            password_encryption_type="9",
+            interfaces=["Gi0/0"],
+            networks=[("192.168.1.1", "255.255.255.0")]
+        )
+        self.assertIn("enable secret 9", result)
 
     #DHCP 
     def test_dhcp_full_pool(self):
