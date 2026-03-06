@@ -115,39 +115,178 @@
                     </div>
                 </div>
 
-                <!-- Step 3: Site Profile (Routing) -->
+                <!-- Step 3: Routing Protocol & Multicast -->
                 <div class="step-content" id="step-3">
                     <h2 class="step-title">Routing Protocol & Multicast</h2>
-                    <div class="form-group">
-                        <label>Routing Protocol</label>
-                        <div style="display: flex; gap: 20px; margin-top: 10px;">
-                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="routing-protocol" value="OSPF"> OSPF
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="routing-protocol" value="RIP"> RIP
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="routing-protocol" value="EIGRP"> EIGRP
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="routing-protocol" value="Static"> Static
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="routing-protocol" value="None" checked> None
-                            </label>
+
+                    <div class="protocol-selection-area">
+                        <!-- Compact Enterprise Sidebar -->
+                        <div class="protocol-sidebar" id="protocol-sidebar">
+                            <button type="button" class="protocol-btn active" id="btn-Static"
+                                onclick="selectProtocol('Static')">Static</button>
+                            <button type="button" class="protocol-btn" id="btn-RIP"
+                                onclick="selectProtocol('RIP')">RIP</button>
+                            <button type="button" class="protocol-btn" id="btn-OSPF"
+                                onclick="selectProtocol('OSPF')">OSPF</button>
+                            <button type="button" class="protocol-btn" id="btn-EIGRP"
+                                onclick="selectProtocol('EIGRP')">EIGRP</button>
+                            <button type="button" class="protocol-btn" id="btn-BGP"
+                                onclick="selectProtocol('BGP')">BGP</button>
+                            <button type="button" class="protocol-btn" id="btn-IS-IS"
+                                onclick="selectProtocol('IS-IS')">IS-IS</button>
+                            <button type="button" class="protocol-btn" id="btn-None"
+                                onclick="selectProtocol('None')">None</button>
+
+                            <!-- Hidden original inputs for compatibility -->
+                            <div class="hidden">
+                                <input type="radio" name="routing-protocol" id="radio-Static" value="Static" checked>
+                                <input type="radio" name="routing-protocol" id="radio-RIP" value="RIP">
+                                <input type="radio" name="routing-protocol" id="radio-OSPF" value="OSPF">
+                                <input type="radio" name="routing-protocol" id="radio-EIGRP" value="EIGRP">
+                                <input type="radio" name="routing-protocol" id="radio-BGP" value="BGP">
+                                <input type="radio" name="routing-protocol" id="radio-IS-IS" value="IS-IS">
+                                <input type="radio" name="routing-protocol" id="radio-None" value="None">
+                            </div>
+                        </div>
+
+                        <!-- Config Pane -->
+                        <div class="protocol-config-pane">
+                            <!-- Static Config -->
+                            <div id="pane-Static" class="protocol-pane">
+                                <h3>Static Routing</h3>
+                                <div class="config-grid">
+                                    <div class="config-item">
+                                        <label for="static-dest">Destination Network</label>
+                                        <input type="text" id="static-dest" class="interface-input"
+                                            placeholder="192.168.10.0">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="static-mask">Subnet Mask / Prefix</label>
+                                        <input type="text" id="static-mask" class="interface-input"
+                                            placeholder="255.255.255.0 or /24">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="static-next-hop">Next Hop IP</label>
+                                        <input type="text" id="static-next-hop" class="interface-input"
+                                            placeholder="10.0.0.1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RIP Config -->
+                            <div id="pane-RIP" class="protocol-pane hidden">
+                                <h3>RIP Configuration</h3>
+                                <div class="config-grid">
+                                    <label class="checkbox-row">
+                                        <span class="checkbox-row-label">no auto-summary</span>
+                                        <input type="checkbox" id="rip-no-auto" checked>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- OSPF Config -->
+                            <div id="pane-OSPF" class="protocol-pane hidden">
+                                <h3>OSPF Configuration</h3>
+                                <div class="config-grid">
+                                    <div class="config-item">
+                                        <label for="router-id">Router ID</label>
+                                        <input type="text" id="router-id" class="interface-input" placeholder="1.1.1.1">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="ospf-process-id">Process ID</label>
+                                        <input type="text" id="ospf-process-id" class="interface-input" placeholder="1"
+                                            value="1">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="ospf-area">Area</label>
+                                        <input type="text" id="ospf-area" class="interface-input" placeholder="0"
+                                            value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- EIGRP Config -->
+                            <div id="pane-EIGRP" class="protocol-pane hidden">
+                                <h3>EIGRP Configuration</h3>
+                                <div class="config-grid">
+                                    <div class="config-item">
+                                        <label for="eigrp-as">AS Number</label>
+                                        <input type="text" id="eigrp-as" class="interface-input" placeholder="100"
+                                            value="100">
+                                    </div>
+                                    <label class="checkbox-row">
+                                        <span class="checkbox-row-label">no auto-summary</span>
+                                        <input type="checkbox" id="eigrp-no-auto" checked>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- BGP Config -->
+                            <div id="pane-BGP" class="protocol-pane hidden">
+                                <h3>BGP Configuration</h3>
+                                <div class="config-grid">
+                                    <div class="config-item">
+                                        <label for="bgp-router-id">Router ID</label>
+                                        <input type="text" id="bgp-router-id" class="interface-input"
+                                            placeholder="1.1.1.1">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="bgp-local-as">Local AS</label>
+                                        <input type="text" id="bgp-local-as" class="interface-input"
+                                            placeholder="65000">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="bgp-neighbor-ip">Neighbor IP</label>
+                                        <input type="text" id="bgp-neighbor-ip" class="interface-input"
+                                            placeholder="2.2.2.2">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="bgp-remote-as">Remote AS</label>
+                                        <input type="text" id="bgp-remote-as" class="interface-input"
+                                            placeholder="65001">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- IS-IS Config -->
+                            <div id="pane-IS-IS" class="protocol-pane hidden">
+                                <h3>IS-IS Configuration</h3>
+                                <div class="config-grid">
+                                    <div class="config-item">
+                                        <label for="isis-area-id">Area ID</label>
+                                        <input type="text" id="isis-area-id" class="interface-input"
+                                            placeholder="49.0001">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="isis-system-id">System ID</label>
+                                        <input type="text" id="isis-system-id" class="interface-input"
+                                            placeholder="0000.0000.0001">
+                                    </div>
+                                    <div class="config-item">
+                                        <label for="isis-type">Router Type</label>
+                                        <select id="isis-type" class="interface-input">
+                                            <option value="level-1">Level-1</option>
+                                            <option value="level-2">Level-2</option>
+                                            <option value="level-1-2" selected>Level-1-2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- None State -->
+                            <div id="pane-None" class="protocol-pane hidden">
+                                <div class="protocol-message">
+                                    <p>Routing Protocol is currently disabled.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="ospf-options" class="hidden" style="margin-top: 20px;">
-                        <div class="form-group">
-                            <label for="router-id">Router ID</label>
-                            <input type="text" id="router-id" placeholder="1.1.1.1">
+                    <!-- Multicast Routing Block -->
+                    <div class="multicast-section">
+                        <div class="section-divider">
+                            <h3>Multicast Routing</h3>
                         </div>
-                    </div>
-
-                    <div class="form-group" style="margin-top: 30px;">
-                        <label>Multicast Routing</label>
                         <label class="toggle-group">
                             <div class="switch">
                                 <input type="checkbox" id="multicast-checkbox">

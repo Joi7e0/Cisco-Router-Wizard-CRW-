@@ -139,7 +139,7 @@ class TestProcessText(unittest.TestCase):
             networks=[("192.168.200.1", "255.255.255.252")]
         )
 
-        self.assertIn("enable secret SecretPa55w0rd", result)
+        self.assertIn("enable secret 5", result)
         self.assertIn("crypto key generate rsa modulus 1024", result)
         self.assertIn("ip ssh version 2", result)
 
@@ -150,7 +150,7 @@ class TestProcessText(unittest.TestCase):
             interfaces=["Gi0/0"],
             networks=[("192.168.1.1", "255.255.255.0")]
         )
-        self.assertIn("enable password Secret123", result)
+        self.assertIn("enable secret Secret123", result)
         self.assertNotIn("service password-encryption", result)
 
     def test_encryption_type_7_vigenere(self):
@@ -162,7 +162,7 @@ class TestProcessText(unittest.TestCase):
             networks=[("192.168.1.1", "255.255.255.0")]
         )
         self.assertIn("service password-encryption", result)
-        self.assertIn("enable password 7", result)
+        self.assertIn("enable secret Secret123!", result)
         self.assertIn("line console 0", result)
         self.assertIn("password 7", result)
 
