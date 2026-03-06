@@ -169,11 +169,10 @@ def generate_security_config(
 
     if enable_secret:
         if password_encryption_type == "0":
-            cfg.append(f"enable password {enable_secret}")
+            cfg.append(f"enable secret {enable_secret}")
         elif password_encryption_type == "7":
-            # Для Type 7 використовуємо enable password 7
-            enc_pwd = encrypt_password(enable_secret, "7")
-            cfg.append(f"enable password 7 {enc_pwd}")
+            # Для Type 7 використовуємо enable secret з сирим паролем (буде Type 5 за замовчуванням на пристрої)
+            cfg.append(f"enable secret {enable_secret}")
         elif password_encryption_type in ["1", "2", "3", "4", "5", "6", "8", "9"]:
             enc_pwd = encrypt_password(enable_secret, password_encryption_type)
             # Cisco uses 'enable secret <type> <hash>' for most secure types

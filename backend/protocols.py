@@ -4,7 +4,7 @@
 def _mask_to_wildcard(mask: str) -> str:
     try:
         if not mask or not isinstance(mask, str):
-            return "0.0.0.255"
+            return "0.0.0.0"
         mask = mask.strip()
         
         # Якщо це префікс (н-д, 24)
@@ -18,11 +18,16 @@ def _mask_to_wildcard(mask: str) -> str:
         # Якщо це повноцінна маска (н-д, 255.255.255.0)
         parts = mask.split('.')
         if len(parts) == 4:
-            return ".".join(str(255 - int(p)) for p in parts)
+            try:
+                vals = [int(p) for p in parts]
+                if all(0 <= v <= 255 for v in vals):
+                    return ".".join(str(255 - v) for v in vals)
+            except ValueError:
+                pass
             
-        return "0.0.0.255"
+        return "0.0.0.0"
     except Exception:
-        return "0.0.0.255"
+        return "0.0.0.0"
 
 def _cidr_to_mask(cidr: int) -> str:
     try:
@@ -43,7 +48,7 @@ def generate_protocol_config(
     """
     Генерує команди для протоколів маршрутизації
     """
-    if not protocol or protocol.upper() == "NONE":
+    if not isinstance(protocol, str) or not protocol or protocol.upper() == "NONE":
         return []
 
     proto = protocol.upper().strip()
