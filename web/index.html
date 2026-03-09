@@ -31,27 +31,27 @@
                 <div class="stepper-progress" id="stepper-progress"></div>
                 <div class="step active" data-step="1">
                     <div class="step-circle" id="circle-1"><img src="photo/account-settings.jpg"></div>
-                    <div class="step-label">Account</div>
+                    <div class="step-label" data-i18n="stepAccount">Account</div>
                 </div>
                 <div class="step" data-step="2">
                     <div class="step-circle" id="circle-2"><img src="photo/basic-settings.jpg"></div>
-                    <div class="step-label">Basic</div>
+                    <div class="step-label" data-i18n="stepBasic">Basic</div>
                 </div>
                 <div class="step" data-step="3">
                     <div class="step-circle" id="circle-3"><img src="photo/site-profile.jpg"></div>
-                    <div class="step-label">Site Profile</div>
+                    <div class="step-label" data-i18n="stepSite">Site Profile</div>
                 </div>
                 <div class="step" data-step="4">
                     <div class="step-circle" id="circle-4"><img src="photo/switch-wide-settings.jpg"></div>
-                    <div class="step-label">DHCP & Telephony</div>
+                    <div class="step-label" data-i18n="stepDHCP">DHCP & Telephony</div>
                 </div>
                 <div class="step" data-step="5">
                     <div class="step-circle" id="circle-5"><img src="photo/port-settings.jpg"></div>
-                    <div class="step-label">Advanced</div>
+                    <div class="step-label" data-i18n="stepAdvanced">Advanced</div>
                 </div>
                 <div class="step" data-step="6">
                     <div class="step-circle" id="circle-6"><img src="photo/summary.jpg"></div>
-                    <div class="step-label">Summary</div>
+                    <div class="step-label" data-i18n="stepSummary">Summary</div>
                 </div>
             </div>
         </nav>
@@ -62,32 +62,33 @@
 
                 <!-- Step 1: Account Settings (Security) -->
                 <div class="step-content active" id="step-1">
-                    <h2 class="step-title">Security Configuration</h2>
+                    <h2 class="step-title" data-i18n="securityConfig">Security Configuration</h2>
                     <div class="form-group">
-                        <label for="hostname">Hostname*</label>
+                        <label for="hostname" data-i18n="hostname">Hostname*</label>
                         <input type="text" id="hostname" placeholder="Router" value="R1">
                     </div>
                     <div class="form-group">
-                        <label for="enable_secret">Enable Secret*</label>
+                        <label for="enable_secret" data-i18n="enableSecret">Enable Secret*</label>
                         <input type="password" id="enable_secret" placeholder="••••••••">
                     </div>
                     <div class="form-group">
-                        <label for="console_password">Console Password*</label>
+                        <label for="console_password" data-i18n="consolePassword">Console Password*</label>
                         <input type="password" id="console_password" placeholder="••••••••">
                     </div>
                     <div class="form-group">
-                        <label for="vty_password">VTY Password*</label>
+                        <label for="vty_password" data-i18n="vtyPassword">VTY Password*</label>
                         <input type="password" id="vty_password" placeholder="••••••••">
                     </div>
                     <div class="form-group">
-                        <label for="password_encryption_type">Password Encryption Type</label>
+                        <label for="password_encryption_type" data-i18n="passwordEncryptionType">Password Encryption
+                            Type</label>
                         <select id="password_encryption_type" class="form-control"
                             onchange="updateEncryptionSecurityBadge()">
-                            <option value="0" class="sec-low">Type 0 - None</option>
-                            <option value="5" class="sec-medium" selected>type 5 - MD5</option>
-                            <option value="7" class="sec-medium">Type 7 - vigenère</option>
-                            <option value="8" class="sec-high">Type 8 - sha-256</option>
-                            <option value="9" class="sec-high">Type 9 - scrypt</option>
+                            <option value="0" class="sec-low" data-i18n="type0">Type 0 - None</option>
+                            <option value="5" class="sec-medium" selected data-i18n="type5">type 5 - MD5</option>
+                            <option value="7" class="sec-medium" data-i18n="type7">Type 7 - vigenère</option>
+                            <option value="8" class="sec-high" data-i18n="type8">Type 8 - sha-256</option>
+                            <option value="9" class="sec-high" data-i18n="type9">Type 9 - scrypt</option>
                         </select>
                         <div id="encryption_security_badge" class="security-badge sec-medium">medium</div>
                     </div>
@@ -97,26 +98,27 @@
                                 <input type="checkbox" id="enable_ssh">
                                 <span class="slider"></span>
                             </div>
-                            <span class="toggle-label">Enable SSH</span>
+                            <span class="toggle-label" data-i18n="enableSsh">Enable SSH</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Step 2: Basic Settings (Interfaces) -->
                 <div class="step-content" id="step-2">
-                    <h2 class="step-title">Interface Settings</h2>
+                    <h2 class="step-title" data-i18n="interfaceSettings">Interface Settings</h2>
                     <div id="interfaces-list">
                         <!-- Interfaces will be added here dynamically -->
                     </div>
                     <div style="margin-top: 20px;">
-                        <button type="button" class="btn btn-secondary" onclick="addInterfaceField()">+ Add
+                        <button type="button" class="btn btn-secondary" onclick="addInterfaceField()"
+                            data-i18n="addInterface">+ Add
                             Interface</button>
                     </div>
                 </div>
 
                 <!-- Step 3: Routing Protocol & Multicast -->
                 <div class="step-content" id="step-3">
-                    <h2 class="step-title">Routing Protocol & Multicast</h2>
+                    <h2 class="step-title" data-i18n="routingProtocol">Routing Protocol & Multicast</h2>
 
                     <div class="protocol-selection-area">
                         <!-- Compact Enterprise Sidebar -->
@@ -152,20 +154,20 @@
                         <div class="protocol-config-pane">
                             <!-- Static Config -->
                             <div id="pane-Static" class="protocol-pane">
-                                <h3>Static Routing</h3>
+                                <h3 data-i18n="staticRouting">Static Routing</h3>
                                 <div class="config-grid">
                                     <div class="config-item">
-                                        <label for="static-dest">Destination Network</label>
+                                        <label for="static-dest" data-i18n="destNetwork">Destination Network</label>
                                         <input type="text" id="static-dest" class="interface-input"
                                             placeholder="192.168.10.0">
                                     </div>
                                     <div class="config-item">
-                                        <label for="static-mask">Subnet Mask / Prefix</label>
+                                        <label for="static-mask" data-i18n="subnetMask">Subnet Mask / Prefix</label>
                                         <input type="text" id="static-mask" class="interface-input"
                                             placeholder="255.255.255.0 or /24">
                                     </div>
                                     <div class="config-item">
-                                        <label for="static-next-hop">Next Hop IP</label>
+                                        <label for="static-next-hop" data-i18n="nextHop">Next Hop IP</label>
                                         <input type="text" id="static-next-hop" class="interface-input"
                                             placeholder="10.0.0.1">
                                     </div>
@@ -174,10 +176,11 @@
 
                             <!-- RIP Config -->
                             <div id="pane-RIP" class="protocol-pane hidden">
-                                <h3>RIP Configuration</h3>
+                                <h3 data-i18n="ripConfig">RIP Configuration</h3>
                                 <div class="config-grid">
                                     <label class="checkbox-row">
-                                        <span class="checkbox-row-label">no auto-summary</span>
+                                        <span class="checkbox-row-label" data-i18n="noAutoSummary">no
+                                            auto-summary</span>
                                         <input type="checkbox" id="rip-no-auto" checked>
                                     </label>
                                 </div>
@@ -185,19 +188,19 @@
 
                             <!-- OSPF Config -->
                             <div id="pane-OSPF" class="protocol-pane hidden">
-                                <h3>OSPF Configuration</h3>
+                                <h3 data-i18n="ospfConfig">OSPF Configuration</h3>
                                 <div class="config-grid">
                                     <div class="config-item">
-                                        <label for="router-id">Router ID</label>
+                                        <label for="router-id" data-i18n="routerId">Router ID</label>
                                         <input type="text" id="router-id" class="interface-input" placeholder="1.1.1.1">
                                     </div>
                                     <div class="config-item">
-                                        <label for="ospf-process-id">Process ID</label>
+                                        <label for="ospf-process-id" data-i18n="processId">Process ID</label>
                                         <input type="text" id="ospf-process-id" class="interface-input" placeholder="1"
                                             value="1">
                                     </div>
                                     <div class="config-item">
-                                        <label for="ospf-area">Area</label>
+                                        <label for="ospf-area" data-i18n="area">Area</label>
                                         <input type="text" id="ospf-area" class="interface-input" placeholder="0"
                                             value="0">
                                     </div>
@@ -206,15 +209,16 @@
 
                             <!-- EIGRP Config -->
                             <div id="pane-EIGRP" class="protocol-pane hidden">
-                                <h3>EIGRP Configuration</h3>
+                                <h3 data-i18n="eigrpConfig">EIGRP Configuration</h3>
                                 <div class="config-grid">
                                     <div class="config-item">
-                                        <label for="eigrp-as">AS Number</label>
+                                        <label for="eigrp-as" data-i18n="asNumber">AS Number</label>
                                         <input type="text" id="eigrp-as" class="interface-input" placeholder="100"
                                             value="100">
                                     </div>
                                     <label class="checkbox-row">
-                                        <span class="checkbox-row-label">no auto-summary</span>
+                                        <span class="checkbox-row-label" data-i18n="noAutoSummary">no
+                                            auto-summary</span>
                                         <input type="checkbox" id="eigrp-no-auto" checked>
                                     </label>
                                 </div>
@@ -222,25 +226,25 @@
 
                             <!-- BGP Config -->
                             <div id="pane-BGP" class="protocol-pane hidden">
-                                <h3>BGP Configuration</h3>
+                                <h3 data-i18n="bgpConfig">BGP Configuration</h3>
                                 <div class="config-grid">
                                     <div class="config-item">
-                                        <label for="bgp-router-id">Router ID</label>
+                                        <label for="bgp-router-id" data-i18n="routerId">Router ID</label>
                                         <input type="text" id="bgp-router-id" class="interface-input"
                                             placeholder="1.1.1.1">
                                     </div>
                                     <div class="config-item">
-                                        <label for="bgp-local-as">Local AS</label>
+                                        <label for="bgp-local-as" data-i18n="localAs">Local AS</label>
                                         <input type="text" id="bgp-local-as" class="interface-input"
                                             placeholder="65000">
                                     </div>
                                     <div class="config-item">
-                                        <label for="bgp-neighbor-ip">Neighbor IP</label>
+                                        <label for="bgp-neighbor-ip" data-i18n="neighborIp">Neighbor IP</label>
                                         <input type="text" id="bgp-neighbor-ip" class="interface-input"
                                             placeholder="2.2.2.2">
                                     </div>
                                     <div class="config-item">
-                                        <label for="bgp-remote-as">Remote AS</label>
+                                        <label for="bgp-remote-as" data-i18n="remoteAs">Remote AS</label>
                                         <input type="text" id="bgp-remote-as" class="interface-input"
                                             placeholder="65001">
                                     </div>
@@ -249,20 +253,20 @@
 
                             <!-- IS-IS Config -->
                             <div id="pane-IS-IS" class="protocol-pane hidden">
-                                <h3>IS-IS Configuration</h3>
+                                <h3 data-i18n="isisConfig">IS-IS Configuration</h3>
                                 <div class="config-grid">
                                     <div class="config-item">
-                                        <label for="isis-area-id">Area ID</label>
+                                        <label for="isis-area-id" data-i18n="areaId">Area ID</label>
                                         <input type="text" id="isis-area-id" class="interface-input"
                                             placeholder="49.0001">
                                     </div>
                                     <div class="config-item">
-                                        <label for="isis-system-id">System ID</label>
+                                        <label for="isis-system-id" data-i18n="systemId">System ID</label>
                                         <input type="text" id="isis-system-id" class="interface-input"
                                             placeholder="0000.0000.0001">
                                     </div>
                                     <div class="config-item">
-                                        <label for="isis-type">Router Type</label>
+                                        <label for="isis-type" data-i18n="routerType">Router Type</label>
                                         <select id="isis-type" class="interface-input">
                                             <option value="level-1">Level-1</option>
                                             <option value="level-2">Level-2</option>
@@ -275,7 +279,7 @@
                             <!-- None State -->
                             <div id="pane-None" class="protocol-pane hidden">
                                 <div class="protocol-message">
-                                    <p>Routing Protocol is currently disabled.</p>
+                                    <p data-i18n="protocolDisabled">Routing Protocol is currently disabled.</p>
                                 </div>
                             </div>
                         </div>
@@ -284,64 +288,64 @@
                     <!-- Multicast Routing Block -->
                     <div class="multicast-section">
                         <div class="section-divider">
-                            <h3>Multicast Routing</h3>
+                            <h3 data-i18n="multicastRouting">Multicast Routing</h3>
                         </div>
                         <label class="toggle-group">
                             <div class="switch">
                                 <input type="checkbox" id="multicast-checkbox">
                                 <span class="slider"></span>
                             </div>
-                            <span class="toggle-label">Enable IP Multicast Routing</span>
+                            <span class="toggle-label" data-i18n="enableMulticast">Enable IP Multicast Routing</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Step 4: DHCP & Telephony -->
                 <div class="step-content" id="step-4">
-                    <h2 class="step-title">DHCP Server & Telephony</h2>
-                    <h3>DHCP Server</h3>
+                    <h2 class="step-title" data-i18n="dhcpServer">DHCP Server & Telephony</h2>
+                    <h3 data-i18n="dhcpTitle">DHCP Server</h3>
                     <div class="form-group">
-                        <label for="dhcp-network">Network</label>
+                        <label for="dhcp-network" data-i18n="network">Network</label>
                         <input type="text" id="dhcp-network" placeholder="192.168.10.0">
                     </div>
                     <div class="form-group">
-                        <label for="dhcp-mask">Subnet Mask</label>
+                        <label for="dhcp-mask" data-i18n="subnetMask">Subnet Mask</label>
                         <input type="text" id="dhcp-mask" placeholder="255.255.255.0">
                     </div>
                     <div class="form-group">
-                        <label for="dhcp-gateway">Default Gateway</label>
+                        <label for="dhcp-gateway" data-i18n="defaultGateway">Default Gateway</label>
                         <input type="text" id="dhcp-gateway" placeholder="192.168.10.1">
                     </div>
                     <div class="form-group">
-                        <label for="dhcp-dns">DNS Server</label>
+                        <label for="dhcp-dns" data-i18n="dnsServer">DNS Server</label>
                         <input type="text" id="dhcp-dns" placeholder="8.8.8.8">
                     </div>
 
-                    <h3 style="margin-top: 25px;">Telephony Service</h3>
+                    <h3 style="margin-top: 25px;" data-i18n="telephonyService">Telephony Service</h3>
                     <div class="form-group">
                         <label class="toggle-group">
                             <div class="switch">
                                 <input type="checkbox" id="telephony-checkbox">
                                 <span class="slider"></span>
                             </div>
-                            <span class="toggle-label">Enable Telephony Service</span>
+                            <span class="toggle-label" data-i18n="enableTelephony">Enable Telephony Service</span>
                         </label>
                     </div>
                     <div id="telephony-options">
                         <div class="form-group">
-                            <label>DN 1 (Number/Name)</label>
+                            <label data-i18n="dnName">DN 1 (Number/Name)</label>
                             <input type="text" id="dn1-number" placeholder="100"
                                 style="width: 80px; flex: 0 0 auto; margin-right: 10px;">
                             <input type="text" id="dn1-user" placeholder="User 1">
                         </div>
                         <div class="form-group">
-                            <label>DN 2</label>
+                            <label data-i18n="dnName">DN 2</label>
                             <input type="text" id="dn2-number" placeholder="101"
                                 style="width: 80px; flex: 0 0 auto; margin-right: 10px;">
                             <input type="text" id="dn2-user" placeholder="User 2">
                         </div>
                         <div class="form-group">
-                            <label>DN 3</label>
+                            <label data-i18n="dnName">DN 3</label>
                             <input type="text" id="dn3-number" placeholder="102"
                                 style="width: 80px; flex: 0 0 auto; margin-right: 10px;">
                             <input type="text" id="dn3-user" placeholder="User 3">
@@ -351,20 +355,20 @@
 
                 <!-- Step 5: Advanced (NAT & SNMP) -->
                 <div class="step-content" id="step-5">
-                    <h2 class="step-title">NAT & Monitoring</h2>
-                    <h3>NAT Overload</h3>
+                    <h2 class="step-title" data-i18n="natMonitoring">NAT & Monitoring</h2>
+                    <h3 data-i18n="natOverload">NAT Overload</h3>
                     <div class="form-group">
-                        <label>Inside Interface</label>
+                        <label data-i18n="insideInterface">Inside Interface</label>
                         <input type="text" id="nat-inside" placeholder="GigabitEthernet0/0">
                     </div>
                     <div class="form-group">
-                        <label>Outside Interface</label>
+                        <label data-i18n="outsideInterface">Outside Interface</label>
                         <input type="text" id="nat-outside" placeholder="GigabitEthernet0/1">
                     </div>
 
-                    <h3 style="margin-top: 25px;">SNMP Monitoring</h3>
+                    <h3 style="margin-top: 25px;" data-i18n="snmpMonitoring">SNMP Monitoring</h3>
                     <div class="form-group">
-                        <label for="snmp-community">Community String</label>
+                        <label for="snmp-community" data-i18n="communityString">Community String</label>
                         <input type="text" id="snmp-community" placeholder="public">
                     </div>
                     <div class="form-group">
@@ -373,32 +377,34 @@
                                 <input type="checkbox" id="snmp-enabled">
                                 <span class="slider"></span>
                             </div>
-                            <span class="toggle-label">Enable SNMP</span>
+                            <span class="toggle-label" data-i18n="enableSnmp">Enable SNMP</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Step 6: Summary -->
                 <div class="step-content" id="step-6">
-                    <h2 class="step-title">Summary & Generation</h2>
-                    <p>Configuration is ready to be generated. Review your settings and click "Generate".</p>
+                    <h2 class="step-title" data-i18n="summaryGeneration">Summary & Generation</h2>
+                    <p data-i18n="summaryDesc">Configuration is ready to be generated. Review your settings and click
+                        "Generate".</p>
 
                     <div style="margin-top: 30px;">
                         <button class="btn btn-primary" style="width: 100%; padding: 15px;"
-                            onclick="sendToPython()">GENERATE CONFIGURATION</button>
+                            onclick="triggerGenerateConfig()" data-i18n="generateBtn">GENERATE CONFIGURATION</button>
                     </div>
 
                     <div style="margin-top: 40px;">
                         <div
                             style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--cisco-blue); margin-bottom: 10px; padding-bottom: 5px;">
-                            <h3 style="color: var(--cisco-blue); border-bottom: none; margin: 0; padding: 0;">IOS
+                            <h3 style="color: var(--cisco-blue); border-bottom: none; margin: 0; padding: 0;"
+                                data-i18n="iosCommands">IOS
                                 Configuration Commands:</h3>
                             <button id="download-btn" class="btn btn-secondary hidden"
-                                style="padding: 5px 15px; font-size: 0.8rem;" onclick="downloadCommands()">Download
+                                style="padding: 5px 15px; font-size: 0.8rem;" onclick="crw_api.downloadCommands()"
+                                data-i18n="downloadBtn">Download
                                 .txt</button>
                         </div>
-                        <div id="response"
-                            style="background: #f4f4f4; padding: 20px; font-family: monospace; white-space: pre-wrap; border: 1px solid #ccc; max-height: 400px; overflow-y: auto;">
+                        <div id="response">
                             <!-- Result will appear here -->
                         </div>
                     </div>
@@ -409,40 +415,49 @@
             <!-- Help Panel -->
             <aside class="info-area">
                 <div class="info-tabs">
-                    <div class="tab active" onclick="switchTab('device-info')">DEVICE INFO</div>
-                    <div class="tab" onclick="switchTab('help-tips')">HELP AND TIPS</div>
+                    <div class="tab" data-i18n="deviceInfo">DEVICE INFO</div>
                 </div>
-                <div class="info-content" id="info-tab-content">
-                    <div id="device-info-pane">
-                        <p style="font-weight: bold; margin-bottom: 15px;">Hardware and Software Details
-                        </p>
-                        <ul style="list-style: none; font-size: 0.85rem;">
-                            <li><strong>Platform Type:</strong> C4331</li>
-                            <li><strong>IOS Version:</strong> 17.3.3</li>
-                            <li><strong>Interfaces:</strong> 3 GE Ports</li>
-                        </ul>
-                    </div>
-                    <div id="help-tips-pane" class="hidden">
-                        <p>Select settings to configure your Cisco router. Follow the steps sequentially.</p>
-                    </div>
+                <div class="info-content" id="device-info-pane">
+                    <p style="font-weight: bold; margin-bottom: 15px;" data-i18n="hwSwDetails">Hardware and Software
+                        Details
+                    </p>
+                    <ul style="list-style: none; font-size: 0.85rem;">
+                        <li><strong data-i18n="platformType">Platform Type:</strong> C4331</li>
+                        <li><strong data-i18n="iosVersion">IOS Version:</strong> 17.3.3</li>
+                        <li><strong data-i18n="interfaces">Interfaces:</strong> 3 GE Ports</li>
+                    </ul>
                 </div>
-            </aside>
-        </main>
+                <div id="help-tips-pane" class="hidden">
+                    <p data-i18n="helpDesc">Select settings to configure your Cisco router. Follow the steps
+                        sequentially.</p>
+                </div>
+    </div>
+    </aside>
+    </main>
 
-        <!-- Bottom Navigation -->
-        <footer class="bottom-bar">
-            <div class="nav-btn-group">
-                <button class="btn btn-secondary" id="back-btn" onclick="prevStep()" disabled>&lt; Previous
-                    Step</button>
-                <button class="btn btn-secondary" onclick="autoFillForm()">Auto Fill</button>
-                <button class="btn btn-primary" id="next-btn" onclick="nextStep()">Next Step &gt;</button>
-            </div>
-        </footer>
+    <!-- Bottom Navigation -->
+    <footer class="bottom-bar">
+        <!-- Left Aligned Automation Tools -->
+        <button class="btn btn-secondary" onclick="autoFillForm()" data-i18n="autoFillBtn">
+            <i class="ph ph-magic-wand" style="margin-right:8px"></i>Auto Fill
+        </button>
+
+        <!-- Right Aligned Wizard Navigation -->
+        <div class="nav-btn-group">
+            <button class="btn btn-secondary" onclick="prevStep()" id="back-btn" disabled data-i18n="prevBtn">&lt;
+                Previous Step</button>
+            <button class="btn btn-primary" onclick="nextStep()" id="next-btn" data-i18n="nextBtn">Next Step
+                &gt;</button>
+        </div>
+    </footer>
     </div>
 
     <!-- Eel and Scripts -->
     <script type="text/javascript" src="/eel.js"></script>
-    <script src="main.js"></script>
+    <script src="i18n.js"></script>
+    <script src="api.js"></script>
+    <script src="state.js"></script>
+    <script src="ui.js"></script>
 </body>
 
 </html>

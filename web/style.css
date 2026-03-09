@@ -1,15 +1,21 @@
 :root {
-  /* Dynamic Palette */
+  /* Centralized Dynamic Palette (Default Light) */
+  --bg-main: #f0f2f5;
+  --bg-surface: #ffffff;
+  --bg-input: #ffffff;
+  --bg-console: #f8f9fa;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6c757d;
+  --text-console: #28a745;
+  --border-color: #dee2e6;
+
+  /* Additional Design Variables */
   --cisco-blue: #0078D7;
   --cisco-dark-blue: #005a9e;
-  --bg-color: #f8fafc;
-  --card-bg: #ffffff;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --border-color: #e2e8f0;
-  --accent-light: #f0faff;
+  --cisco-light-blue: #f0faff;
   --success-color: #107c10;
   --danger-color: #d93025;
+  --danger-red: #d93025;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -19,12 +25,20 @@
   --transition-speed: 0.6s;
 }
 
+/* --- ТЕМНА ТЕМА --- */
+body.dark-theme,
 [data-theme="dark"] {
-  --bg-color: #0f172a;
-  --card-bg: #1e293b;
+  --bg-main: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-input: #334155;
+  --bg-console: #000000;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
+  --text-console: #4ade80;
   --border-color: #334155;
+
+  /* Component specific (Mapping) */
+  --cisco-light-blue: #151b28;
   --accent-light: rgba(0, 120, 215, 0.1);
 }
 
@@ -40,7 +54,7 @@ body {
   font-family: 'Poppins', system-ui, sans-serif;
   color: var(--text-primary);
   line-height: 1.6;
-  background-color: var(--bg-color);
+  background-color: var(--bg-main);
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -50,10 +64,18 @@ body {
   flex-direction: column;
 }
 
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
 .logo-section img {
-  width: 48px;
-  height: 48px;
+  width: 106px;
+  height: 106px;
   object-fit: contain;
+  margin-right: 16px;
+  border-radius: 8px;
+  /* Допомагає виглядати акуратніше */
 }
 
 
@@ -63,7 +85,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 16px 40px;
-  background: var(--card-bg);
+  background: var(--bg-surface);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
 }
@@ -82,7 +104,7 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: var(--card-bg);
+  background: var(--bg-surface);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   cursor: pointer;
@@ -95,9 +117,11 @@ body {
 }
 
 .title-section h1 {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1;
 }
 
 .close-btn {
@@ -121,7 +145,7 @@ body {
 /* Stepper */
 .stepper-container {
   padding: 20px 100px 10px;
-  background: #fff;
+  background: var(--bg-surface);
 }
 
 .stepper {
@@ -167,14 +191,14 @@ body {
 .step-circle {
   width: 64px;
   height: 64px;
-  background: #fff;
-  border: 4px solid #f0f0f0;
+  background: var(--bg-surface);
+  border: 4px solid var(--border-color);
   border-radius: 50%;
   margin-bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #aaa;
+  color: var(--text-secondary);
   font-weight: bold;
   font-size: 1.2rem;
   transition: all var(--transition-speed);
@@ -197,7 +221,7 @@ body {
 
 .step.completed .step-circle {
   border-color: var(--cisco-blue);
-  background: #fff;
+  background: var(--bg-surface);
   color: var(--cisco-blue);
 }
 
@@ -222,16 +246,17 @@ body {
 /* Main Layout */
 
 .info-area {
-  flex: 1.2;
-  background-color: var(--cisco-light-blue);
-  border-left: 1px solid var(--border-gray);
+  flex: 0.6;
+  background-color: var(--bg-surface);
+  border-left: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
 }
 
 .info-tabs {
   display: flex;
-  background: #eef9ff;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tab {
@@ -241,7 +266,7 @@ body {
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #888;
+  color: var(--text-secondary);
   border-bottom: 2px solid transparent;
   transition: all 0.2s;
 }
@@ -251,7 +276,7 @@ body {
 }
 
 .tab.active {
-  background: #fff;
+  background: var(--bg-main);
   color: var(--cisco-blue);
   border-bottom: 3px solid var(--cisco-blue);
 }
@@ -259,7 +284,7 @@ body {
 .info-content {
   padding: 25px;
   font-size: 0.85rem;
-  color: #444;
+  color: var(--text-primary);
 }
 
 .info-image-container {
@@ -334,7 +359,7 @@ h3 {
   width: 220px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .form-group input[type="text"],
@@ -347,7 +372,7 @@ h3 {
   font-size: 0.95rem;
   max-width: 450px;
   transition: all 0.2s ease;
-  background-color: var(--card-bg);
+  background-color: var(--bg-input);
   color: var(--text-primary);
 }
 
@@ -418,7 +443,7 @@ input:checked+.slider:before {
 
 .toggle-label {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 /* Remove Button - Circular Red */
@@ -450,19 +475,17 @@ input:checked+.slider:before {
 
 /* Navigation */
 .bottom-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
   width: 100%;
   padding: 18px 40px;
-  background: #fff;
-  border-top: 1px solid var(--border-gray);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.07);
   z-index: 100;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .nav-btn-group {
@@ -470,10 +493,6 @@ input:checked+.slider:before {
   gap: 18px;
   padding-right: 0;
   margin-left: auto;
-}
-
-.wizard-container {
-  padding-bottom: 80px;
 }
 
 .wizard-container {
@@ -538,8 +557,8 @@ input:checked+.slider:before {
 
 /* Interface Styles */
 .interface-item {
-  background: #fcfcfc;
-  border: 1px solid var(--border-gray);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
   padding: 20px;
   margin-bottom: 15px;
   border-radius: 6px;
@@ -574,11 +593,12 @@ input:checked+.slider:before {
 }
 
 #response {
-  background: #f4f4f4;
+  background: var(--bg-console);
+  color: var(--text-console);
   padding: 20px;
   font-family: monospace;
   white-space: pre-wrap;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   max-height: 400px;
   overflow-y: auto;
 }
@@ -639,25 +659,25 @@ option.sec-high {
 .interface-input {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-family: inherit;
   font-size: 0.9rem;
-  color: var(--text-dark);
-  background-color: #fff;
+  color: var(--text-primary);
+  background-color: var(--bg-input);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .interface-input:hover {
-  border-color: #bdbdbd;
-  background-color: #fafafa;
+  border-color: var(--cisco-blue);
+  background-color: var(--input-bg-focus);
 }
 
 .interface-input:focus {
   outline: none;
   border-color: var(--cisco-blue);
-  background-color: #fff;
+  background-color: var(--input-bg-focus);
   box-shadow: 0 0 0 4px rgba(0, 120, 215, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
@@ -685,7 +705,7 @@ option.sec-high {
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 1.1rem;
-  color: #000;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -708,8 +728,8 @@ option.sec-high {
   /* Changed from previous logic but user asked for otstupi zlyva */
   display: flex;
   flex-direction: column;
-  background: #f8f9fa;
-  border-right: 1px solid var(--border-gray);
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
 }
 
 /* User specifically asked for 'z leva otstupi' for sidebar */
@@ -722,9 +742,9 @@ option.sec-high {
   width: 100%;
   padding: 12px 18px;
   background: transparent;
-  color: #000;
+  color: var(--text-primary);
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-color);
   font-weight: 700;
   font-size: 1.1rem;
   text-align: left;
@@ -736,19 +756,19 @@ option.sec-high {
 }
 
 .protocol-btn:hover {
-  background-color: #f1f3f5;
+  background-color: var(--bg-main);
   color: var(--cisco-blue);
 }
 
 .protocol-btn.active {
-  background-color: #fff;
+  background-color: var(--bg-main);
   color: var(--cisco-blue);
   border-left: 4px solid var(--cisco-blue);
 }
 
 .protocol-config-pane {
   flex: 1;
-  background: #fff;
+  background: var(--bg-surface);
   padding: 25px;
   display: flex;
   flex-direction: column;
@@ -773,7 +793,7 @@ option.sec-high {
   padding-bottom: 0;
   border-bottom: none;
   white-space: nowrap;
-  color: #000;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -781,7 +801,7 @@ option.sec-high {
   content: "";
   flex: 1;
   height: 1px;
-  background: #eee;
+  background: var(--border-color);
   margin-left: 15px;
 }
 
@@ -803,7 +823,7 @@ option.sec-high {
 .config-item label {
   font-size: 1rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
 }
 
 /* Checkbox row — used for 'no auto-summary' in RIP/EIGRP */
@@ -827,7 +847,7 @@ option.sec-high {
 .checkbox-row-label {
   font-size: 1rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
 }
 
 /* Label-only row (no input below, label + inline value) */
@@ -837,29 +857,30 @@ option.sec-high {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .option-label {
   font-size: 1rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .option-input {
   width: 100px;
   text-align: right;
   font-weight: 600;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 5px 10px;
   font-size: 0.9rem;
-  color: #007bca;
+  background: var(--bg-input);
+  color: var(--text-primary);
 }
 
 .bold-label {
   font-weight: 700 !important;
-  color: #000 !important;
+  color: var(--text-primary) !important;
 }
 
 /* Wildcard Display */
@@ -905,7 +926,7 @@ option.sec-high {
   font-size: 1rem;
   font-weight: 700;
   user-select: none;
-  color: #000;
+  color: var(--text-primary);
   min-height: 32px;
 }
 

@@ -25,35 +25,36 @@
       <div class="logo-centered">
         <img src="photo/crw-logo.jpg" alt="CRW Logo">
       </div>
-      <h1 id="welcomeTitle">Welcome to Cisco<br>Router Setup Wizard!</h1>
+      <h1 data-i18n="welcomeTitle">Welcome to Cisco<br>Router Setup Wizard!</h1>
     </section>
 
     <div class="action-cards">
       <div class="card" id="cardOffline" onclick="selectAction('offline')">
         <img src="photo/ofline.jpg" class="card-img" alt="Offline Card">
-        <span class="card-title" id="cardOfflineTitle">Start Offline</span>
+        <span class="card-title" data-i18n="statusOffline">Start Offline</span>
       </div>
       <div class="card" id="cardConnect" onclick="selectAction('connect')">
         <img src="photo/online.jpg" class="card-img" alt="Online Card">
-        <span class="card-title" id="cardConnectTitle">Start Online</span>
+        <span class="card-title" data-i18n="statusOnline">Start Online</span>
       </div>
     </div>
 
     <!-- Primary Action -->
-    <button class="primary-btn" id="btnStartConfig" onclick="startConfig()" disabled>Start Configuration</button>
+    <button class="primary-btn" id="btnStartConfig" onclick="startConfig()" disabled data-i18n="btnStartConfig">Start
+      Configuration</button>
 
     <!-- Settings Modal Overlay -->
     <div class="modal-overlay" id="settingsOverlay" onclick="closeSettingsIfOutside(event)">
       <div class="settings-modal" id="settingsModal">
         <div class="modal-header">
-          <h2 id="settingsHeaderTitle">Settings</h2>
+          <h2 data-i18n="settingsHeaderTitle">Settings</h2>
           <button class="close-modal" onclick="toggleSettings()">&times;</button>
         </div>
         <div class="modal-body">
           <div class="setting-row">
             <div class="setting-info">
               <i class="ph-bold ph-moon" id="theme-icon"></i>
-              <span id="lblDarkTheme">Dark Theme</span>
+              <span data-i18n="lblDarkTheme">Dark Theme</span>
             </div>
             <div class="setting-control">
               <label class="switch">
@@ -66,7 +67,7 @@
           <div class="setting-row">
             <div class="setting-info">
               <i class="ph-bold ph-globe"></i>
-              <span id="lblLanguage">Language</span>
+              <span data-i18n="lblLanguage">Language</span>
             </div>
             <div class="setting-control">
               <div class="lang-selector" id="langSelector">
@@ -81,6 +82,7 @@
 
   </div>
 
+  <script src="i18n.js"></script>
   <script>
     let selectedAction = null;
 
@@ -106,17 +108,24 @@
     }
 
     function updateStatus(status) {
-      const text = document.getElementById('statusText');
+      const textElem = document.getElementById('statusText');
       const dot = document.querySelector('.status-dot');
-      const lang = currentLangElem.textContent;
 
-      if (status === 'online') {
-        if (text) text.textContent = translations[lang].statusOnline;
-        if (dot) dot.className = 'status-dot green';
-      } else {
-        if (text) text.textContent = translations[lang].statusOffline;
-        if (dot) dot.className = 'status-dot orange';
+      const lang = window.crw_i18n.getCurrentLanguage();
+      // Only update if we have data (or let i18n handle it if we trigger it)
+      // For immediate feedback before full dictionary might be applied:
+      if (dot) {
+        if (status === 'online') {
+          dot.className = 'status-dot green';
+          if (textElem) textElem.setAttribute("data-i18n", "statusOnline");
+        } else {
+          dot.className = 'status-dot orange';
+          if (textElem) textElem.setAttribute("data-i18n", "statusOffline");
+        }
       }
+
+      // Re-apply current language immediately to update the status text
+      window.crw_i18n.setLanguage(lang, "home");
     }
 
     function startConfig() {
@@ -137,64 +146,21 @@
     }
 
     // Language System
-    const translations = {
-      'ENG': {
-        statusOffline: 'Status: Offline',
-        statusOnline: 'Status: Online',
-        welcomeTitle: 'Welcome to Cisco<br>Router Setup Wizard!',
-        btnStartConfig: 'Start Configuration',
-        settingsHeaderTitle: 'Settings',
-        lblDarkTheme: 'Dark Theme',
-        lblLanguage: 'Language',
-        langLabel: 'Eng'
-      },
-      'UA': {
-        statusOffline: 'Статус: Офлайн',
-        statusOnline: 'Статус: Онлайн',
-        welcomeTitle: 'Вітаємо у Cisco<br>Router Setup Wizard!',
-        btnStartConfig: 'Почати конфігурацію',
-        settingsHeaderTitle: 'Налаштування',
-        lblDarkTheme: 'Темна тема',
-        lblLanguage: 'Мова',
-        langLabel: 'UA'
-      },
-      'DE': {
-        statusOffline: 'Status: Offline',
-        statusOnline: 'Status: Online',
-        welcomeTitle: 'Willkommen beim Cisco<br>Router Setup Wizard!',
-        btnStartConfig: 'Konfiguration starten',
-        settingsHeaderTitle: 'Einstellungen',
-        lblDarkTheme: 'Dunkles Design',
-        lblLanguage: 'Sprache',
-        langLabel: 'De'
-      }
-    };
-
-    const langs = ['ENG', 'UA', 'DE'];
+    const validLangs = ['en', 'ua', 'de'];
     let currentLangIdx = 0;
 
     const langSelector = document.getElementById('langSelector');
     const currentLangElem = document.getElementById('currentLang');
 
-    function updateLanguage(langCode) {
-      localStorage.setItem('crw_lang', langCode); // Save for cross-page sync
-
-      const t = translations[langCode];
-
-      // Status text depends on online/offline state
-      updateStatus(selectedAction === 'connect' ? 'online' : 'offline');
-
-      document.getElementById('welcomeTitle').innerHTML = t.welcomeTitle;
-      document.getElementById('btnStartConfig').textContent = t.btnStartConfig;
-      document.getElementById('settingsHeaderTitle').textContent = t.settingsHeaderTitle;
-      document.getElementById('lblDarkTheme').textContent = t.lblDarkTheme;
-      document.getElementById('lblLanguage').textContent = t.lblLanguage;
-      currentLangElem.textContent = langCode; // Display Eng, UA, De directly
+    function updateLanguageUI(langCode) {
+      const displayMap = { 'en': 'ENG', 'ua': 'UA', 'de': 'DE' };
+      currentLangElem.textContent = displayMap[langCode];
+      window.crw_i18n.setLanguage(langCode, "home");
     }
 
     langSelector.addEventListener('click', () => {
-      currentLangIdx = (currentLangIdx + 1) % langs.length;
-      updateLanguage(langs[currentLangIdx]);
+      currentLangIdx = (currentLangIdx + 1) % validLangs.length;
+      updateLanguageUI(validLangs[currentLangIdx]);
     });
 
     // Theme Toggle System
@@ -202,30 +168,36 @@
     const themeIcon = document.getElementById('theme-icon');
 
     // Initial setup
-    const savedLang = localStorage.getItem('crw_lang');
-    if (savedLang && langs.includes(savedLang)) {
-      currentLangIdx = langs.indexOf(savedLang);
-      updateLanguage(savedLang);
-    }
-
-    const savedTheme = localStorage.getItem('crw_theme');
-    if (savedTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      themeToggle.checked = true;
-      themeIcon.className = 'ph-bold ph-moon';
-    }
-
-    themeToggle.addEventListener('change', (e) => {
-      if (e.target.checked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('crw_theme', 'dark');
-        themeIcon.className = 'ph-bold ph-moon';
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedLang = window.crw_i18n.getCurrentLanguage();
+      if (validLangs.includes(savedLang)) {
+        currentLangIdx = validLangs.indexOf(savedLang);
+        updateLanguageUI(savedLang);
       } else {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('crw_theme', 'light');
-        themeIcon.className = 'ph-bold ph-sun';
+        updateLanguageUI('en');
+      }
+
+      const savedTheme = localStorage.getItem('crw_theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (themeToggle) themeToggle.checked = true;
+        if (themeIcon) themeIcon.className = 'ph-bold ph-moon';
       }
     });
+
+    if (themeToggle) {
+      themeToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('crw_theme', 'dark');
+          themeIcon.className = 'ph-bold ph-moon';
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('crw_theme', 'light');
+          themeIcon.className = 'ph-bold ph-sun';
+        }
+      });
+    }
   </script>
 </body>
 

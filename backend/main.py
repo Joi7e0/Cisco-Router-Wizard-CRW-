@@ -15,35 +15,38 @@ eel.init(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "web")))
 
 
 @eel.expose
-def process_text(
-    routing_protocol: str = "",
-    proto: str = "",
-    router_id: str = "",
-    ip_multicast: bool = False,
-    telephony_enabled: bool = False,
-    dn_list: list = None,
-    enable_ssh: bool = False,
-    hostname: str = "",
-    enable_secret: str = "",
-    console_password: str = "",
-    vty_password: str = "",
-    password_encryption_type: str = "7",
-    dhcp_network: str = "",
-    dhcp_mask: str = "",
-    dhcp_gateway: str = "",
-    dhcp_dns: str = "",
-    interfaces: list = None,
-    networks: list = None,
-    no_shutdown_interfaces: list = None,
-    descriptions: list = None,
-    max_ephones: int = 3,
-    max_dn: int = 3,
-    ip_source_address: str = "10.0.0.1",
-    auto_assign_range: str = "1 to 3",
-    dhcp_excluded: tuple = ("10.0.0.1", "10.0.0.10"),
-    routing_config: dict = None
-) -> str:
+def process_text(config_data: dict = None) -> str:
+    if config_data is None:
+        config_data = {}
+
     try:
+        # Екстрагування значень із JSON об'єкта
+        routing_protocol = config_data.get("routingProtocol", "")
+        router_id = config_data.get("routerId", "")
+        ip_multicast = config_data.get("ipMulticast", False)
+        telephony_enabled = config_data.get("telephonyEnabled", False)
+        dn_list = config_data.get("dnList", [])
+        enable_ssh = config_data.get("enableSsh", False)
+        hostname = config_data.get("hostname", "")
+        enable_secret = config_data.get("enableSecret", "")
+        console_password = config_data.get("consolePassword", "")
+        vty_password = config_data.get("vtyPassword", "")
+        password_encryption_type = config_data.get("passwordEncryptionType", "7")
+        dhcp_network = config_data.get("dhcpNetwork", "")
+        dhcp_mask = config_data.get("dhcpMask", "")
+        dhcp_gateway = config_data.get("dhcpGateway", "")
+        dhcp_dns = config_data.get("dhcpDns", "")
+        interfaces = config_data.get("interfaces", [])
+        networks = config_data.get("networks", [])
+        no_shutdown_interfaces = config_data.get("noShutdownInterfaces", [])
+        descriptions = config_data.get("descriptions", [])
+        max_ephones = config_data.get("maxEphones", 3)
+        max_dn = config_data.get("maxDn", 3)
+        ip_source_address = config_data.get("ipSourceAddress", "10.0.0.1")
+        auto_assign_range = config_data.get("autoAssignRange", "1 to 3")
+        dhcp_excluded = config_data.get("dhcpExcluded", ["10.0.0.1", "10.0.0.10"])
+        routing_config = config_data.get("routingConfig", {})
+
         # Захист від None
         if dn_list is None:
             dn_list = []
@@ -90,10 +93,6 @@ def process_text(
             return "❌ Error: Некоректний формат параметра `networks` — очікується список мереж"
 
         # Базова валідація для OSPF
-        # Підтримка короткого імені параметра `proto` в тестах
-        if proto and not routing_protocol:
-            routing_protocol = proto
-
         # Захищено: routing_protocol може бути неправильного типу
         if not isinstance(routing_protocol, str):
             routing_protocol = str(routing_protocol)

@@ -189,6 +189,7 @@ body {
 .card.active {
     border-color: var(--cisco-blue);
     background: rgba(0, 188, 235, 0.1);
+    color: var(--text-primary);
     box-shadow: 0 0 0 4px rgba(0, 188, 235, 0.2), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
@@ -217,14 +218,13 @@ body {
     line-height: 1.4;
 }
 
-/* Action Button */
 .primary-btn {
     display: block;
     width: 100%;
     max-width: 592px;
     /* 280*2 + 32 */
     background: var(--cisco-blue);
-    color: white;
+    color: #ffffff;
     text-align: center;
     padding: 24px;
     border-radius: 20px;
