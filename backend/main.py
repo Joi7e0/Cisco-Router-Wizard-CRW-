@@ -121,6 +121,16 @@ def process_text(
         if isinstance(max_dn, list):
             max_dn = 3
 
+        # Fallbacks for optional parameters
+        final_ip_source = ip_source_address.strip() if ip_source_address else "10.0.0.1"
+        final_auto_assign = auto_assign_range.strip() if auto_assign_range else "1 to 3"
+        
+        # Ensure dhcp_excluded is at least a tuple of strings
+        if not dhcp_excluded:
+            final_dhcp_excluded = ("10.0.0.1", "10.0.0.10")
+        else:
+            final_dhcp_excluded = tuple(str(x).strip() for x in dhcp_excluded)
+
         # Виклик генерації конфігурації
         try:
             config_lines = generate_full_config(
@@ -145,9 +155,9 @@ def process_text(
                 descriptions=[str(d).strip() for d in descriptions],
                 max_ephones=int(max_ephones),
                 max_dn=int(max_dn),
-                ip_source_address=ip_source_address.strip(),
-                auto_assign_range=auto_assign_range.strip(),
-                dhcp_excluded=tuple(dhcp_excluded),
+                ip_source_address=final_ip_source,
+                auto_assign_range=final_auto_assign,
+                dhcp_excluded=final_dhcp_excluded,
                 routing_config=routing_config
             )
 
@@ -175,7 +185,7 @@ if __name__ == "__main__":
     for mode in ["edge", "chrome", None]:
         try:
             eel.start(
-                "index.html",
+                "home.html",
                 size=window_size,
                 mode=mode,
                 port=0,           

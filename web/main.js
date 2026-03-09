@@ -493,9 +493,9 @@ async function sendToPython() {
             descriptions,
             3, // max_ephones
             3, // max_dn
-            "10.0.0.1", // ip_source
-            "1 to 3", // auto_assign
-            ["10.0.0.1", "10.0.0.10"], // dhcp_excluded
+            "", // ip_source (empty to let backend handle)
+            "", // auto_assign (empty to let backend handle)
+            [], // dhcp_excluded (empty to let backend handle)
             routingConfig // Send the whole config object as the last argument
         )();
 
@@ -537,6 +537,22 @@ function downloadCommands() {
 
 // --- INIT ---
 document.addEventListener("DOMContentLoaded", () => {
+    // Apply Theme and Language Synergy
+    const savedTheme = localStorage.getItem('crw_theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
+    const savedMode = localStorage.getItem('crw_mode');
+    if (savedMode) {
+        updateStatus(savedMode === 'connect' ? 'online' : 'offline');
+    }
+
+    const savedLang = localStorage.getItem('crw_lang');
+    if (savedLang) {
+        console.log("Active Language:", savedLang);
+    }
+
     // Start with 0 interfaces as per request
     document.getElementById("interfaces-list").innerHTML = "";
     updateStepUI();
@@ -544,3 +560,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Default to Static on load
     selectProtocol('Static');
 });
+
+function updateStatus(status) {
+    const text = document.getElementById('statusText');
+    const dot = document.querySelector('.status-dot');
+    if (!text || !dot) return;
+
+    if (status === 'online') {
+        text.textContent = "Status: Online";
+        dot.className = 'status-dot green';
+    } else {
+        text.textContent = "Status: Offline";
+        dot.className = 'status-dot orange';
+    }
+}

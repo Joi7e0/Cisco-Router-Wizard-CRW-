@@ -221,7 +221,10 @@ def generate_dhcp_config(
         return []
 
     cfg = ["!"]
-    cfg.append(f"ip dhcp excluded-address {excluded[0]} {excluded[1]}")
+    if excluded and len(excluded) >= 2:
+        cfg.append(f"ip dhcp excluded-address {excluded[0]} {excluded[1]}")
+    elif excluded and len(excluded) == 1:
+        cfg.append(f"ip dhcp excluded-address {excluded[0]}")
     cfg.extend([
         "ip dhcp pool LAN",
         f" network {dhcp_network} {dhcp_mask}"

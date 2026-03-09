@@ -23,7 +23,6 @@
                     <h1>Cisco Router Wizard</h1>
                 </div>
             </div>
-            <!-- Close button removed -->
         </header>
 
         <!-- Stepper -->
@@ -432,8 +431,9 @@
 
         <!-- Bottom Navigation -->
         <footer class="bottom-bar">
-            <button class="btn btn-secondary" id="back-btn" onclick="prevStep()" disabled>&lt; Previous Step</button>
-            <div>
+            <div class="nav-btn-group">
+                <button class="btn btn-secondary" id="back-btn" onclick="prevStep()" disabled>&lt; Previous
+                    Step</button>
                 <button class="btn btn-secondary" onclick="autoFillForm()">Auto Fill</button>
                 <button class="btn btn-primary" id="next-btn" onclick="nextStep()">Next Step &gt;</button>
             </div>
