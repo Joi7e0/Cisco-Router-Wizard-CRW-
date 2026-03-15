@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>backend.generate API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>backend.generate</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="backend.generate.generate_base_config"><code class="name flex">
+<span>def <span class="ident">generate_base_config</span></span>(<span>hostname: str,<br>interfaces: list[str],<br>networks: list[tuple[str, str]],<br>no_shutdown_interfaces: list[str] = None,<br>descriptions: list[str] = None,<br>routing_config: dict = None,<br>nat_inside: str = '',<br>nat_outside: str = '') ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_base_config(
+    hostname: str,
+    interfaces: list[str],
+    networks: list[tuple[str, str]],
+    no_shutdown_interfaces: list[str] = None,
+    descriptions: list[str] = None,
+    routing_config: dict = None,
+    nat_inside: str = &#34;&#34;,
+    nat_outside: str = &#34;&#34;
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує початкову (базову) частину конфігурації.
+
+    Генерує ``enable``, ``configure terminal`` та ``hostname``
+    (обробник ``base.j2``), а потім повну конфігурацію
+    інтерфейсів через :func:`generate_interface_config`.
+
+    Args:
+        hostname (str): Ім&#39;я пристрою. Якщо порожне — використовується
+            fallback ``&#34;R1&#34;``.
+        interfaces (list[str]): Список імен інтерфейсів.
+        networks (list[tuple[str, str]]): Список кортежів ``(ip, mask)``.
+        no_shutdown_interfaces (list[str], optional): Defaults to ``None``.
+        descriptions (list[str], optional): Defaults to ``None``.
+        routing_config (dict, optional): Defaults to ``None``.
+        nat_inside (str, optional): Defaults to ``&#34;&#34;``.
+        nat_outside (str, optional): Defaults to ``&#34;&#34;``.
+
+    Returns:
+        list[str]: Список команд: ``enable``, ``configure terminal``,
+            ``hostname ...``, блоки інтерфейсів.
+    &#34;&#34;&#34;
+    cfg = render_template_to_lines(&#39;base.j2&#39;, {&#39;hostname&#39;: hostname or &#39;R1&#39;})
+    cfg.extend(generate_interface_config(interfaces, networks, no_shutdown_interfaces, descriptions, routing_config, nat_inside, nat_outside))
+    return cfg</code></pre>
+</details>
+<div class="desc"><p>Генерує початкову (базову) частину конфігурації.</p>
+<p>Генерує <code>enable</code>, <code>configure terminal</code> та <code>hostname</code>
+(обробник <code>base.j2</code>), а потім повну конфігурацію
+інтерфейсів через :func:<code><a title="backend.generate.generate_interface_config" href="#backend.generate.generate_interface_config">generate_interface_config()</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hostname</code></strong> :&ensp;<code>str</code></dt>
+<dd>Ім'я пристрою. Якщо порожне — використовується
+fallback <code>"R1"</code>.</dd>
+<dt><strong><code>interfaces</code></strong> :&ensp;<code>list[str]</code></dt>
+<dd>Список імен інтерфейсів.</dd>
+<dt><strong><code>networks</code></strong> :&ensp;<code>list[tuple[str, str]]</code></dt>
+<dd>Список кортежів <code>(ip, mask)</code>.</dd>
+<dt><strong><code>no_shutdown_interfaces</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Defaults to <code>None</code>.</dd>
+<dt><strong><code>descriptions</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Defaults to <code>None</code>.</dd>
+<dt><strong><code>routing_config</code></strong> :&ensp;<code>dict</code>, optional</dt>
+<dd>Defaults to <code>None</code>.</dd>
+<dt><strong><code>nat_inside</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Defaults to <code>""</code>.</dd>
+<dt><strong><code>nat_outside</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Defaults to <code>""</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Список команд: <code>enable</code>, <code>configure terminal</code>,
+<code>hostname &hellip;</code>, блоки інтерфейсів.</dd>
+</dl></div>
+</dd>
+<dt id="backend.generate.generate_dhcp_config"><code class="name flex">
+<span>def <span class="ident">generate_dhcp_config</span></span>(<span>dhcp_network: str,<br>dhcp_mask: str,<br>dhcp_gateway: str,<br>dhcp_dns: str,<br>excluded: list[str] = None,<br>dhcp_option150: str = '') ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_dhcp_config(
+    dhcp_network: str,
+    dhcp_mask: str,
+    dhcp_gateway: str,
+    dhcp_dns: str,
+    excluded: list[str] = None,
+    dhcp_option150: str = &#34;&#34;
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує конфігурацію DHCP-сервера.
+
+    Генерує ``ip dhcp excluded-address`` (для gateway та фіксованих
+    адрес), ``ip dhcp pool LAN`` з ``network``, ``default-router``,
+    ``dns-server`` і опціонально ``option 150 ip`` для IP-телефонів.
+    Використовує шаблон ``dhcp.j2``.
+
+    Args:
+        dhcp_network (str): Мережа DHCP-пулу (``&#34;192.168.1.0&#34;``).
+            Якщо порожна — повертає ``[]``.
+        dhcp_mask (str): Маска DHCP-пулу (``&#34;255.255.255.0&#34;``).
+            Якщо порожна — повертає ``[]``.
+        dhcp_gateway (str): Gateway для DHCP-клієнтів.
+        dhcp_dns (str): DNS-сервер для DHCP-клієнтів.
+        excluded (list[str], optional): 1 або 2 IP-адреси для
+            ``ip dhcp excluded-address``. 1 елемент = одна адреса,
+            2 = діапазон. Defaults to ``None``.
+        dhcp_option150 (str, optional): IP-адреса TFTP-сервера для
+            Option 150 (Cisco IP Phones). Defaults to ``&#34;&#34;``.
+
+    Returns:
+        list[str]: Команди DHCP або ``[]`` якщо мережа/маска не
+            вказані.
+    &#34;&#34;&#34;
+    if not dhcp_network or not dhcp_mask:
+        return []
+
+    if isinstance(excluded, str):
+        excluded = tuple(excluded.split())
+    elif not excluded:
+        excluded = []
+
+    return render_template_to_lines(&#39;dhcp.j2&#39;, {
+        &#39;dhcp_network&#39;: dhcp_network,
+        &#39;dhcp_mask&#39;: dhcp_mask,
+        &#39;dhcp_gateway&#39;: dhcp_gateway,
+        &#39;dhcp_dns&#39;: dhcp_dns,
+        &#39;excluded&#39;: excluded,
+        &#39;dhcp_option150&#39;: dhcp_option150
+    })</code></pre>
+</details>
+<div class="desc"><p>Генерує конфігурацію DHCP-сервера.</p>
+<p>Генерує <code>ip dhcp excluded-address</code> (для gateway та фіксованих
+адрес), <code>ip dhcp pool LAN</code> з <code>network</code>, <code>default-router</code>,
+<code>dns-server</code> і опціонально <code>option 150 ip</code> для IP-телефонів.
+Використовує шаблон <code>dhcp.j2</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dhcp_network</code></strong> :&ensp;<code>str</code></dt>
+<dd>Мережа DHCP-пулу (<code>"192.168.1.0"</code>).
+Якщо порожна — повертає <code>[]</code>.</dd>
+<dt><strong><code>dhcp_mask</code></strong> :&ensp;<code>str</code></dt>
+<dd>Маска DHCP-пулу (<code>"255.255.255.0"</code>).
+Якщо порожна — повертає <code>[]</code>.</dd>
+<dt><strong><code>dhcp_gateway</code></strong> :&ensp;<code>str</code></dt>
+<dd>Gateway для DHCP-клієнтів.</dd>
+<dt><strong><code>dhcp_dns</code></strong> :&ensp;<code>str</code></dt>
+<dd>DNS-сервер для DHCP-клієнтів.</dd>
+<dt><strong><code>excluded</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>1 або 2 IP-адреси для
+<code>ip dhcp excluded-address</code>. 1 елемент = одна адреса,
+2 = діапазон. Defaults to <code>None</code>.</dd>
+<dt><strong><code>dhcp_option150</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>IP-адреса TFTP-сервера для
+Option 150 (Cisco IP Phones). Defaults to <code>""</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Команди DHCP або <code>[]</code> якщо мережа/маска не
+вказані.</dd>
+</dl></div>
+</dd>
+<dt id="backend.generate.generate_full_config"><code class="name flex">
+<span>def <span class="ident">generate_full_config</span></span>(<span>hostname: str,<br>interfaces: list[str],<br>networks: list[tuple[str, str]],<br>ip_multicast: bool,<br>routing_protocol: str,<br>router_id: str,<br>telephony_enabled: bool,<br>dn_list: list[dict],<br>enable_ssh: bool,<br>enable_secret: str,<br>console_password: str,<br>admin_username: str,<br>admin_password: str,<br>domain_name: str,<br>dhcp_network: str,<br>dhcp_mask: str,<br>dhcp_gateway: str,<br>dhcp_dns: str,<br>nat_type: str = 'None',<br>nat_inside: str = '',<br>nat_outside: str = '',<br>nat_inside_local: str = '',<br>nat_inside_global: str = '',<br>snmp_enabled: bool = False,<br>snmp_community_ro: str = '',<br>snmp_community_rw: str = '',<br>snmp_location: str = '',<br>snmp_contact: str = '',<br>snmp_trap_host: str = '',<br>no_shutdown_interfaces: list[str] = None,<br>descriptions: list[str] = None,<br>max_ephones: int = 3,<br>max_dn: int = 3,<br>ip_source_address: str = '10.0.0.1',<br>auto_assign_range: str = '1 to 3',<br>dhcp_excluded: list[str] = None,<br>no_auto_summary: bool = True,<br>routing_config: dict = None,<br>pim_interfaces: list[str] = None,<br>dhcp_option150: str = '') ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_full_config(
+    hostname: str,
+    interfaces: list[str],
+    networks: list[tuple[str, str]],
+    ip_multicast: bool,
+    routing_protocol: str,
+    router_id: str,
+    telephony_enabled: bool,
+    dn_list: list[dict],
+    enable_ssh: bool,
+    enable_secret: str,
+    console_password: str,
+    admin_username: str,
+    admin_password: str,
+    domain_name: str,
+    dhcp_network: str,
+    dhcp_mask: str,
+    dhcp_gateway: str,
+    dhcp_dns: str,
+    nat_type: str = &#34;None&#34;,
+    nat_inside: str = &#34;&#34;,
+    nat_outside: str = &#34;&#34;,
+    nat_inside_local: str = &#34;&#34;,
+    nat_inside_global: str = &#34;&#34;,
+    snmp_enabled: bool = False,
+    snmp_community_ro: str = &#34;&#34;,
+    snmp_community_rw: str = &#34;&#34;,
+    snmp_location: str = &#34;&#34;,
+    snmp_contact: str = &#34;&#34;,
+    snmp_trap_host: str = &#34;&#34;,
+    no_shutdown_interfaces: list[str] = None,
+    descriptions: list[str] = None,
+    max_ephones: int = 3,
+    max_dn: int = 3,
+    ip_source_address: str = &#34;10.0.0.1&#34;,
+    auto_assign_range: str = &#34;1 to 3&#34;,
+    dhcp_excluded: list[str] = None,
+    no_auto_summary: bool = True,
+    routing_config: dict = None,
+    pim_interfaces: list[str] = None,
+    dhcp_option150: str = &#34;&#34;
+) -&gt; list[str]:
+    &#34;&#34;&#34;Збирає повну конфігурацію Cisco IOS з усіх секцій.
+
+    Головна функція-оркестратор. Послідовно викликає генератори кожної
+    секції і збирає їх вивід в єдиний список команд, готовий для
+    копіювання на Cisco-пристрій через CLI або TFTP.
+
+    Порядок секцій у конфігурації:
+        1. Base config (``enable`` / ``configure terminal`` / hostname / interfaces)
+        2. Multicast (якщо ``ip_multicast=True``)
+        3. Routing protocol (RIP / OSPF / EIGRP / BGP / Static / IS-IS)
+        4. Telephony service (CME ephone-dn / ephone)
+        5. Security (enable secret / console password / SSH)
+        6. DHCP server
+        7. NAT (PAT or Static)
+        8. SNMP
+        9. ``end`` / ``write memory``
+
+    Args:
+        hostname (str): Ім&#39;я пристрою (Cisco IOS hostname). Якщо порожнє,
+            використовується ``&#34;R1&#34;`` як fallback.
+        interfaces (list[str]): Список імен інтерфейсів
+            (наприклад, ``[&#34;Gi0/0&#34;, &#34;Gi0/1&#34;]``).
+        networks (list[tuple[str, str]]): Список кортежів ``(ip, mask)``
+            відповідно до порядку в ``interfaces``.
+        ip_multicast (bool): Якщо ``True`` — генерує ``ip multicast-routing``
+            та PIM-конфігурацію.
+        routing_protocol (str): Протокол маршрутизації
+            (``&#34;RIP&#34;``, ``&#34;OSPF&#34;``, ``&#34;EIGRP&#34;``, ``&#34;BGP&#34;``, ``&#34;STATIC&#34;``,
+            ``&#34;IS-IS&#34;``, ``&#34;None&#34;``).
+        router_id (str): Router ID у форматі IPv4. Обов&#39;язковий для OSPF.
+        telephony_enabled (bool): Якщо ``True`` — генерує блок
+            ``telephony-service`` та ephone.
+        dn_list (list[dict]): Список телефонних номерів. Кожен елемент:
+            ``{&#34;number&#34;: str, &#34;user&#34;: str, &#34;mac&#34;: str}``.
+        enable_ssh (bool): Якщо ``True`` — генерує SSH/VTY конфігурацію.
+        enable_secret (str): Enable secret пароль (пустий — не додається).
+        console_password (str): Пароль для console 0.
+        admin_username (str): Ім&#39;я SSH-користувача.
+        admin_password (str): Пароль SSH-користувача.
+        domain_name (str): IP domain-name для генерації RSA-ключів.
+        dhcp_network (str): Мережа DHCP-пулу (наприклад, ``&#34;192.168.1.0&#34;``).
+        dhcp_mask (str): Маска DHCP-пулу.
+        dhcp_gateway (str): Gateway для DHCP-клієнтів.
+        dhcp_dns (str): DNS-сервер для DHCP-клієнтів.
+        nat_type (str, optional): Тип NAT: ``&#34;PAT&#34;``, ``&#34;Static&#34;`` або
+            ``&#34;None&#34;``. Defaults to ``&#34;None&#34;``.
+        nat_inside (str, optional): Інтерфейс NAT inside. Defaults to ``&#34;&#34;``.
+        nat_outside (str, optional): Інтерфейс NAT outside. Defaults to ``&#34;&#34;``.
+        nat_inside_local (str, optional): Внутрішня IP для Static NAT.
+        nat_inside_global (str, optional): Зовнішня IP для Static NAT.
+        snmp_enabled (bool, optional): Якщо ``True`` — генерує SNMP.
+            Defaults to ``False``.
+        snmp_community_ro (str, optional): SNMP RO community. Defaults to ``&#34;&#34;``.
+        snmp_community_rw (str, optional): SNMP RW community. Defaults to ``&#34;&#34;``.
+        snmp_location (str, optional): snmp-server location. Defaults to ``&#34;&#34;``.
+        snmp_contact (str, optional): snmp-server contact. Defaults to ``&#34;&#34;``.
+        snmp_trap_host (str, optional): IP для SNMP trap. Defaults to ``&#34;&#34;``.
+        no_shutdown_interfaces (list[str], optional): Список інтерфейсів для
+            ``no shutdown``. Defaults to ``None`` (всі).
+        descriptions (list[str], optional): Описи для кожного інтерфейсу.
+            Defaults to ``None``.
+        max_ephones (int, optional): max-ephones для telephony-service.
+            Defaults to ``3``.
+        max_dn (int, optional): max-dn для telephony-service. Defaults to ``3``.
+        ip_source_address (str, optional): CME source IP. Defaults to
+            ``&#34;10.0.0.1&#34;``.
+        auto_assign_range (str, optional): auto assign range. Defaults to
+            ``&#34;1 to 3&#34;``.
+        dhcp_excluded (list[str], optional): Список виключених DHCP-адрес
+            (1 або 2 елементи). Defaults to ``None``.
+        no_auto_summary (bool, optional): Якщо ``True`` — додає ``no
+            auto-summary`` для RIP/EIGRP. Defaults to ``True``.
+        routing_config (dict, optional): Розширена конфігурація протоколу
+            (ospfNetworks, eigrpNetworks тощо). Defaults to ``None``.
+        pim_interfaces (list[str], optional): Інтерфейси для PIM. Defaults
+            to ``None``.
+        dhcp_option150 (str, optional): TFTP-сервер для Option 150 (IP-
+            телефони). Defaults to ``&#34;&#34;``.
+
+    Returns:
+        list[str]: Список рядків Cisco IOS команд у правильному порядку.
+            Перший елемент — ``&#34;enable&#34;``, останній — ``&#34;write memory&#34;``.
+
+    Examples:
+        &gt;&gt;&gt; cfg = generate_full_config(
+        ...     hostname=&#34;HQ&#34;,
+        ...     interfaces=[&#34;Gi0/0&#34;],
+        ...     networks=[(&#34;192.168.1.1&#34;, &#34;255.255.255.0&#34;)],
+        ...     ip_multicast=False,
+        ...     routing_protocol=&#34;None&#34;,
+        ...     router_id=&#34;&#34;,
+        ...     telephony_enabled=False,
+        ...     dn_list=[],
+        ...     enable_ssh=False,
+        ...     enable_secret=&#34;&#34;,
+        ...     console_password=&#34;&#34;,
+        ...     admin_username=&#34;&#34;,
+        ...     admin_password=&#34;&#34;,
+        ...     domain_name=&#34;&#34;,
+        ...     dhcp_network=&#34;&#34;,
+        ...     dhcp_mask=&#34;&#34;,
+        ...     dhcp_gateway=&#34;&#34;,
+        ...     dhcp_dns=&#34;&#34;
+        ... )
+        &gt;&gt;&gt; cfg[0]
+        &#39;enable&#39;
+        &gt;&gt;&gt; cfg[-1]
+        &#39;write memory&#39;
+    &#34;&#34;&#34;
+    if no_shutdown_interfaces is None:
+        no_shutdown_interfaces = []
+
+    config = []
+
+    # 1. Базова частина + інтерфейси
+    config.extend(generate_base_config(hostname, interfaces, networks, no_shutdown_interfaces, descriptions, routing_config, nat_inside, nat_outside))
+
+    # 2. Multicast (якщо потрібно)
+    config.extend(generate_multicast_config(ip_multicast, pim_interfaces))
+
+    # 3. Протокол маршрутизації
+    config.extend(generate_protocol_config(routing_protocol, router_id, networks, no_auto_summary, routing_config))
+
+    # 4. Telephony
+    config.extend(generate_telephony_config(
+        telephony_enabled, dn_list, max_ephones, max_dn,
+        ip_source_address, auto_assign_range
+    ))
+
+    # 5. Безпека
+    config.extend(generate_security_config(
+        enable_ssh, enable_secret, console_password,
+        admin_username, admin_password, domain_name
+    ))
+
+    # 6. DHCP
+    config.extend(generate_dhcp_config(
+        dhcp_network, dhcp_mask, dhcp_gateway, dhcp_dns, dhcp_excluded,
+        dhcp_option150=dhcp_option150
+    ))
+
+    # 7. NAT
+    config.extend(generate_nat_config(
+        nat_type, nat_inside, nat_outside, nat_inside_local, nat_inside_global, dhcp_network, dhcp_mask
+    ))
+
+    # 8. SNMP
+    config.extend(generate_snmp_config(
+        snmp_enabled, snmp_community_ro, snmp_community_rw, snmp_location, snmp_contact, snmp_trap_host
+    ))
+
+    # 9. Завершення конфігурації
+    config.extend([
+        &#34;!&#34;,
+        &#34;end&#34;,
+        &#34;write memory&#34;
+    ])
+
+    return config</code></pre>
+</details>
+<div class="desc"><p>Збирає повну конфігурацію Cisco IOS з усіх секцій.</p>
+<p>Головна функція-оркестратор. Послідовно викликає генератори кожної
+секції і збирає їх вивід в єдиний список команд, готовий для
+копіювання на Cisco-пристрій через CLI або TFTP.</p>
+<p>Порядок секцій у конфігурації:
+1. Base config (<code>enable</code> / <code>configure terminal</code> / hostname / interfaces)
+2. Multicast (якщо <code>ip_multicast=True</code>)
+3. Routing protocol (RIP / OSPF / EIGRP / BGP / Static / IS-IS)
+4. Telephony service (CME ephone-dn / ephone)
+5. Security (enable secret / console password / SSH)
+6. DHCP server
+7. NAT (PAT or Static)
+8. SNMP
+9. <code>end</code> / <code>write memory</code></p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hostname</code></strong> :&ensp;<code>str</code></dt>
+<dd>Ім'я пристрою (Cisco IOS hostname). Якщо порожнє,
+використовується <code>"R1"</code> як fallback.</dd>
+<dt><strong><code>interfaces</code></strong> :&ensp;<code>list[str]</code></dt>
+<dd>Список імен інтерфейсів
+(наприклад, <code>["Gi0/0", "Gi0/1"]</code>).</dd>
+<dt><strong><code>networks</code></strong> :&ensp;<code>list[tuple[str, str]]</code></dt>
+<dd>Список кортежів <code>(ip, mask)</code>
+відповідно до порядку в <code>interfaces</code>.</dd>
+<dt><strong><code>ip_multicast</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Якщо <code>True</code> — генерує <code>ip multicast-routing</code>
+та PIM-конфігурацію.</dd>
+<dt><strong><code>routing_protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>Протокол маршрутизації
+(<code>"RIP"</code>, <code>"OSPF"</code>, <code>"EIGRP"</code>, <code>"BGP"</code>, <code>"STATIC"</code>,
+<code>"IS-IS"</code>, <code>"None"</code>).</dd>
+<dt><strong><code>router_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Router ID у форматі IPv4. Обов'язковий для OSPF.</dd>
+<dt><strong><code>telephony_enabled</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Якщо <code>True</code> — генерує блок
+<code>telephony-service</code> та ephone.</dd>
+<dt><strong><code>dn_list</code></strong> :&ensp;<code>list[dict]</code></dt>
+<dd>Список телефонних номерів. Кожен елемент:
+<code>{"number": str, "user": str, "mac": str}</code>.</dd>
+<dt><strong><code>enable_ssh</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Якщо <code>True</code> — генерує SSH/VTY конфігурацію.</dd>
+<dt><strong><code>enable_secret</code></strong> :&ensp;<code>str</code></dt>
+<dd>Enable secret пароль (пустий — не додається).</dd>
+<dt><strong><code>console_password</code></strong> :&ensp;<code>str</code></dt>
+<dd>Пароль для console 0.</dd>
+<dt><strong><code>admin_username</code></strong> :&ensp;<code>str</code></dt>
+<dd>Ім'я SSH-користувача.</dd>
+<dt><strong><code>admin_password</code></strong> :&ensp;<code>str</code></dt>
+<dd>Пароль SSH-користувача.</dd>
+<dt><strong><code>domain_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>IP domain-name для генерації RSA-ключів.</dd>
+<dt><strong><code>dhcp_network</code></strong> :&ensp;<code>str</code></dt>
+<dd>Мережа DHCP-пулу (наприклад, <code>"192.168.1.0"</code>).</dd>
+<dt><strong><code>dhcp_mask</code></strong> :&ensp;<code>str</code></dt>
+<dd>Маска DHCP-пулу.</dd>
+<dt><strong><code>dhcp_gateway</code></strong> :&ensp;<code>str</code></dt>
+<dd>Gateway для DHCP-клієнтів.</dd>
+<dt><strong><code>dhcp_dns</code></strong> :&ensp;<code>str</code></dt>
+<dd>DNS-сервер для DHCP-клієнтів.</dd>
+<dt><strong><code>nat_type</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Тип NAT: <code>"PAT"</code>, <code>"Static"</code> або
+<code>"None"</code>. Defaults to <code>"None"</code>.</dd>
+<dt><strong><code>nat_inside</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Інтерфейс NAT inside. Defaults to <code>""</code>.</dd>
+<dt><strong><code>nat_outside</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Інтерфейс NAT outside. Defaults to <code>""</code>.</dd>
+<dt><strong><code>nat_inside_local</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Внутрішня IP для Static NAT.</dd>
+<dt><strong><code>nat_inside_global</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Зовнішня IP для Static NAT.</dd>
+<dt><strong><code>snmp_enabled</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Якщо <code>True</code> — генерує SNMP.
+Defaults to <code>False</code>.</dd>
+<dt><strong><code>snmp_community_ro</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>SNMP RO community. Defaults to <code>""</code>.</dd>
+<dt><strong><code>snmp_community_rw</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>SNMP RW community. Defaults to <code>""</code>.</dd>
+<dt><strong><code>snmp_location</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>snmp-server location. Defaults to <code>""</code>.</dd>
+<dt><strong><code>snmp_contact</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>snmp-server contact. Defaults to <code>""</code>.</dd>
+<dt><strong><code>snmp_trap_host</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>IP для SNMP trap. Defaults to <code>""</code>.</dd>
+<dt><strong><code>no_shutdown_interfaces</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Список інтерфейсів для
+<code>no shutdown</code>. Defaults to <code>None</code> (всі).</dd>
+<dt><strong><code>descriptions</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Описи для кожного інтерфейсу.
+Defaults to <code>None</code>.</dd>
+<dt><strong><code>max_ephones</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>max-ephones для telephony-service.
+Defaults to <code>3</code>.</dd>
+<dt><strong><code>max_dn</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>max-dn для telephony-service. Defaults to <code>3</code>.</dd>
+<dt><strong><code>ip_source_address</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>CME source IP. Defaults to
+<code>"10.0.0.1"</code>.</dd>
+<dt><strong><code>auto_assign_range</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>auto assign range. Defaults to
+<code>"1 to 3"</code>.</dd>
+<dt><strong><code>dhcp_excluded</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Список виключених DHCP-адрес
+(1 або 2 елементи). Defaults to <code>None</code>.</dd>
+<dt><strong><code>no_auto_summary</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Якщо <code>True</code> — додає <code>no
+auto-summary</code> для RIP/EIGRP. Defaults to <code>True</code>.</dd>
+<dt><strong><code>routing_config</code></strong> :&ensp;<code>dict</code>, optional</dt>
+<dd>Розширена конфігурація протоколу
+(ospfNetworks, eigrpNetworks тощо). Defaults to <code>None</code>.</dd>
+<dt><strong><code>pim_interfaces</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Інтерфейси для PIM. Defaults
+to <code>None</code>.</dd>
+<dt><strong><code>dhcp_option150</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>TFTP-сервер для Option 150 (IP-
+телефони). Defaults to <code>""</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Список рядків Cisco IOS команд у правильному порядку.
+Перший елемент — <code>"enable"</code>, останній — <code>"write memory"</code>.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; cfg = generate_full_config(
+...     hostname=&quot;HQ&quot;,
+...     interfaces=[&quot;Gi0/0&quot;],
+...     networks=[(&quot;192.168.1.1&quot;, &quot;255.255.255.0&quot;)],
+...     ip_multicast=False,
+...     routing_protocol=&quot;None&quot;,
+...     router_id=&quot;&quot;,
+...     telephony_enabled=False,
+...     dn_list=[],
+...     enable_ssh=False,
+...     enable_secret=&quot;&quot;,
+...     console_password=&quot;&quot;,
+...     admin_username=&quot;&quot;,
+...     admin_password=&quot;&quot;,
+...     domain_name=&quot;&quot;,
+...     dhcp_network=&quot;&quot;,
+...     dhcp_mask=&quot;&quot;,
+...     dhcp_gateway=&quot;&quot;,
+...     dhcp_dns=&quot;&quot;
+... )
+&gt;&gt;&gt; cfg[0]
+'enable'
+&gt;&gt;&gt; cfg[-1]
+'write memory'
+</code></pre></div>
+</dd>
+<dt id="backend.generate.generate_interface_config"><code class="name flex">
+<span>def <span class="ident">generate_interface_config</span></span>(<span>interfaces: list[str],<br>networks: list[tuple[str, str]],<br>no_shutdown_interfaces: list[str] = None,<br>descriptions: list[str] = None,<br>routing_config: dict = None,<br>nat_inside: str = '',<br>nat_outside: str = '') ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_interface_config(
+    interfaces: list[str],
+    networks: list[tuple[str, str]],
+    no_shutdown_interfaces: list[str] = None,
+    descriptions: list[str] = None,
+    routing_config: dict = None,
+    nat_inside: str = &#34;&#34;,
+    nat_outside: str = &#34;&#34;
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує Cisco IOS команди для налаштування інтерфейсів.
+
+    Для кожного інтерфейсу генерує блок: ``interface``, ``ip address``,
+    опціональні ``description``, ``no shutdown``, ``ip nat inside/outside``,
+    ``ip router isis``. Використовує шаблон ``interfaces.j2``.
+
+    Args:
+        interfaces (list[str]): Список імен інтерфейсів
+            (``[&#34;Gi0/0&#34;, &#34;Gi0/1&#34;]``).
+        networks (list[tuple[str, str]]): Список кортежів ``(ip, mask)``
+            у тому ж порядку, що й ``interfaces``.
+        no_shutdown_interfaces (list[str], optional): Інтерфейси, які
+            отримають ``no shutdown``. ``None`` = всі.
+            Defaults to ``None``.
+        descriptions (list[str], optional): Описи для кожного
+            інтерфейсу (по порядку). Defaults to ``None``.
+        routing_config (dict, optional): Конфігурація протоколу
+            маршрутизації (для визначення IS-IS інтерфейсів).
+            Defaults to ``None``.
+        nat_inside (str, optional): Назва інтерфейсу ``ip nat inside``.
+            Defaults to ``&#34;&#34;``.
+        nat_outside (str, optional): Назва інтерфейсу ``ip nat outside``.
+            Defaults to ``&#34;&#34;``.
+
+    Returns:
+        list[str]: Список Cisco IOS команд для всіх інтерфейсів.
+    &#34;&#34;&#34;
+    # Якщо список не передано або він порожній — всі інтерфейси будуть no shutdown
+    if not no_shutdown_interfaces:
+        no_shutdown_interfaces = interfaces.copy() if interfaces else []
+    if descriptions is None:
+        descriptions = []
+
+    interface_data = []
+    for idx, (intf, (ip, mask)) in enumerate(zip(interfaces, networks)):
+        desc = descriptions[idx] if idx &lt; len(descriptions) and descriptions[idx] else &#34;&#34;
+        isis = False
+        if routing_config and routing_config.get(&#34;protocol&#34;) == &#34;IS-IS&#34;:
+            if intf in routing_config.get(&#34;participatingInterfaces&#34;, []):
+                isis = True
+                
+        interface_data.append({
+            &#39;name&#39;: intf,
+            &#39;ip&#39;: ip,
+            &#39;mask&#39;: mask,
+            &#39;description&#39;: desc,
+            &#39;no_shutdown&#39;: intf in no_shutdown_interfaces,
+            &#39;isis&#39;: isis,
+            &#39;is_nat_inside&#39;: intf == nat_inside,
+            &#39;is_nat_outside&#39;: intf == nat_outside
+        })
+
+    return render_template_to_lines(&#39;interfaces.j2&#39;, {&#39;interface_data&#39;: interface_data})</code></pre>
+</details>
+<div class="desc"><p>Генерує Cisco IOS команди для налаштування інтерфейсів.</p>
+<p>Для кожного інтерфейсу генерує блок: <code>interface</code>, <code>ip address</code>,
+опціональні <code>description</code>, <code>no shutdown</code>, <code>ip nat inside/outside</code>,
+<code>ip router isis</code>. Використовує шаблон <code>interfaces.j2</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>interfaces</code></strong> :&ensp;<code>list[str]</code></dt>
+<dd>Список імен інтерфейсів
+(<code>["Gi0/0", "Gi0/1"]</code>).</dd>
+<dt><strong><code>networks</code></strong> :&ensp;<code>list[tuple[str, str]]</code></dt>
+<dd>Список кортежів <code>(ip, mask)</code>
+у тому ж порядку, що й <code>interfaces</code>.</dd>
+<dt><strong><code>no_shutdown_interfaces</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Інтерфейси, які
+отримають <code>no shutdown</code>. <code>None</code> = всі.
+Defaults to <code>None</code>.</dd>
+<dt><strong><code>descriptions</code></strong> :&ensp;<code>list[str]</code>, optional</dt>
+<dd>Описи для кожного
+інтерфейсу (по порядку). Defaults to <code>None</code>.</dd>
+<dt><strong><code>routing_config</code></strong> :&ensp;<code>dict</code>, optional</dt>
+<dd>Конфігурація протоколу
+маршрутизації (для визначення IS-IS інтерфейсів).
+Defaults to <code>None</code>.</dd>
+<dt><strong><code>nat_inside</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Назва інтерфейсу <code>ip nat inside</code>.
+Defaults to <code>""</code>.</dd>
+<dt><strong><code>nat_outside</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Назва інтерфейсу <code>ip nat outside</code>.
+Defaults to <code>""</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Список Cisco IOS команд для всіх інтерфейсів.</dd>
+</dl></div>
+</dd>
+<dt id="backend.generate.generate_multicast_config"><code class="name flex">
+<span>def <span class="ident">generate_multicast_config</span></span>(<span>ip_multicast: bool, pim_interfaces: list[str]) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_multicast_config(ip_multicast: bool, pim_interfaces: list[str]) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує конфігурацію IP Multicast та PIM.
+
+    Якщо multicast увімкнено, генерує ``ip multicast-routing``
+    та ``ip pim sparse-dense-mode`` на вказаних інтерфейсах.
+    Використовує шаблон ``multicast.j2``.
+
+    Args:
+        ip_multicast (bool): Увімкнути multicast. ``False`` — повертає ``[]``.
+        pim_interfaces (list[str]): Інтерфейси для PIM
+            (``[&#34;Gi0/0&#34;, &#34;Gi0/1&#34;]``). Може бути порожним.
+
+    Returns:
+        list[str]: Команди multicast або ``[]`` якщо
+            ``ip_multicast=False``.
+
+    Examples:
+        &gt;&gt;&gt; generate_multicast_config(True, [&#34;Gi0/0&#34;])
+        [&#39;!&#39;, &#39;ip multicast-routing&#39;, &#39;interface Gi0/0&#39;, &#39; ip pim sparse-dense-mode&#39;, &#39; exit&#39;]
+        &gt;&gt;&gt; generate_multicast_config(False, [])
+        []
+    &#34;&#34;&#34;
+    if not ip_multicast:
+        return []
+    
+    if pim_interfaces is None:
+        pim_interfaces = []
+    
+    return render_template_to_lines(&#39;multicast.j2&#39;, {
+        &#39;ip_multicast&#39;: ip_multicast,
+        &#39;pim_interfaces&#39;: pim_interfaces
+    })</code></pre>
+</details>
+<div class="desc"><p>Генерує конфігурацію IP Multicast та PIM.</p>
+<p>Якщо multicast увімкнено, генерує <code>ip multicast-routing</code>
+та <code>ip pim sparse-dense-mode</code> на вказаних інтерфейсах.
+Використовує шаблон <code>multicast.j2</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ip_multicast</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Увімкнути multicast. <code>False</code> — повертає <code>[]</code>.</dd>
+<dt><strong><code>pim_interfaces</code></strong> :&ensp;<code>list[str]</code></dt>
+<dd>Інтерфейси для PIM
+(<code>["Gi0/0", "Gi0/1"]</code>). Може бути порожним.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Команди multicast або <code>[]</code> якщо
+<code>ip_multicast=False</code>.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; generate_multicast_config(True, [&quot;Gi0/0&quot;])
+['!', 'ip multicast-routing', 'interface Gi0/0', ' ip pim sparse-dense-mode', ' exit']
+&gt;&gt;&gt; generate_multicast_config(False, [])
+[]
+</code></pre></div>
+</dd>
+<dt id="backend.generate.generate_nat_config"><code class="name flex">
+<span>def <span class="ident">generate_nat_config</span></span>(<span>nat_type: str,<br>nat_inside: str,<br>nat_outside: str,<br>nat_inside_local: str,<br>nat_inside_global: str,<br>dhcp_network: str,<br>dhcp_mask: str) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_nat_config(
+    nat_type: str,
+    nat_inside: str,
+    nat_outside: str,
+    nat_inside_local: str,
+    nat_inside_global: str,
+    dhcp_network: str,
+    dhcp_mask: str
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує конфігурацію NAT (PAT або Static).
+
+    Для PAT: ``access-list 1 permit`` + ``ip nat inside source list 1 ... overload``.
+    Для Static: ``ip nat inside source static``.
+    Використовує шаблон ``nat.j2``.
+
+    Note:
+        Позначки ``ip nat inside`` / ``ip nat outside`` на інтерфейсах
+        генеруються в :func:`generate_interface_config`, не тут.
+
+    Args:
+        nat_type (str): Тип NAT: ``&#34;PAT&#34;``, ``&#34;Static&#34;`` або ``&#34;None&#34;``.
+        nat_inside (str): Назва інтерфейсу inside (``&#34;Gi0/0&#34;``).
+        nat_outside (str): Назва інтерфейсу outside (``&#34;Gi0/1&#34;``).
+        nat_inside_local (str): Внутрішня IP для Static NAT.
+        nat_inside_global (str): Зовнішня IP для Static NAT.
+        dhcp_network (str): Внутрішня мережа для access-list (PAT).
+        dhcp_mask (str): Маска внутрішньої мережі (перетворюється
+            в wildcard mask).
+
+    Returns:
+        list[str]: Команди NAT або ``[]`` якщо ``nat_type==&#34;None&#34;``.
+    &#34;&#34;&#34;
+    if nat_type == &#34;None&#34; or not nat_type:
+        return []
+
+    # Calculate wildcard mask from DHCP mask
+    # For a wizard, assuming DHCP network is the internal network
+    wildcard_mask = &#34;0.0.0.0&#34;
+    if dhcp_mask:
+        try:
+            octets = dhcp_mask.split(&#39;.&#39;)
+            wildcard_octets = [str(255 - int(o)) for o in octets]
+            wildcard_mask = &#34;.&#34;.join(wildcard_octets)
+        except ValueError:
+            pass
+
+    return render_template_to_lines(&#39;nat.j2&#39;, {
+        &#39;nat_type&#39;: nat_type,
+        &#39;nat_inside&#39;: nat_inside,
+        &#39;nat_outside&#39;: nat_outside,
+        &#39;nat_inside_local&#39;: nat_inside_local,
+        &#39;nat_inside_global&#39;: nat_inside_global,
+        &#39;local_network&#39;: dhcp_network,
+        &#39;wildcard_mask&#39;: wildcard_mask
+    })</code></pre>
+</details>
+<div class="desc"><p>Генерує конфігурацію NAT (PAT або Static).</p>
+<p>Для PAT: <code>access-list 1 permit</code> + <code>ip nat inside source list 1 &hellip; overload</code>.
+Для Static: <code>ip nat inside source static</code>.
+Використовує шаблон <code>nat.j2</code>.</p>
+<h2 id="note">Note</h2>
+<p>Позначки <code>ip nat inside</code> / <code>ip nat outside</code> на інтерфейсах
+генеруються в :func:<code><a title="backend.generate.generate_interface_config" href="#backend.generate.generate_interface_config">generate_interface_config()</a></code>, не тут.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nat_type</code></strong> :&ensp;<code>str</code></dt>
+<dd>Тип NAT: <code>"PAT"</code>, <code>"Static"</code> або <code>"None"</code>.</dd>
+<dt><strong><code>nat_inside</code></strong> :&ensp;<code>str</code></dt>
+<dd>Назва інтерфейсу inside (<code>"Gi0/0"</code>).</dd>
+<dt><strong><code>nat_outside</code></strong> :&ensp;<code>str</code></dt>
+<dd>Назва інтерфейсу outside (<code>"Gi0/1"</code>).</dd>
+<dt><strong><code>nat_inside_local</code></strong> :&ensp;<code>str</code></dt>
+<dd>Внутрішня IP для Static NAT.</dd>
+<dt><strong><code>nat_inside_global</code></strong> :&ensp;<code>str</code></dt>
+<dd>Зовнішня IP для Static NAT.</dd>
+<dt><strong><code>dhcp_network</code></strong> :&ensp;<code>str</code></dt>
+<dd>Внутрішня мережа для access-list (PAT).</dd>
+<dt><strong><code>dhcp_mask</code></strong> :&ensp;<code>str</code></dt>
+<dd>Маска внутрішньої мережі (перетворюється
+в wildcard mask).</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Команди NAT або <code>[]</code> якщо <code>nat_type=="None"</code>.</dd>
+</dl></div>
+</dd>
+<dt id="backend.generate.generate_security_config"><code class="name flex">
+<span>def <span class="ident">generate_security_config</span></span>(<span>enable_ssh: bool,<br>enable_secret: str,<br>console_password: str,<br>admin_username: str,<br>admin_password: str,<br>domain_name: str) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_security_config(
+    enable_ssh: bool,
+    enable_secret: str,
+    console_password: str,
+    admin_username: str,
+    admin_password: str,
+    domain_name: str
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує конфігурацію безпеки (SSH, паролі, шифрування).
+
+    Генерує:
+    - ``service password-encryption`` (завжди)
+    - ``enable algorithm-type scrypt secret`` (якщо вказано)
+    - ``line console 0`` / ``password`` / ``login`` (якщо вказано)
+    - ``ip domain-name``, ``username``, ``crypto key generate rsa``,
+      ``ip ssh version 2``, ``line vty 0 4`` (якщо SSH увімкнено
+      і всі SSH-параметри непорожні)
+    Використовує шаблон ``security.j2``.
+
+    Args:
+        enable_ssh (bool): Увімкнути SSH. Активний лише якщо
+            всі SSH-поля (користувач, пароль, домен) непорожні.
+        enable_secret (str): Enable secret пароль. Порожний — не
+            додається.
+        console_password (str): Console пароль. Порожний — не
+            додається.
+        admin_username (str): SSH користувач.
+        admin_password (str): SSH пароль.
+        domain_name (str): IP domain-name для генерації RSA-ключів.
+
+    Returns:
+        list[str]: Команди безпеки або ``[]`` якщо жодне поле
+            не вказано.
+    &#34;&#34;&#34;
+    # If SSH enabled, all SSH fields must be present to generate valid config
+    effective_ssh = enable_ssh and bool(admin_username) and bool(admin_password) and bool(domain_name)
+    
+    return render_template_to_lines(&#39;security.j2&#39;, {
+        &#39;enable_secret&#39;: enable_secret,
+        &#39;console_password&#39;: console_password,
+        &#39;enable_ssh&#39;: effective_ssh,
+        &#39;admin_username&#39;: admin_username,
+        &#39;admin_password&#39;: admin_password,
+        &#39;domain_name&#39;: domain_name
+    })</code></pre>
+</details>
+<div class="desc"><p>Генерує конфігурацію безпеки (SSH, паролі, шифрування).</p>
+<p>Генерує:
+- <code>service password-encryption</code> (завжди)
+- <code>enable algorithm-type scrypt secret</code> (якщо вказано)
+- <code>line console 0</code> / <code>password</code> / <code>login</code> (якщо вказано)
+- <code>ip domain-name</code>, <code>username</code>, <code>crypto key generate rsa</code>,
+<code>ip ssh version 2</code>, <code>line vty 0 4</code> (якщо SSH увімкнено
+і всі SSH-параметри непорожні)
+Використовує шаблон <code>security.j2</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>enable_ssh</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Увімкнути SSH. Активний лише якщо
+всі SSH-поля (користувач, пароль, домен) непорожні.</dd>
+<dt><strong><code>enable_secret</code></strong> :&ensp;<code>str</code></dt>
+<dd>Enable secret пароль. Порожний — не
+додається.</dd>
+<dt><strong><code>console_password</code></strong> :&ensp;<code>str</code></dt>
+<dd>Console пароль. Порожний — не
+додається.</dd>
+<dt><strong><code>admin_username</code></strong> :&ensp;<code>str</code></dt>
+<dd>SSH користувач.</dd>
+<dt><strong><code>admin_password</code></strong> :&ensp;<code>str</code></dt>
+<dd>SSH пароль.</dd>
+<dt><strong><code>domain_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>IP domain-name для генерації RSA-ключів.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Команди безпеки або <code>[]</code> якщо жодне поле
+не вказано.</dd>
+</dl></div>
+</dd>
+<dt id="backend.generate.generate_snmp_config"><code class="name flex">
+<span>def <span class="ident">generate_snmp_config</span></span>(<span>snmp_enabled: bool,<br>snmp_community_ro: str,<br>snmp_community_rw: str,<br>snmp_location: str,<br>snmp_contact: str,<br>snmp_trap_host: str) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_snmp_config(
+    snmp_enabled: bool,
+    snmp_community_ro: str,
+    snmp_community_rw: str,
+    snmp_location: str,
+    snmp_contact: str,
+    snmp_trap_host: str
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує конфігурацію SNMP.
+
+    Генерує ``snmp-server community`` (RO/RW), ``snmp-server location``,
+    ``snmp-server contact`` та ``snmp-server host`` (trap).
+    Використовує шаблон ``snmp.j2``.
+
+    Note:
+        SNMPv2c передає community string у незашифрованому вигляді.
+        Для продукційних середовищ розгляньте SNMPv3.
+
+    Args:
+        snmp_enabled (bool): Увімкнути SNMP. ``False`` — повертає ``[]``.
+        snmp_community_ro (str): Community string для притання (RO).
+        snmp_community_rw (str): Community string для запису (RW).
+        snmp_location (str): Параметр ``snmp-server location``.
+        snmp_contact (str): Параметр ``snmp-server contact``.
+        snmp_trap_host (str): IP-адреса сервера SNMP trap.
+
+    Returns:
+        list[str]: Команди SNMP або ``[]`` якщо ``snmp_enabled=False``.
+    &#34;&#34;&#34;
+    if not snmp_enabled:
+        return []
+    
+    return render_template_to_lines(&#39;snmp.j2&#39;, {
+        &#39;snmp_community_ro&#39;: snmp_community_ro,
+        &#39;snmp_community_rw&#39;: snmp_community_rw,
+        &#39;snmp_location&#39;: snmp_location,
+        &#39;snmp_contact&#39;: snmp_contact,
+        &#39;snmp_trap_host&#39;: snmp_trap_host
+    })</code></pre>
+</details>
+<div class="desc"><p>Генерує конфігурацію SNMP.</p>
+<p>Генерує <code>snmp-server community</code> (RO/RW), <code>snmp-server location</code>,
+<code>snmp-server contact</code> та <code>snmp-server host</code> (trap).
+Використовує шаблон <code>snmp.j2</code>.</p>
+<h2 id="note">Note</h2>
+<p>SNMPv2c передає community string у незашифрованому вигляді.
+Для продукційних середовищ розгляньте SNMPv3.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>snmp_enabled</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Увімкнути SNMP. <code>False</code> — повертає <code>[]</code>.</dd>
+<dt><strong><code>snmp_community_ro</code></strong> :&ensp;<code>str</code></dt>
+<dd>Community string для притання (RO).</dd>
+<dt><strong><code>snmp_community_rw</code></strong> :&ensp;<code>str</code></dt>
+<dd>Community string для запису (RW).</dd>
+<dt><strong><code>snmp_location</code></strong> :&ensp;<code>str</code></dt>
+<dd>Параметр <code>snmp-server location</code>.</dd>
+<dt><strong><code>snmp_contact</code></strong> :&ensp;<code>str</code></dt>
+<dd>Параметр <code>snmp-server contact</code>.</dd>
+<dt><strong><code>snmp_trap_host</code></strong> :&ensp;<code>str</code></dt>
+<dd>IP-адреса сервера SNMP trap.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Команди SNMP або <code>[]</code> якщо <code>snmp_enabled=False</code>.</dd>
+</dl></div>
+</dd>
+<dt id="backend.generate.generate_telephony_config"><code class="name flex">
+<span>def <span class="ident">generate_telephony_config</span></span>(<span>telephony_enabled: bool,<br>dn_list: list[dict],<br>max_ephones: int = 3,<br>max_dn: int = 3,<br>ip_source_address: str = '10.0.0.1',<br>auto_assign_range: str = '1 to 3') ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_telephony_config(
+    telephony_enabled: bool,
+    dn_list: list[dict],
+    max_ephones: int = 3,
+    max_dn: int = 3,
+    ip_source_address: str = &#34;10.0.0.1&#34;,
+    auto_assign_range: str = &#34;1 to 3&#34;
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує конфігурацію Cisco CME (Telephony Service).
+
+    Створює блок ``telephony-service`` з параметрами
+    ``max-ephones``, ``max-dn``, ``ip source-address`` та блоки
+    ``ephone-dn`` / ``ephone`` для кожного телефону.
+    Використовує шаблон ``telephony.j2``.
+
+    Args:
+        telephony_enabled (bool): Увімкнути CME. ``False`` — повертає ``[]``.
+        dn_list (list[dict]): Список телефонних номерів. Кожен
+            елемент: ``{&#34;number&#34;: str, &#34;user&#34;: str, &#34;mac&#34;: str}``.
+        max_ephones (int, optional): Максимальна кількість ephone.
+            Defaults to ``3``.
+        max_dn (int, optional): Максимальна кількість ephone-dn.
+            Defaults to ``3``.
+        ip_source_address (str, optional): CME source IP-адреса.
+            Defaults to ``&#34;10.0.0.1&#34;``.
+        auto_assign_range (str, optional): Діапазон auto assign
+            (``&#34;1 to 3&#34;``). Defaults to ``&#34;1 to 3&#34;``.
+
+    Returns:
+        list[str]: Команди CME або ``[]`` якщо ``telephony_enabled=False``.
+    &#34;&#34;&#34;
+    if not telephony_enabled:
+        return []
+
+    formatted_dn_list = []
+    for idx, entry in enumerate(dn_list[:max_dn], start=1):
+        formatted_dn_list.append({
+            &#39;idx&#39;: idx,
+            &#39;number&#39;: entry.get(&#34;number&#34;, &#34;&#34;).strip(),
+            &#39;user&#39;: entry.get(&#34;user&#34;, &#34;&#34;).strip(),
+            &#39;mac&#39;: entry.get(&#34;mac&#34;, &#34;&#34;).strip()
+        })
+
+    return render_template_to_lines(&#39;telephony.j2&#39;, {
+        &#39;telephony_enabled&#39;: telephony_enabled,
+        &#39;max_ephones&#39;: max_ephones,
+        &#39;max_dn&#39;: max_dn,
+        &#39;ip_source_address&#39;: ip_source_address,
+        &#39;auto_assign_range&#39;: auto_assign_range,
+        &#39;dn_list&#39;: formatted_dn_list
+    })</code></pre>
+</details>
+<div class="desc"><p>Генерує конфігурацію Cisco CME (Telephony Service).</p>
+<p>Створює блок <code>telephony-service</code> з параметрами
+<code>max-ephones</code>, <code>max-dn</code>, <code>ip source-address</code> та блоки
+<code>ephone-dn</code> / <code>ephone</code> для кожного телефону.
+Використовує шаблон <code>telephony.j2</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>telephony_enabled</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Увімкнути CME. <code>False</code> — повертає <code>[]</code>.</dd>
+<dt><strong><code>dn_list</code></strong> :&ensp;<code>list[dict]</code></dt>
+<dd>Список телефонних номерів. Кожен
+елемент: <code>{"number": str, "user": str, "mac": str}</code>.</dd>
+<dt><strong><code>max_ephones</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Максимальна кількість ephone.
+Defaults to <code>3</code>.</dd>
+<dt><strong><code>max_dn</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Максимальна кількість ephone-dn.
+Defaults to <code>3</code>.</dd>
+<dt><strong><code>ip_source_address</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>CME source IP-адреса.
+Defaults to <code>"10.0.0.1"</code>.</dd>
+<dt><strong><code>auto_assign_range</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Діапазон auto assign
+(<code>"1 to 3"</code>). Defaults to <code>"1 to 3"</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Команди CME або <code>[]</code> якщо <code>telephony_enabled=False</code>.</dd>
+</dl></div>
+</dd>
+<dt id="backend.generate.render_template_to_lines"><code class="name flex">
+<span>def <span class="ident">render_template_to_lines</span></span>(<span>template_name: str, context: dict) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render_template_to_lines(template_name: str, context: dict) -&gt; list[str]:
+    &#34;&#34;&#34;Відрендерить Jinja2-шаблон і повертає непорожні рядки.
+
+    Універсальна допоміжня функція для всіх генераторів. Автоматично
+    видаляє порожні рядки (інденти, порожні рядки Jinja2).
+
+    Args:
+        template_name (str): Відносний шлях до шаблону (наприклад,
+            ``&#34;interfaces.j2&#34;`` або ``&#34;routing/ospf.j2&#34;``). Шлях відносно
+            ``backend/templates/``.
+        context (dict): Змінні для підстановки в шаблон.
+
+    Returns:
+        list[str]: Список рядків з відрендереного шаблону (без порожніх).
+    &#34;&#34;&#34;
+    template = env.get_template(template_name)
+    rendered = template.render(**context)
+    return [line for line in rendered.splitlines() if line.strip()]</code></pre>
+</details>
+<div class="desc"><p>Відрендерить Jinja2-шаблон і повертає непорожні рядки.</p>
+<p>Універсальна допоміжня функція для всіх генераторів. Автоматично
+видаляє порожні рядки (інденти, порожні рядки Jinja2).</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>template_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Відносний шлях до шаблону (наприклад,
+<code>"interfaces.j2"</code> або <code>"routing/ospf.j2"</code>). Шлях відносно
+<code>backend/templates/</code>.</dd>
+<dt><strong><code>context</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Змінні для підстановки в шаблон.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Список рядків з відрендереного шаблону (без порожніх).</dd>
+</dl></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="backend" href="index.html">backend</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="backend.generate.generate_base_config" href="#backend.generate.generate_base_config">generate_base_config</a></code></li>
+<li><code><a title="backend.generate.generate_dhcp_config" href="#backend.generate.generate_dhcp_config">generate_dhcp_config</a></code></li>
+<li><code><a title="backend.generate.generate_full_config" href="#backend.generate.generate_full_config">generate_full_config</a></code></li>
+<li><code><a title="backend.generate.generate_interface_config" href="#backend.generate.generate_interface_config">generate_interface_config</a></code></li>
+<li><code><a title="backend.generate.generate_multicast_config" href="#backend.generate.generate_multicast_config">generate_multicast_config</a></code></li>
+<li><code><a title="backend.generate.generate_nat_config" href="#backend.generate.generate_nat_config">generate_nat_config</a></code></li>
+<li><code><a title="backend.generate.generate_security_config" href="#backend.generate.generate_security_config">generate_security_config</a></code></li>
+<li><code><a title="backend.generate.generate_snmp_config" href="#backend.generate.generate_snmp_config">generate_snmp_config</a></code></li>
+<li><code><a title="backend.generate.generate_telephony_config" href="#backend.generate.generate_telephony_config">generate_telephony_config</a></code></li>
+<li><code><a title="backend.generate.render_template_to_lines" href="#backend.generate.render_template_to_lines">render_template_to_lines</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

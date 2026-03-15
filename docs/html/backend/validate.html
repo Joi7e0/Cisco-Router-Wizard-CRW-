@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>backend.validate API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>backend.validate</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="backend.validate.validate_dhcp"><code class="name flex">
+<span>def <span class="ident">validate_dhcp</span></span>(<span>dhcp_network: str, dhcp_mask: str, dhcp_gateway: str, dhcp_dns: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_dhcp(dhcp_network: str, dhcp_mask: str, dhcp_gateway: str, dhcp_dns: str) -&gt; str:
+    if dhcp_network and dhcp_mask:
+        error = validate_ip(dhcp_network) or validate_mask(dhcp_mask)
+        if error:
+            return error
+        try:
+            network = ipaddress.ip_network(f&#34;{dhcp_network}/{dhcp_mask}&#34;)
+            if dhcp_gateway and ipaddress.ip_address(dhcp_gateway) not in network:
+                return &#34;❌ Error: Gateway не в межах DHCP мережі.&#34;
+        except ValueError:
+            return &#34;❌ Error: Некоректна DHCP мережа/маска.&#34;
+    if dhcp_dns:
+        return validate_ip(dhcp_dns)
+    return &#34;&#34;</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="backend.validate.validate_general"><code class="name flex">
+<span>def <span class="ident">validate_general</span></span>(<span>value: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_general(value: str) -&gt; str:
+    &#34;&#34;&#34;Перевіряє загальний рядок на допустимі символи.
+
+    Дозволяє літери, цифри та символи ```. / - _```. Використовується
+    для полів, які можуть містити як IP-адреси, так і назви (hostname,
+    description тощо).
+
+    Args:
+        value (str): Рядок для перевірки.
+
+    Returns:
+        str: Порожній рядок якщо валідний, або повідомлення про помилку
+             що починається з ``❌ Error:``.
+
+    Examples:
+        &gt;&gt;&gt; validate_general(&#34;192.168.1.1&#34;)
+        &#39;&#39;
+        &gt;&gt;&gt; validate_general(&#34;bad value!&#34;)
+        &#34;❌ Error: &#39;bad value!&#39; містить недопустимі символи (дозволено: a-z, 0-9, ., /, -, _).&#34;
+    &#34;&#34;&#34;
+    if not isinstance(value, str):
+        return &#34;❌ Error: Value must be a string.&#34;
+
+    if &#34; &#34; in value:
+        return f&#34;❌ Error: &#39;{value}&#39; містить пробіли.&#34;
+
+    # Дозволені символи для мережевих налаштувань та імен
+    if not all(c.isalnum() or c in &#34;./-_&#34; for c in value):
+        return f&#34;❌ Error: &#39;{value}&#39; містить недопустимі символи (дозволено: a-z, 0-9, ., /, -, _).&#34;
+
+    return &#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Перевіряє загальний рядок на допустимі символи.</p>
+<p>Дозволяє літери, цифри та символи <code>. / - _</code>. Використовується
+для полів, які можуть містити як IP-адреси, так і назви (hostname,
+description тощо).</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
+<dd>Рядок для перевірки.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Порожній рядок якщо валідний, або повідомлення про помилку
+що починається з <code>❌ Error:</code>.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; validate_general(&quot;192.168.1.1&quot;)
+''
+&gt;&gt;&gt; validate_general(&quot;bad value!&quot;)
+&quot;❌ Error: 'bad value!' містить недопустимі символи (дозволено: a-z, 0-9, ., /, -, _).&quot;
+</code></pre></div>
+</dd>
+<dt id="backend.validate.validate_hostname"><code class="name flex">
+<span>def <span class="ident">validate_hostname</span></span>(<span>hostname: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_hostname(hostname: str) -&gt; str:
+    &#34;&#34;&#34;Перевіряє hostname відповідно до правил Cisco IOS.
+
+    Cisco IOS вимагає, щоб hostname:
+    - Починався з літери (не цифри).
+    - Містив лише літери, цифри, ``-``, ``_``, ``.``.
+    - Мав довжину не більше 63 символів.
+
+    Args:
+        hostname (str): Ім&#39;я пристрою для перевірки.
+
+    Returns:
+        str: Порожній рядок якщо валідний, або повідомлення про помилку.
+
+    Examples:
+        &gt;&gt;&gt; validate_hostname(&#34;Branch-Router&#34;)
+        &#39;&#39;
+        &gt;&gt;&gt; validate_hostname(&#34;1Router&#34;)
+        &#34;❌ Error: Hostname повинен починатися з літери.&#34;
+    &#34;&#34;&#34;
+    if not hostname:
+        return &#34;❌ Error: Hostname не може бути порожнім.&#34;
+
+    if len(hostname) &gt; 63:
+        return &#34;❌ Error: Hostname занадто довгий (макс. 63 символи).&#34;
+
+    if not re.match(r&#39;^[a-zA-Z]&#39;, hostname):
+        return &#34;❌ Error: Hostname повинен починатися з літери.&#34;
+
+    if not re.match(r&#39;^[a-zA-Z0-9\-_\.]+$&#39;, hostname):
+        return f&#34;❌ Error: Hostname &#39;{hostname}&#39; містить недопустимі символи.&#34;
+
+    return &#34;&#34;</code></pre>
+</details>
+<div class="desc"><p>Перевіряє hostname відповідно до правил Cisco IOS.</p>
+<p>Cisco IOS вимагає, щоб hostname:
+- Починався з літери (не цифри).
+- Містив лише літери, цифри, <code>-</code>, <code>_</code>, <code>.</code>.
+- Мав довжину не більше 63 символів.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hostname</code></strong> :&ensp;<code>str</code></dt>
+<dd>Ім'я пристрою для перевірки.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Порожній рядок якщо валідний, або повідомлення про помилку.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; validate_hostname(&quot;Branch-Router&quot;)
+''
+&gt;&gt;&gt; validate_hostname(&quot;1Router&quot;)
+&quot;❌ Error: Hostname повинен починатися з літери.&quot;
+</code></pre></div>
+</dd>
+<dt id="backend.validate.validate_inputs"><code class="name flex">
+<span>def <span class="ident">validate_inputs</span></span>(<span>networks: list,<br>hostname: str = '',<br>routing_protocol: str = '',<br>router_id: str = '',<br>enable_secret: str = '',<br>console_password: str = '',<br>admin_password: str = '',<br>dhcp_network: str = '',<br>dhcp_mask: str = '',<br>dhcp_gateway: str = '',<br>dhcp_dns: str = '') ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_inputs(
+        networks: list,
+        hostname: str = &#34;&#34;,
+        routing_protocol: str = &#34;&#34;,
+        router_id: str = &#34;&#34;,
+        enable_secret: str = &#34;&#34;,
+        console_password: str = &#34;&#34;,
+        admin_password: str = &#34;&#34;,
+        dhcp_network: str = &#34;&#34;,
+        dhcp_mask: str = &#34;&#34;,
+        dhcp_gateway: str = &#34;&#34;,
+        dhcp_dns: str = &#34;&#34;
+) -&gt; str:
+    &#34;&#34;&#34;Головна функція валідації всіх вхідних даних конфігурації.
+
+    Послідовно перевіряє hostname, список мереж, Router ID, паролі
+    та DHCP-налаштування. Повертає першу знайдену помилку або
+    порожній рядок якщо всі дані коректні.
+
+    Args:
+        networks (list): Список кортежів ``(ip: str, mask: str)`` для
+            інтерфейсів. Обов&#39;язковий, не може бути порожнім.
+        hostname (str, optional): Hostname пристрою. Якщо вказаний,
+            перевіряється за правилами Cisco IOS. Defaults to ``&#34;&#34;``.
+        routing_protocol (str, optional): Протокол маршрутизації
+            (``&#34;OSPF&#34;``, ``&#34;RIP&#34;`` тощо). Defaults to ``&#34;&#34;``.
+        router_id (str, optional): Router ID у форматі IPv4.
+            Обов&#39;язковий для OSPF. Defaults to ``&#34;&#34;``.
+        enable_secret (str, optional): Enable secret пароль (8-32 символи).
+            Defaults to ``&#34;&#34;``.
+        console_password (str, optional): Console пароль. Defaults to ``&#34;&#34;``.
+        admin_password (str, optional): SSH admin пароль. Defaults to ``&#34;&#34;``.
+        dhcp_network (str, optional): Мережа DHCP-пулу. Defaults to ``&#34;&#34;``.
+        dhcp_mask (str, optional): Маска DHCP-пулу. Defaults to ``&#34;&#34;``.
+        dhcp_gateway (str, optional): Default gateway для DHCP. Defaults to ``&#34;&#34;``.
+        dhcp_dns (str, optional): DNS-сервер для DHCP. Defaults to ``&#34;&#34;``.
+
+    Returns:
+        str: Порожній рядок якщо всі дані валідні, або рядок з повідомленням
+             про першу знайдену помилку (починається з ``❌ Error:``).
+
+    Raises:
+        Exception: Внутрішні винятки перехоплюються та повертаються як
+            ``❌ Error: Внутрішня помилка валідації.``
+
+    Examples:
+        &gt;&gt;&gt; validate_inputs([(&#34;192.168.1.1&#34;, &#34;255.255.255.0&#34;)])
+        &#39;&#39;
+        &gt;&gt;&gt; validate_inputs([])
+        &#39;❌ Error: Будь ласка, вкажіть хоча б одну мережу (IP та маску).&#39;
+        &gt;&gt;&gt; validate_inputs(
+        ...     [(&#34;192.168.1.1&#34;, &#34;255.255.255.0&#34;)],
+        ...     routing_protocol=&#34;OSPF&#34;,
+        ...     router_id=&#34;&#34;
+        ... )
+        &#39;❌ Error: Для OSPF потрібно вказати Router ID.&#39;
+    &#34;&#34;&#34;
+    try:
+        # Валідація Hostname
+        if hostname:
+            error = validate_hostname(hostname)
+            if error: return error
+
+        if not networks:
+            return &#34;❌ Error: Будь ласка, вкажіть хоча б одну мережу (IP та маску).&#34;
+        
+        for item in networks:
+            if not isinstance(item, (tuple, list)) or len(item) != 2:
+                continue
+            ip, mask = item
+            if not ip or not mask:
+                return &#34;❌ Error: Будь ласка, заповніть усі поля IP та маски.&#34;
+            
+            error = validate_general(ip) or validate_general(mask)
+            if error: return error
+            
+            error = validate_ip(ip) or validate_mask(mask)
+            if error: return error
+        
+        # Валідація router_id
+        error = validate_router_id(router_id, routing_protocol)
+        if error:
+            return error
+        
+        # Валідація паролів
+        for pwd, name in [(enable_secret, &#34;Enable secret&#34;), (console_password, &#34;Console password&#34;), (admin_password, &#34;Admin password&#34;)]:
+            if pwd:  # Якщо вказано
+                error = validate_password(pwd, name)
+                if error:
+                    return error
+        
+        # Валідація DHCP
+        error = validate_dhcp(dhcp_network, dhcp_mask, dhcp_gateway, dhcp_dns)
+        if error:
+            return error
+
+        return &#34;&#34;
+    except Exception as e:
+        print(f&#34;Unexpected error in validate_inputs: {e}&#34;)
+        return &#34;❌ Error: Внутрішня помилка валідації.&#34;</code></pre>
+</details>
+<div class="desc"><p>Головна функція валідації всіх вхідних даних конфігурації.</p>
+<p>Послідовно перевіряє hostname, список мереж, Router ID, паролі
+та DHCP-налаштування. Повертає першу знайдену помилку або
+порожній рядок якщо всі дані коректні.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>networks</code></strong> :&ensp;<code>list</code></dt>
+<dd>Список кортежів <code>(ip: str, mask: str)</code> для
+інтерфейсів. Обов'язковий, не може бути порожнім.</dd>
+<dt><strong><code>hostname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Hostname пристрою. Якщо вказаний,
+перевіряється за правилами Cisco IOS. Defaults to <code>""</code>.</dd>
+<dt><strong><code>routing_protocol</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Протокол маршрутизації
+(<code>"OSPF"</code>, <code>"RIP"</code> тощо). Defaults to <code>""</code>.</dd>
+<dt><strong><code>router_id</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Router ID у форматі IPv4.
+Обов'язковий для OSPF. Defaults to <code>""</code>.</dd>
+<dt><strong><code>enable_secret</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Enable secret пароль (8-32 символи).
+Defaults to <code>""</code>.</dd>
+<dt><strong><code>console_password</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Console пароль. Defaults to <code>""</code>.</dd>
+<dt><strong><code>admin_password</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>SSH admin пароль. Defaults to <code>""</code>.</dd>
+<dt><strong><code>dhcp_network</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Мережа DHCP-пулу. Defaults to <code>""</code>.</dd>
+<dt><strong><code>dhcp_mask</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Маска DHCP-пулу. Defaults to <code>""</code>.</dd>
+<dt><strong><code>dhcp_gateway</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Default gateway для DHCP. Defaults to <code>""</code>.</dd>
+<dt><strong><code>dhcp_dns</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>DNS-сервер для DHCP. Defaults to <code>""</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Порожній рядок якщо всі дані валідні, або рядок з повідомленням
+про першу знайдену помилку (починається з <code>❌ Error:</code>).</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>Exception</code></dt>
+<dd>Внутрішні винятки перехоплюються та повертаються як
+<code>❌ Error: Внутрішня помилка валідації.</code></dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; validate_inputs([(&quot;192.168.1.1&quot;, &quot;255.255.255.0&quot;)])
+''
+&gt;&gt;&gt; validate_inputs([])
+'❌ Error: Будь ласка, вкажіть хоча б одну мережу (IP та маску).'
+&gt;&gt;&gt; validate_inputs(
+...     [(&quot;192.168.1.1&quot;, &quot;255.255.255.0&quot;)],
+...     routing_protocol=&quot;OSPF&quot;,
+...     router_id=&quot;&quot;
+... )
+'❌ Error: Для OSPF потрібно вказати Router ID.'
+</code></pre></div>
+</dd>
+<dt id="backend.validate.validate_ip"><code class="name flex">
+<span>def <span class="ident">validate_ip</span></span>(<span>ip: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_ip(ip: str) -&gt; str:
+    &#34;&#34;&#34;Перевіряє коректність IPv4-адреси для конфігурацій Cisco.
+
+    Функція дозволяє broadcast-адресу ``255.255.255.255``, але блокує
+    loopback (``127.x.x.x``), multicast (``224-239.x.x.x``) та інші
+    зарезервовані діапазони, оскільки вони не можуть бути використані
+    на інтерфейсах або як gateway Cisco-пристрою.
+
+    Args:
+        ip (str): IPv4-адреса для перевірки.
+
+    Returns:
+        str: Порожній рядок якщо адреса коректна, або повідомлення про помилку.
+
+    Examples:
+        &gt;&gt;&gt; validate_ip(&#34;192.168.1.1&#34;)
+        &#39;&#39;
+        &gt;&gt;&gt; validate_ip(&#34;127.0.0.1&#34;)
+        &#34;❌ Error: IP &#39;127.0.0.1&#39; є зарезервованим (multicast, loopback тощо).&#34;
+        &gt;&gt;&gt; validate_ip(&#34;255.255.255.255&#34;)  # broadcast дозволений
+        &#39;&#39;
+    &#34;&#34;&#34;
+    try:
+        if not isinstance(ip, str):
+            raise TypeError(f&#34;IP must be str, got {type(ip)}&#34;)
+
+        addr = ipaddress.ip_address(ip)
+
+        # Змінено логіку: дозволяємо broadcast, але блокуємо інші зарезервовані
+        if addr.is_multicast or addr.is_loopback or addr.is_reserved:
+            # Дозволяємо broadcast-адресу
+            if str(addr) == &#34;255.255.255.255&#34;:
+                return &#34;&#34;
+            return f&#34;❌ Error: IP &#39;{ip}&#39; є зарезервованим (multicast, loopback тощо).&#34;
+
+        return &#34;&#34;
+    except (ValueError, TypeError) as e:
+        print(f&#34;Validate IP error: {e}&#34;)
+        return f&#34;❌ Error: Неправильний формат IP-адреси &#39;{ip}&#39;.&#34;</code></pre>
+</details>
+<div class="desc"><p>Перевіряє коректність IPv4-адреси для конфігурацій Cisco.</p>
+<p>Функція дозволяє broadcast-адресу <code>255.255.255.255</code>, але блокує
+loopback (<code>127.x.x.x</code>), multicast (<code>224-239.x.x.x</code>) та інші
+зарезервовані діапазони, оскільки вони не можуть бути використані
+на інтерфейсах або як gateway Cisco-пристрою.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
+<dd>IPv4-адреса для перевірки.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Порожній рядок якщо адреса коректна, або повідомлення про помилку.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; validate_ip(&quot;192.168.1.1&quot;)
+''
+&gt;&gt;&gt; validate_ip(&quot;127.0.0.1&quot;)
+&quot;❌ Error: IP '127.0.0.1' є зарезервованим (multicast, loopback тощо).&quot;
+&gt;&gt;&gt; validate_ip(&quot;255.255.255.255&quot;)  # broadcast дозволений
+''
+</code></pre></div>
+</dd>
+<dt id="backend.validate.validate_mask"><code class="name flex">
+<span>def <span class="ident">validate_mask</span></span>(<span>mask: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_mask(mask: str) -&gt; str:
+    try:
+        if not isinstance(mask, str):
+            raise TypeError(f&#34;Mask must be str, got {type(mask)}&#34;)
+        ipaddress.ip_network(f&#34;0.0.0.0/{mask}&#34;)
+        return &#34;&#34;
+    except (ValueError, TypeError) as e:
+        print(f&#34;Validate mask error: {e}&#34;)
+        return f&#34;❌ Error: Неправильний формат маски &#39;{mask}&#39;.&#34;</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="backend.validate.validate_password"><code class="name flex">
+<span>def <span class="ident">validate_password</span></span>(<span>password: str, field_name: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_password(password: str, field_name: str) -&gt; str:
+    if not isinstance(password, str):
+        return f&#34;❌ Error: {field_name} повинен бути рядком.&#34;
+    if not password:
+        return f&#34;❌ Error: {field_name} не може бути порожнім.&#34;
+    if len(password) &lt; 8 or len(password) &gt; 32:
+        return f&#34;❌ Error: {field_name} повинен бути 8-32 символи.&#34;
+    if not re.search(r&#39;\d&#39;, password) or not re.search(r&#39;[a-zA-Z]&#39;, password):
+        return f&#34;❌ Error: {field_name} повинен містити мінімум 1 цифру та 1 літеру.&#34;
+    return &#34;&#34;</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="backend.validate.validate_router_id"><code class="name flex">
+<span>def <span class="ident">validate_router_id</span></span>(<span>router_id: str, routing_protocol: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_router_id(router_id: str, routing_protocol: str) -&gt; str:
+    &#34;&#34;&#34;Перевіряє Router ID залежно від протоколу маршрутизації.
+
+    Для OSPF Router ID є обов&#39;язковим та не може бути ``0.0.0.0`` або
+    ``255.255.255.255``. Для інших протоколів (EIGRP, BGP, RIP) поле
+    опціональне, але якщо вказане — має бути коректною IP-адресою.
+
+    Args:
+        router_id (str): Router ID у форматі IPv4 (наприклад, ``&#34;1.1.1.1&#34;``).
+        routing_protocol (str): Назва протоколу (``&#34;OSPF&#34;``, ``&#34;EIGRP&#34;``,
+            ``&#34;BGP&#34;``, ``&#34;RIP&#34;``). Регістронезалежний.
+
+    Returns:
+        str: Порожній рядок якщо валідний, або повідомлення про помилку.
+
+    Examples:
+        &gt;&gt;&gt; validate_router_id(&#34;1.1.1.1&#34;, &#34;OSPF&#34;)
+        &#39;&#39;
+        &gt;&gt;&gt; validate_router_id(&#34;&#34;, &#34;OSPF&#34;)
+        &#39;❌ Error: Для OSPF потрібно вказати Router ID.&#39;
+        &gt;&gt;&gt; validate_router_id(&#34;&#34;, &#34;RIP&#34;)  # для RIP опціонально
+        &#39;&#39;
+    &#34;&#34;&#34;
+    try:
+        if not isinstance(routing_protocol, str):
+            raise TypeError(&#34;routing_protocol must be a string&#34;)
+
+        if routing_protocol.upper() == &#34;OSPF&#34;:
+            if not router_id:
+                return &#34;❌ Error: Для OSPF потрібно вказати Router ID.&#34;
+            error = validate_ip(router_id)
+            if error:
+                return error
+            if router_id == &#34;0.0.0.0&#34; or router_id == &#34;255.255.255.255&#34;:
+                return f&#34;❌ Error: Router ID не може бути {router_id}.&#34;
+        elif router_id:  # Опціонально для інших, але якщо вказано — валідне
+            error = validate_ip(router_id)
+            if error:
+                return error
+            if router_id == &#34;0.0.0.0&#34; or router_id == &#34;255.255.255.255&#34;:
+                return f&#34;❌ Error: Router ID не може бути {router_id}.&#34;
+        return &#34;&#34;
+    except (ValueError, TypeError) as e:
+        print(f&#34;Validate router_id error: {e}&#34;)
+        return f&#34;❌ Error: Некоректний Router ID: {router_id}&#34;</code></pre>
+</details>
+<div class="desc"><p>Перевіряє Router ID залежно від протоколу маршрутизації.</p>
+<p>Для OSPF Router ID є обов'язковим та не може бути <code>0.0.0.0</code> або
+<code>255.255.255.255</code>. Для інших протоколів (EIGRP, BGP, RIP) поле
+опціональне, але якщо вказане — має бути коректною IP-адресою.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>router_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Router ID у форматі IPv4 (наприклад, <code>"1.1.1.1"</code>).</dd>
+<dt><strong><code>routing_protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>Назва протоколу (<code>"OSPF"</code>, <code>"EIGRP"</code>,
+<code>"BGP"</code>, <code>"RIP"</code>). Регістронезалежний.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Порожній рядок якщо валідний, або повідомлення про помилку.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; validate_router_id(&quot;1.1.1.1&quot;, &quot;OSPF&quot;)
+''
+&gt;&gt;&gt; validate_router_id(&quot;&quot;, &quot;OSPF&quot;)
+'❌ Error: Для OSPF потрібно вказати Router ID.'
+&gt;&gt;&gt; validate_router_id(&quot;&quot;, &quot;RIP&quot;)  # для RIP опціонально
+''
+</code></pre></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="backend" href="index.html">backend</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="backend.validate.validate_dhcp" href="#backend.validate.validate_dhcp">validate_dhcp</a></code></li>
+<li><code><a title="backend.validate.validate_general" href="#backend.validate.validate_general">validate_general</a></code></li>
+<li><code><a title="backend.validate.validate_hostname" href="#backend.validate.validate_hostname">validate_hostname</a></code></li>
+<li><code><a title="backend.validate.validate_inputs" href="#backend.validate.validate_inputs">validate_inputs</a></code></li>
+<li><code><a title="backend.validate.validate_ip" href="#backend.validate.validate_ip">validate_ip</a></code></li>
+<li><code><a title="backend.validate.validate_mask" href="#backend.validate.validate_mask">validate_mask</a></code></li>
+<li><code><a title="backend.validate.validate_password" href="#backend.validate.validate_password">validate_password</a></code></li>
+<li><code><a title="backend.validate.validate_router_id" href="#backend.validate.validate_router_id">validate_router_id</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

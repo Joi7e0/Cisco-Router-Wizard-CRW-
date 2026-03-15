@@ -11,29 +11,28 @@ def render_template_to_lines(template_name, context):
     return [line for line in rendered.splitlines() if line.strip()]
 
 def _mask_to_wildcard(mask: str) -> str:
-    """Конвертує subnet mask або CIDR-префікс в wildcard mask.
-
-    Приймає Приймає dotted-decimal (наприклад, ``"255.255.255.0"``),
-    CIDR без префіксу (``"24"``) або з префіксом (``"/24"``).
-    Використовується для Jinja2 шаблонів OSPF, EIGRP, NAT.
-
-    Args:
-        mask (str): Subnet mask або CIDR-префікс.
-
-    Returns:
-        str: Wildcard mask у dotted-decimal форматі.
-            У разі помилки повертає ``"0.0.0.0"``.
-
-    Examples:
-        >>> _mask_to_wildcard("255.255.255.0")
-        '0.0.0.255'
-        >>> _mask_to_wildcard("24")
-        '0.0.0.255'
-        >>> _mask_to_wildcard("/30")
-        '0.0.0.3'
-        >>> _mask_to_wildcard("invalid")
-        '0.0.0.0'
-    """
+    # Конвертує subnet mask або CIDR-префікс в wildcard mask.
+    #
+    # Приймає Приймає dotted-decimal (наприклад, ``"255.255.255.0"``),
+    # CIDR без префіксу (``"24"``) або з префіксом (``"/24"``).
+    # Використовується для Jinja2 шаблонів OSPF, EIGRP, NAT.
+    #
+    # Args:
+    # mask (str): Subnet mask або CIDR-префікс.
+    #
+    # Returns:
+    # str: Wildcard mask у dotted-decimal форматі.
+    # У разі помилки повертає ``"0.0.0.0"``.
+    #
+    # Examples:
+    # >>> _mask_to_wildcard("255.255.255.0")
+    # '0.0.0.255'
+    # >>> _mask_to_wildcard("24")
+    # '0.0.0.255'
+    # >>> _mask_to_wildcard("/30")
+    # '0.0.0.3'
+    # >>> _mask_to_wildcard("invalid")
+    # '0.0.0.0'
     try:
         if not mask or not isinstance(mask, str):
             return "0.0.0.0"
@@ -62,23 +61,22 @@ def _mask_to_wildcard(mask: str) -> str:
         return "0.0.0.0"
 
 def _cidr_to_mask(cidr: int) -> str:
-    """Перетворює CIDR-префікс (ціле число) в dotted-decimal subnet mask.
-
-    Args:
-        cidr (int): Префікс в діапазоні 0–32.
-
-    Returns:
-        str: Subnet mask у dotted-decimal форматі.
-            У разі некоректного CIDR повертає ``"255.255.255.0"``.
-
-    Examples:
-        >>> _cidr_to_mask(24)
-        '255.255.255.0'
-        >>> _cidr_to_mask(30)
-        '255.255.255.252'
-        >>> _cidr_to_mask(0)
-        '0.0.0.0'
-    """
+    # Перетворює CIDR-префікс (ціле число) в dotted-decimal subnet mask.
+    #
+    # Args:
+    # cidr (int): Префікс в діапазоні 0–32.
+    #
+    # Returns:
+    # str: Subnet mask у dotted-decimal форматі.
+    # У разі некоректного CIDR повертає ``"255.255.255.0"``.
+    #
+    # Examples:
+    # >>> _cidr_to_mask(24)
+    # '255.255.255.0'
+    # >>> _cidr_to_mask(30)
+    # '255.255.255.252'
+    # >>> _cidr_to_mask(0)
+    # '0.0.0.0'
     try:
         if not (0 <= cidr <= 32):
             return "255.255.255.0"
@@ -94,53 +92,52 @@ def generate_protocol_config(
     no_auto_summary: bool = True,
     routing_config: dict = None
 ) -> list[str]:
-    """Генерує Cisco IOS команди для заданого протоколу маршрутизації.
-
-    Фабрикний метод для всіх підтримуваних протоколів. Визначає потрібний
-    Jinja2-шаблон (наприклад, ``routing/ospf.j2``) і передає ньому
-    контекст з інформацією про мережі, роутер-ID та параметрами
-    протоколу.
-
-    Підтримувані протоколи:
-        - ``RIP`` — RIP v2 з списком мереж цластерних мереж.
-        - ``OSPF`` — single/multi-area OSPF з wildcard masks та area per-network.
-        - ``EIGRP`` — EIGRP з AS number і опціональним wildcard.
-        - ``BGP`` — BGP з списком neighbor і advertised networks.
-        - ``STATIC`` — статичні маршрути з next-hop або exit interface.
-        - ``IS-IS`` — IS-IS з NET-адресою та рівнем маршрутизації.
-
-    Args:
-        protocol (str): Назва протоколу (регістронезалежна).
-            Допустимі значення: ``"RIP"``, ``"OSPF"``, ``"EIGRP"``,
-            ``"BGP"``, ``"STATIC"``, ``"IS-IS"``, ``"None"``.
-        router_id (str): Router ID у форматі IPv4. Обов'язковий для OSPF.
-        networks (list): Список кортежів ``(ip: str, mask: str)``.
-            Використовується для RIP. OSPF/EIGRP/BGP читають з ``routing_config``.
-        no_auto_summary (bool, optional): Додає ``no auto-summary`` для
-            RIP і EIGRP. Defaults to ``True``.
-        routing_config (dict, optional): Розширена конфігурація протоколу.
-            Ключі залежать від протоколу:
-
-            - OSPF: ``{"processId": str, "routerId": str,``
-              ``"ospfNetworks": [{"network", "wildcard", "area"}]}``
-            - EIGRP: ``{"asNumber": str, "eigrpNetworks": [{"network", "wildcard"}]}``
-            - BGP: ``{"localAs": str, "routerId": str,``
-              ``"bgpNeighbors": [{"ip", "remoteAs"}],``
-              ``"bgpAdvertisedNetworks": [{"network", "mask"}]}``
-            - STATIC: ``{"staticRoutes": [{"dest", "mask", "nextHop",``
-              ``"interface", "ad", "metric"}]}``
-            - IS-IS: ``{"areaId": str, "systemId": str, "routerType": str}``
-
-    Returns:
-        list[str]: Список Cisco IOS команд. Порожний список, якщо
-            ``protocol`` дорівнює ``"None"`` або порожній.
-
-    Examples:
-        >>> generate_protocol_config("RIP", "", [("192.168.1.0", "255.255.255.0")])
-        ['!', 'router rip', ' version 2', ' network 192.168.1.0', ' no auto-summary', ' exit']
-        >>> generate_protocol_config("None", "", [])
-        []
-    """
+    # Генерує Cisco IOS команди для заданого протоколу маршрутизації.
+    #
+    # Фабрикний метод для всіх підтримуваних протоколів. Визначає потрібний
+    # Jinja2-шаблон (наприклад, ``routing/ospf.j2``) і передає ньому
+    # контекст з інформацією про мережі, роутер-ID та параметрами
+    # протоколу.
+    #
+    # Підтримувані протоколи:
+    # - ``RIP`` — RIP v2 з списком мереж цластерних мереж.
+    # - ``OSPF`` — single/multi-area OSPF з wildcard masks та area per-network.
+    # - ``EIGRP`` — EIGRP з AS number і опціональним wildcard.
+    # - ``BGP`` — BGP з списком neighbor і advertised networks.
+    # - ``STATIC`` — статичні маршрути з next-hop або exit interface.
+    # - ``IS-IS`` — IS-IS з NET-адресою та рівнем маршрутизації.
+    #
+    # Args:
+    # protocol (str): Назва протоколу (регістронезалежна).
+    # Допустимі значення: ``"RIP"``, ``"OSPF"``, ``"EIGRP"``,
+    # ``"BGP"``, ``"STATIC"``, ``"IS-IS"``, ``"None"``.
+    # router_id (str): Router ID у форматі IPv4. Обов'язковий для OSPF.
+    # networks (list): Список кортежів ``(ip: str, mask: str)``.
+    # Використовується для RIP. OSPF/EIGRP/BGP читають з ``routing_config``.
+    # no_auto_summary (bool, optional): Додає ``no auto-summary`` для
+    # RIP і EIGRP. Defaults to ``True``.
+    # routing_config (dict, optional): Розширена конфігурація протоколу.
+    # Ключі залежать від протоколу:
+    #
+    # - OSPF: ``{"processId": str, "routerId": str,``
+    # ``"ospfNetworks": [{"network", "wildcard", "area"}]}``
+    # - EIGRP: ``{"asNumber": str, "eigrpNetworks": [{"network", "wildcard"}]}``
+    # - BGP: ``{"localAs": str, "routerId": str,``
+    # ``"bgpNeighbors": [{"ip", "remoteAs"}],``
+    # ``"bgpAdvertisedNetworks": [{"network", "mask"}]}``
+    # - STATIC: ``{"staticRoutes": [{"dest", "mask", "nextHop",``
+    # ``"interface", "ad", "metric"}]}``
+    # - IS-IS: ``{"areaId": str, "systemId": str, "routerType": str}``
+    #
+    # Returns:
+    # list[str]: Список Cisco IOS команд. Порожний список, якщо
+    # ``protocol`` дорівнює ``"None"`` або порожній.
+    #
+    # Examples:
+    # >>> generate_protocol_config("RIP", "", [("192.168.1.0", "255.255.255.0")])
+    # ['!', 'router rip', ' version 2', ' network 192.168.1.0', ' no auto-summary', ' exit']
+    # >>> generate_protocol_config("None", "", [])
+    # []
     if not isinstance(protocol, str) or not protocol or protocol.upper() == "NONE":
         return []
 
