@@ -125,6 +125,15 @@ def generate_base_config(
 def generate_multicast_config(ip_multicast: bool, pim_interfaces: list[str]) -> list[str]:
     # Генерує конфігурацію IP Multicast та PIM.
     #
+    # Args:
+    #     ip_multicast (bool): Увімкнути multicast.
+    #     pim_interfaces (list[str]): Список інтерфейсів.
+    #
+    # Returns:
+    #     list[str]: Команди Cisco IOS.
+
+    # Генерує конфігурацію IP Multicast та PIM.
+    #
     # Якщо multicast увімкнено, генерує ``ip multicast-routing``
     # та ``ip pim sparse-dense-mode`` на вказаних інтерфейсах.
     # Використовує шаблон ``multicast.j2``.
@@ -312,6 +321,16 @@ def generate_nat_config(
 ) -> list[str]:
     # Генерує конфігурацію NAT (PAT або Static).
     #
+    # Args:
+    #     nat_type (str): PAT/Static/None.
+    #     nat_inside (str): Інтерфейс IN.
+    #     nat_outside (str): Інтерфейс OUT.
+    #     dhcp_network (str): Локальна мережа для PAT.
+    #
+    # Returns:
+    #     list[str]: Команди NAT.
+
+    #
     # Для PAT: ``access-list 1 permit`` + ``ip nat inside source list 1 ... overload``.
     # Для Static: ``ip nat inside source static``.
     # Використовує шаблон ``nat.j2``.
@@ -335,16 +354,19 @@ def generate_nat_config(
     if nat_type == "None" or not nat_type:
         return []
 
-    # Calculate wildcard mask from DHCP mask
-    # For a wizard, assuming DHCP network is the internal network
+    # ПІДГОТОВКА ДЛЯ PAT (Port Address Translation):
+    # Обчислюємо Wildcard Mask з DHCP-маски для створення access-list.
+    # Гіпотеза: Внутрішня мережа для NAT збігається з мережею DHCP-пулу.
     wildcard_mask = "0.0.0.0"
     if dhcp_mask:
         try:
+            # Алгоритм інверсії октетів (255 - маска)
             octets = dhcp_mask.split('.')
             wildcard_octets = [str(255 - int(o)) for o in octets]
             wildcard_mask = ".".join(wildcard_octets)
         except ValueError:
             pass
+
 
     return render_template_to_lines('nat.j2', {
         'nat_type': nat_type,
@@ -365,6 +387,14 @@ def generate_snmp_config(
     snmp_trap_host: str
 ) -> list[str]:
     # Генерує конфігурацію SNMP.
+    #
+    # Args:
+    #     snmp_enabled (bool): Статус.
+    #     snmp_community_ro (str): RO Community.
+    #
+    # Returns:
+    #     list[str]: Команди SNMP.
+
     #
     # Генерує ``snmp-server community`` (RO/RW), ``snmp-server location``,
     # ``snmp-server contact`` та ``snmp-server host`` (trap).
@@ -551,48 +581,52 @@ def generate_full_config(
 
     config = []
 
-    # 1. Базова частина + інтерфейси
+    # ЛАНЦЮЖОК ГЕНЕРАЦІЇ:
+    # Важливо підтримувати такий порядок для коректності Cisco IOS:
+    # 1. Base (hostname/interfaces) - фундамент, на якому тримається решта
     config.extend(generate_base_config(hostname, interfaces, networks, no_shutdown_interfaces, descriptions, routing_config, nat_inside, nat_outside))
 
-    # 2. Multicast (якщо потрібно)
+    # 2. Advanced features (опціональні розширення)
     config.extend(generate_multicast_config(ip_multicast, pim_interfaces))
 
-    # 3. Протокол маршрутизації
+    # 3. Маршрутизація (повинна завантажуватись після інтерфейсів, щоб прив'язки були валідні)
     config.extend(generate_protocol_config(routing_protocol, router_id, networks, no_auto_summary, routing_config))
 
-    # 4. Telephony
+    # 4. Сервіси та Безпека
     config.extend(generate_telephony_config(
         telephony_enabled, dn_list, max_ephones, max_dn,
         ip_source_address, auto_assign_range
     ))
 
-    # 5. Безпека
+    # 5. Безпека (SSH та паролі)
     config.extend(generate_security_config(
         enable_ssh, enable_secret, console_password,
         admin_username, admin_password, domain_name
     ))
 
-    # 6. DHCP
+    # 6. IP Infrastructure (DHCP та NAT)
     config.extend(generate_dhcp_config(
         dhcp_network, dhcp_mask, dhcp_gateway, dhcp_dns, dhcp_excluded,
         dhcp_option150=dhcp_option150
     ))
 
-    # 7. NAT
+    # 7. NAT (залежить від DHCP-налаштувань для розрахунку Wildcard)
     config.extend(generate_nat_config(
         nat_type, nat_inside, nat_outside, nat_inside_local, nat_inside_global, dhcp_network, dhcp_mask
     ))
 
-    # 8. SNMP
+    # 8. Management
     config.extend(generate_snmp_config(
         snmp_enabled, snmp_community_ro, snmp_community_rw, snmp_location, snmp_contact, snmp_trap_host
     ))
 
-    # 9. Завершення конфігурації
+    # 9. ФІНАЛІЗАЦІЯ:
+    # Повернення в привілейований режим та збереження в енергонезалежну пам'ять (NVRAM).
     config.extend([
         "!",
         "end",
         "write memory"
     ])
+
 
     return config
