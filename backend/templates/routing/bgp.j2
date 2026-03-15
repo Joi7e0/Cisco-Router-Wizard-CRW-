@@ -1,0 +1,14 @@
+!
+router bgp {{ bgp_local_as }}
+{% if bgp_rid %}
+  bgp router-id {{ bgp_rid }}
+{% endif %}
+{% for nb in bgp_neighbors %}
+  neighbor {{ nb.ip }} remote-as {{ nb.remote_as }}
+{% endfor %}
+{% for net in bgp_networks %}
+{% if net.mask_str %}
+  network {{ net.ip }} mask {{ net.mask_str }}
+{% endif %}
+{% endfor %}
+ exit

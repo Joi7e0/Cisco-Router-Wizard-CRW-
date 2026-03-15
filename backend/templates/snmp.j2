@@ -1,0 +1,16 @@
+!
+{% if snmp_community_ro %}
+snmp-server community {{ snmp_community_ro }} RO
+{% endif %}
+{% if snmp_community_rw %}
+snmp-server community {{ snmp_community_rw }} RW
+{% endif %}
+{% if snmp_location %}
+snmp-server location {{ snmp_location }}
+{% endif %}
+{% if snmp_contact %}
+snmp-server contact {{ snmp_contact }}
+{% endif %}
+{% if snmp_trap_host %}
+snmp-server host {{ snmp_trap_host }} version 2c {{ snmp_community_ro or "public" }}
+{% endif %}

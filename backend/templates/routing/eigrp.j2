@@ -1,0 +1,13 @@
+!
+router eigrp {{ eigrp_asn }}
+{% for net in eigrp_networks %}
+{% if net.wildcard %}
+  network {{ net.ip }} {{ net.wildcard }}
+{% else %}
+  network {{ net.ip }}
+{% endif %}
+{% endfor %}
+{% if no_auto_summary %}
+  no auto-summary
+{% endif %}
+ exit

@@ -1,7 +1,39 @@
-# backend/protocols.py
-# Генерація конфігурації протоколів маршрутизації
+import os
+from jinja2 import Environment, FileSystemLoader
+
+# Set up Jinja2 environment
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+env = Environment(loader=FileSystemLoader(template_dir), trim_blocks=True, lstrip_blocks=True)
+
+def render_template_to_lines(template_name, context):
+    template = env.get_template(template_name)
+    rendered = template.render(**context)
+    return [line for line in rendered.splitlines() if line.strip()]
 
 def _mask_to_wildcard(mask: str) -> str:
+    """Конвертує subnet mask або CIDR-префікс в wildcard mask.
+
+    Приймає Приймає dotted-decimal (наприклад, ``"255.255.255.0"``),
+    CIDR без префіксу (``"24"``) або з префіксом (``"/24"``).
+    Використовується для Jinja2 шаблонів OSPF, EIGRP, NAT.
+
+    Args:
+        mask (str): Subnet mask або CIDR-префікс.
+
+    Returns:
+        str: Wildcard mask у dotted-decimal форматі.
+            У разі помилки повертає ``"0.0.0.0"``.
+
+    Examples:
+        >>> _mask_to_wildcard("255.255.255.0")
+        '0.0.0.255'
+        >>> _mask_to_wildcard("24")
+        '0.0.0.255'
+        >>> _mask_to_wildcard("/30")
+        '0.0.0.3'
+        >>> _mask_to_wildcard("invalid")
+        '0.0.0.0'
+    """
     try:
         if not mask or not isinstance(mask, str):
             return "0.0.0.0"
@@ -30,6 +62,23 @@ def _mask_to_wildcard(mask: str) -> str:
         return "0.0.0.0"
 
 def _cidr_to_mask(cidr: int) -> str:
+    """Перетворює CIDR-префікс (ціле число) в dotted-decimal subnet mask.
+
+    Args:
+        cidr (int): Префікс в діапазоні 0–32.
+
+    Returns:
+        str: Subnet mask у dotted-decimal форматі.
+            У разі некоректного CIDR повертає ``"255.255.255.0"``.
+
+    Examples:
+        >>> _cidr_to_mask(24)
+        '255.255.255.0'
+        >>> _cidr_to_mask(30)
+        '255.255.255.252'
+        >>> _cidr_to_mask(0)
+        '0.0.0.0'
+    """
     try:
         if not (0 <= cidr <= 32):
             return "255.255.255.0"
@@ -45,121 +94,206 @@ def generate_protocol_config(
     no_auto_summary: bool = True,
     routing_config: dict = None
 ) -> list[str]:
-    """
-    Генерує команди для протоколів маршрутизації
+    """Генерує Cisco IOS команди для заданого протоколу маршрутизації.
+
+    Фабрикний метод для всіх підтримуваних протоколів. Визначає потрібний
+    Jinja2-шаблон (наприклад, ``routing/ospf.j2``) і передає ньому
+    контекст з інформацією про мережі, роутер-ID та параметрами
+    протоколу.
+
+    Підтримувані протоколи:
+        - ``RIP`` — RIP v2 з списком мереж цластерних мереж.
+        - ``OSPF`` — single/multi-area OSPF з wildcard masks та area per-network.
+        - ``EIGRP`` — EIGRP з AS number і опціональним wildcard.
+        - ``BGP`` — BGP з списком neighbor і advertised networks.
+        - ``STATIC`` — статичні маршрути з next-hop або exit interface.
+        - ``IS-IS`` — IS-IS з NET-адресою та рівнем маршрутизації.
+
+    Args:
+        protocol (str): Назва протоколу (регістронезалежна).
+            Допустимі значення: ``"RIP"``, ``"OSPF"``, ``"EIGRP"``,
+            ``"BGP"``, ``"STATIC"``, ``"IS-IS"``, ``"None"``.
+        router_id (str): Router ID у форматі IPv4. Обов'язковий для OSPF.
+        networks (list): Список кортежів ``(ip: str, mask: str)``.
+            Використовується для RIP. OSPF/EIGRP/BGP читають з ``routing_config``.
+        no_auto_summary (bool, optional): Додає ``no auto-summary`` для
+            RIP і EIGRP. Defaults to ``True``.
+        routing_config (dict, optional): Розширена конфігурація протоколу.
+            Ключі залежать від протоколу:
+
+            - OSPF: ``{"processId": str, "routerId": str,``
+              ``"ospfNetworks": [{"network", "wildcard", "area"}]}``
+            - EIGRP: ``{"asNumber": str, "eigrpNetworks": [{"network", "wildcard"}]}``
+            - BGP: ``{"localAs": str, "routerId": str,``
+              ``"bgpNeighbors": [{"ip", "remoteAs"}],``
+              ``"bgpAdvertisedNetworks": [{"network", "mask"}]}``
+            - STATIC: ``{"staticRoutes": [{"dest", "mask", "nextHop",``
+              ``"interface", "ad", "metric"}]}``
+            - IS-IS: ``{"areaId": str, "systemId": str, "routerType": str}``
+
+    Returns:
+        list[str]: Список Cisco IOS команд. Порожний список, якщо
+            ``protocol`` дорівнює ``"None"`` або порожній.
+
+    Examples:
+        >>> generate_protocol_config("RIP", "", [("192.168.1.0", "255.255.255.0")])
+        ['!', 'router rip', ' version 2', ' network 192.168.1.0', ' no auto-summary', ' exit']
+        >>> generate_protocol_config("None", "", [])
+        []
     """
     if not isinstance(protocol, str) or not protocol or protocol.upper() == "NONE":
         return []
 
     proto = protocol.upper().strip()
-    cfg = []
     rc = routing_config or {}
 
+    context = {
+        'protocol': proto,
+        'no_auto_summary': rc.get("noAutoSummary", no_auto_summary)
+    }
+
     if proto == "STATIC":
+        static_routes = []
         routes = rc.get("staticRoutes", [])
-        if routes:
-            cfg.append("!")
-            for r in routes:
-                dest = r.get("dest")
-                mask = r.get("mask", "")
-                next_hop = r.get("nextHop", "")
-                intf = r.get("interface", "")
-                ad = r.get("ad", "")
-                metric = r.get("metric", "")
+        for r in routes:
+            dest = r.get("dest")
+            mask = r.get("mask", "")
+            next_hop = r.get("nextHop", "")
+            intf = r.get("interface", "")
+            ad = r.get("ad", "")
+            metric = r.get("metric", "")
+            
+            # Convert prefix to mask if needed
+            if mask.isdigit() or mask.startswith('/'):
+                m_val = mask[1:] if mask.startswith('/') else mask
+                mask_final = _cidr_to_mask(int(m_val))
+            else:
+                mask_final = mask or "255.255.255.0"
                 
-                # Convert prefix to mask if needed
-                if mask.isdigit() or mask.startswith('/'):
-                    m_val = mask[1:] if mask.startswith('/') else mask
-                    mask_final = _cidr_to_mask(int(m_val))
-                else:
-                    mask_final = mask or "255.255.255.0"
-                
-                cmd = f"ip route {dest} {mask_final}"
-                if next_hop: cmd += f" {next_hop}"
-                if intf: cmd += f" {intf}"
-                if ad: cmd += f" {ad}"
-                if metric: cmd += f" {metric}" # Metric in static is usually AD but keeping it
-                cfg.append(cmd)
+            static_routes.append({
+                'dest': dest,
+                'mask_final': mask_final,
+                'nextHop': next_hop,
+                'interface': intf,
+                'ad': ad,
+                'metric': metric
+            })
+        context['static_routes'] = static_routes
 
     elif proto == "RIP":
-        cfg.append("!")
-        cfg.append("router rip")
-        cfg.append(" version 2")
-        for item in networks:
-            net_ip = item[0] if isinstance(item, (list, tuple)) else item
-            if net_ip and net_ip != "invalid":
-                cfg.append(f"  network {net_ip}")
-        if rc.get("noAutoSummary", no_auto_summary):
-            cfg.append("  no auto-summary")
-        cfg.append(" exit")
+        rip_networks = []
+        manual_rip_networks = rc.get("ripNetworks", [])
+        
+        if manual_rip_networks:
+            for net in manual_rip_networks:
+                if net and net != "invalid":
+                    rip_networks.append(net)
+        else:
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                if net_ip and net_ip != "invalid":
+                    rip_networks.append(net_ip)
+                    
+        context['rip_networks'] = rip_networks
 
     elif proto == "OSPF":
-        pid = rc.get("processId", "1")
-        area = rc.get("area", "0")
-        rid = rc.get("routerId") or router_id
-        
-        cfg.append("!")
-        cfg.append(f"router ospf {pid}")
-        if rid:
-            cfg.append(f"  router-id {rid}")
-            
-        # OSPF Networks are now handled differently or removed from UI but keeping for backend consistency
-        for item in networks:
-            net_ip = item[0] if isinstance(item, (list, tuple)) else item
-            net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) > 1 else "24"
-            if net_ip and net_ip != "invalid":
-                wildcard = _mask_to_wildcard(net_mask)
-                cfg.append(f"  network {net_ip} {wildcard} area {area}")
-        cfg.append(" exit")
+        ospf_networks = []
+        manual_ospf_networks = rc.get("ospfNetworks", [])
+        if manual_ospf_networks:
+            # Use per-network area from UI table
+            for item in manual_ospf_networks:
+                net_ip = item.get("network", "") if isinstance(item, dict) else ""
+                wildcard = item.get("wildcard", "0.0.0.255") if isinstance(item, dict) else "0.0.0.255"
+                area = item.get("area", "0") if isinstance(item, dict) else "0"
+                if net_ip and net_ip != "invalid":
+                    ospf_networks.append({'ip': net_ip, 'wildcard': wildcard, 'area': area})
+        else:
+            # Fallback: derive from interface networks with default area 0
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) > 1 else "24"
+                if net_ip and net_ip != "invalid":
+                    wildcard = _mask_to_wildcard(net_mask)
+                    ospf_networks.append({'ip': net_ip, 'wildcard': wildcard, 'area': '0'})
+        context.update({
+            'ospf_pid': rc.get("processId", "1"),
+            'ospf_rid': rc.get("routerId") or router_id,
+            'ospf_networks': ospf_networks
+        })
 
     elif proto == "EIGRP":
-        asn = rc.get("asNumber", "100")
-        no_auto = rc.get("noAutoSummary", True)
-        
-        cfg.append("!")
-        cfg.append(f"router eigrp {asn}")
-        for item in networks:
-            net_ip = item[0] if isinstance(item, (list, tuple)) else item
-            if net_ip and net_ip != "invalid":
-                cfg.append(f"  network {net_ip}")
-        if no_auto:
-            cfg.append("  no auto-summary")
-        cfg.append(" exit")
+        eigrp_networks = []
+        manual_eigrp_networks = rc.get("eigrpNetworks", [])
+        if manual_eigrp_networks:
+            for item in manual_eigrp_networks:
+                net_ip = item.get("network", "") if isinstance(item, dict) else ""
+                wildcard = item.get("wildcard", "") if isinstance(item, dict) else ""
+                if net_ip and net_ip != "invalid":
+                    eigrp_networks.append({'ip': net_ip, 'wildcard': wildcard})
+        else:
+            # Fallback: use interface networks (classful, no wildcard)
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                if net_ip and net_ip != "invalid":
+                    eigrp_networks.append({'ip': net_ip, 'wildcard': ''})
+        context.update({
+            'eigrp_asn': rc.get("asNumber", rc.get("eigrpAs", "100")),
+            'eigrp_networks': eigrp_networks
+        })
 
     elif proto == "BGP":
-        local_as = rc.get("localAs", "65001")
-        rid = rc.get("routerId") or router_id
-        neighbor = rc.get("neighborIp")
-        remote_as = rc.get("remoteAs")
-        
-        cfg.append("!")
-        cfg.append(f"router bgp {local_as}")
-        if rid:
-            cfg.append(f"  bgp router-id {rid}")
-        if neighbor and remote_as:
-            cfg.append(f"  neighbor {neighbor} remote-as {remote_as}")
-            
-        for item in networks:
-            net_ip = item[0] if isinstance(item, (list, tuple)) else item
-            net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) > 1 else "24"
-            if net_ip and net_ip != "invalid":
-                if net_mask.isdigit():
-                    mask = _cidr_to_mask(int(net_mask))
-                    cfg.append(f"  network {net_ip} mask {mask}")
-                else:
-                    cfg.append(f"  network {net_ip} mask {net_mask}")
-        cfg.append(" exit")
+        bgp_neighbors = []
+        manual_neighbors = rc.get("bgpNeighbors", [])
+        if manual_neighbors:
+            for nb in manual_neighbors:
+                ip = nb.get("ip", "") if isinstance(nb, dict) else ""
+                remote_as = nb.get("remoteAs", "") if isinstance(nb, dict) else ""
+                if ip and remote_as:
+                    bgp_neighbors.append({'ip': ip, 'remote_as': remote_as})
+        else:
+            # Fallback: single neighbor from old fields
+            nb_ip = rc.get("neighborIp", "")
+            nb_as = rc.get("remoteAs", "")
+            if nb_ip and nb_as:
+                bgp_neighbors.append({'ip': nb_ip, 'remote_as': nb_as})
+
+        bgp_adv_networks = []
+        manual_bgp_nets = rc.get("bgpAdvertisedNetworks", [])
+        if manual_bgp_nets:
+            for item in manual_bgp_nets:
+                net_ip = item.get("network", "") if isinstance(item, dict) else ""
+                net_mask = item.get("mask", "") if isinstance(item, dict) else ""
+                if net_ip and net_ip != "invalid":
+                    if net_mask.isdigit():
+                        mask_str = _cidr_to_mask(int(net_mask))
+                    else:
+                        mask_str = net_mask or "255.255.255.0"
+                    bgp_adv_networks.append({'ip': net_ip, 'mask_str': mask_str})
+        else:
+            # Fallback: derive from interface networks
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) > 1 else "24"
+                if net_ip and net_ip != "invalid":
+                    if net_mask.isdigit():
+                        mask_str = _cidr_to_mask(int(net_mask))
+                    else:
+                        mask_str = net_mask
+                    bgp_adv_networks.append({'ip': net_ip, 'mask_str': mask_str})
+        context.update({
+            'bgp_local_as': rc.get("localAs", "65001"),
+            'bgp_rid': rc.get("routerId") or router_id,
+            'bgp_neighbors': bgp_neighbors,
+            'bgp_networks': bgp_adv_networks
+        })
 
     elif proto == "IS-IS":
-        area_id = rc.get("areaId", "49.0001")
-        system_id = rc.get("systemId", "0000.0000.0001")
-        r_type = rc.get("routerType", "level-1-2")
-        
-        cfg.append("!")
-        cfg.append("router isis")
-        cfg.append(f"  net {area_id}.{system_id}.00")
-        cfg.append(f"  is-type {r_type}")
-        cfg.append("  no auto-summary")
-        cfg.append(" exit")
+        context.update({
+            'isis_area_id': rc.get("areaId", "49.0001"),
+            'isis_system_id': rc.get("systemId", "0000.0000.0001"),
+            'isis_router_type': rc.get("routerType", "level-1-2")
+        })
 
-    return cfg
+    # Normalize protocol name for template file (IS-IS → isis)
+    template_name = proto.lower().replace('-', '')
+    return render_template_to_lines(f'routing/{template_name}.j2', context)

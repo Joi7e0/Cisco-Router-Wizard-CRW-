@@ -1,0 +1,7 @@
+{% if static_routes %}
+!
+{% for r in static_routes %}
+ip route {{ r.dest }} {{ r.mask_final }}{% if r.nextHop %} {{ r.nextHop }}{% endif %}{% if r.interface %} {{ r.interface }}{% endif %}{% if r.ad %} {{ r.ad }}{% endif %}{% if r.metric %} {{ r.metric }}{% endif %}
+
+{% endfor %}
+{% endif %}
