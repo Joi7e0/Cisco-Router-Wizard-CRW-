@@ -1,0 +1,21 @@
+{% if dhcp_network and dhcp_mask %}
+!
+{% if excluded and excluded|length >= 2 %}
+ip dhcp excluded-address {{ excluded[0] }} {{ excluded[1] }}
+{% elif excluded and excluded|length == 1 %}
+ip dhcp excluded-address {{ excluded[0] }}
+{% endif %}
+ip dhcp pool LAN
+ network {{ dhcp_network }} {{ dhcp_mask }}
+{% if dhcp_gateway %}
+ default-router {{ dhcp_gateway }}
+{% endif %}
+{% if dhcp_dns %}
+ dns-server {{ dhcp_dns }}
+{% endif %}
+{% if dhcp_option150 %}
+ option 150 ip {{ dhcp_option150 }}
+{% endif %}
+ exit
+!
+{% endif %}

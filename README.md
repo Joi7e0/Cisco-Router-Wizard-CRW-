@@ -1,108 +1,170 @@
-﻿# Cisco Router Wizard
+# Cisco Router Wizard
 
-Коротко: простий інструмент із GUI (Eel) для генерації конфігурацій Cisco-маршрутизаторів на основі введених даних.
+Простий інструмент із GUI (Eel) для генерації конфігурацій Cisco-маршрутизаторів на основі введених даних.
 
 ## Зміст репозиторію
-- `backend/` — серверна частина: генерація конфігів, валідація, утиліти.
-- `web/` — фронтенд (HTML/JS) який викликає бекенд через Eel.
-- `tests/` — модульні тести.
-- `SPECIFICATIONS.md` — специфікації ключових функцій для тестування та рефакторингу.
 
-## Коротка інформація про проєкт
-Мета проєкту — швидко генерувати робочі конфігурації для Cisco-пристроїв (інтерфейси, маршрутизація, DHCP, telephony, SSH тощо) на основі форм у веб-інтерфейсі.
+```
+backend/           # Бекенд: генерація конфігів, валідація
+  templates/       # Jinja2-шаблони для кожної секції конфігу
+web/               # Фронтенд (HTML/JS), з'єднаний з бекендом через Eel
+tests/
+  unit/
+    test_validators/   # Тести валідаторів
+    test_generators/   # Тести генераторів конфігурацій
+  integration/         # End-to-end тести
+  performance/         # Benchmark тести
+SPECIFICATIONS.md  # Специфікації ключових функцій
+README.md
+```
 
 ## Вимоги
-- Python 3.8 або новіший
-- Рекомендовано: віртуальне оточення (venv)
-- Для запуску GUI: встановлений браузер (Chrome/Edge)
+
+- Python 3.8+
+- Рекомендовано: virtualenv (venv)
+- Для GUI: браузер Chrome або Edge
 
 ## Встановлення (Windows)
-1. Відкрийте PowerShell або cmd і перейдіть в папку проекту.
-2. (Опціонально) створіть та активуйте virtualenv:
 
 ```powershell
 py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1    # PowerShell
-# або для cmd: .\.venv\Scripts\activate.bat
-```
-
-3. Встановіть залежності (якщо є `requirements.txt`):
-
-```powershell
+.\.venv\Scripts\Activate.ps1
 py -3 -m pip install -r requirements.txt
 ```
 
-Примітка: якщо `py` або `python` не знайдені, встановіть Python з https://python.org або через Microsoft Store.
-
 ## Запуск застосунку
-Запуск з кореня проєкту (важливо):
 
 ```powershell
 py -3 -m backend.main
-# або
-python -m backend.main
 ```
 
-Якщо запускаєте окремі файли в IDE, переконайтеся, що робоча директорія — корінь проєкту, або запускайте модулі через `-m`.
-
-## Тести — як запускати
-У репозиторії є тести в `tests/test_main.py`. Є два підходи для запуску:
-
-- Через вбудований `unittest` (без додаткових пакетів):
+## Запуск тестів
 
 ```powershell
-py -3 -u tests\test_main.py
+# Усі тести
+py -m pytest tests/ -v
+
+# Тільки валідатори
+py -m pytest tests/unit/test_validators/ -v
+
+# Тільки генератори
+py -m pytest tests/unit/test_generators/ -v
+
+# З benchmark
+py -m pytest tests/performance/ -v
 ```
 
-- Через `pytest` (якщо встановлено):
+---
 
+## 📖 Стандарти документування
+
+### Мова та формат: Google-style docstrings
+
+У проєкті використовується **Google-style docstrings** — стандарт документування для Python, підтримуваний Sphinx, pdoc3 та VSCode IntelliSense.
+
+#### Структура docstring
+
+```python
+def my_function(param1: str, param2: int = 0) -> str:
+    """Короткий опис того, що робить функція (одним реченням).
+
+    Розширений опис, якщо потрібен. Може займати декілька рядків.
+    Описує поведінку, важливі особливості, граничні випадки.
+
+    Args:
+        param1 (str): Опис першого параметра.
+        param2 (int, optional): Опис другого. Defaults to ``0``.
+
+    Returns:
+        str: Що повертає функція та в якому форматі.
+
+    Raises:
+        ValueError: Коли і чому виникає виняток.
+
+    Examples:
+        >>> my_function("hello")
+        'HELLO'
+        >>> my_function("world", 1)
+        'WORLD!'
+    """
+```
+
+#### Правила для цього проєкту
+
+| Правило | Деталі |
+|---------|--------|
+| **Обов'язкові секції** | `Args`, `Returns` для всіх публічних функцій |
+| **Опціональні секції** | `Raises`, `Examples`, `Note` — додавати за потреби |
+| **Мова** | Опис функції — українська; назви параметрів, типи, IOS-команди — англійська |
+| **Типізація** | Використовувати type hints у сигнатурі (`param: str -> str`) |
+| **Приклади** | Обов'язкові для складних функцій (валідатори, генератори) |
+| **Інлайн-коментарі** | `#` для пояснення нетривіальної логіки всередині функцій |
+
+#### Що документувати
+
+✅ **Обов'язково**:
+- Всі публічні функції в `backend/` (`validate.py`, `generate.py`, `protocols.py`)
+- Тест-класи — docstring з описом що тестується
+- Складна логіка (конвертація масок, шаблонний рендеринг)
+
+⚠️ **За потреби**:
+- Допоміжні приватні функції (`_mask_to_wildcard`) — якщо логіка нетривіальна
+- Jinja2-шаблони — коментар вгорі файлу з описом змінних контексту
+
+❌ **Не потрібно**:
+- Геттери/сеттери з очевидною поведінкою
+- `conftest.py` fixtures з самоочевидними назвами
+
+---
+
+### 🔧 Інструменти для автоматичної генерації документації
+
+| Інструмент | Опис | Команда |
+|------------|------|---------|
+| **[Sphinx](https://www.sphinx-doc.org/)** | Стандарт Python-документації; генерує HTML, PDF. Підтримує Google-style через `napoleon` extension | `sphinx-apidoc -o docs/ backend/` |
+| **[pdoc3](https://pdoc3.github.io/pdoc/)** | Простіший аналог Sphinx; генерує HTML прямо з docstrings без конфігурації | `pdoc3 --html backend/ -o docs/` |
+| **[mkdocs + mkdocstrings](https://mkdocstrings.github.io/)** | Документація у Markdown + автовставка docstrings; гарний UI | `mkdocs serve` |
+| **VSCode IntelliSense** | Показує docstrings у hover-підказках автоматично | (вбудований) |
+
+**Рекомендація для проєкту**: `pdoc3` — мінімальна конфігурація, швидкий старт:
 ```powershell
-py -3 -m pip install -U pytest
-py -3 -m pytest -q -s tests/test_main.py
+py -m pip install pdoc3
+py -m pdoc3 --html backend/ -o docs/
 ```
 
-Параметр `-s` у `pytest` дозволяє бачити друкований вивід з тестів (print). Ми також вмикаємо `verbosity` і вимикаємо буферизацію у тестовому файлі, щоб кінцевий вивід з конфігураціями показувався у консолі.
+---
 
-## Опис тестів
-Файл [tests/test_main.py](tests/test_main.py) містить набори тестів для ключових сценаріїв генерації конфігурацій (короткий перелік):
+## Правила для нових контриб'юторів
 
-- `test_basic_configuration_no_routing`: перевіряє базову генерацію з декількома інтерфейсами, адресами та `no shutdown`.
-- `test_ospf_with_router_id`: перевіряє генерацію OSPF з `router-id` та правильними рядками `network`.
-- `test_ospf_missing_router_id_error`: перевіряє повідомлення про помилку, коли OSPF без `router-id`.
-- `test_networks_length_mismatch`: перевірка захисту від невідповідності числа інтерфейсів і мереж.
-- `test_telephony_basic`: перевіряє генерацію `telephony-service`, `ephone` та `ephone-dn` блоків.
-- `test_dhcp_configuration`: перевірка DHCP-пулу, шлюзу та DNS.
-- `test_ssh_security_block`: перевірка генерації SSH/enable-secret/ключів RSA.
+### Додаючи нову функцію
 
-Додатково: тестова конфігурація в кінці тестів друкує згенеровані конфігурації у консоль для полегшеної перевірки.
+1. **Напишіть docstring** за Google-style перед кодом.
+2. **Вкажіть типи** у сигнатурі функції.
+3. **Додайте приклад** у секцію `Examples:`.
+4. **Напишіть тест** у відповідний файл у `tests/`.
 
-## SPECIFICATIONS.md
-Дивіться файл [SPECIFICATIONS.md](SPECIFICATIONS.md) — містить детальні специфікації для функцій: `validate_inputs`, `_mask_to_wildcard`, `generate_protocol_config`, `generate_interface_config`, `generate_full_config`.
+### Додаючи новий протокол маршрутизації
 
-## Додавання нових тестів / рефакторинг
-- Рефакторинг логіки слід робити в `backend/` модулях; додайте модульні тести в `tests/`.
-- Під час змін, переконайтеся, що `SPECIFICATIONS.md` оновлено відповідно до контрактів функцій.
+1. Додайте Jinja2-шаблон у `backend/templates/routing/<назва>.j2`.
+2. Додайте обробку в `generate_protocol_config()` у `protocols.py`.
+3. Задокументуйте нові ключі `routing_config` у docstring функції.
+4. Напишіть тест-клас у `tests/unit/test_generators/test_routing.py`.
 
-## Типові проблеми та їх вирішення
-- "Python was not found": використайте `py -3` або додайте `python` до PATH.
-- Якщо `pytest` не встановлено, встановіть його командою `py -3 -m pip install -U pytest`.
-- Якщо тести не виводять print-повідомлення під `pytest`, запускайте з `-s` або використовуйте `unittest` без буферизації.
+### Додаючи новий валідатор
 
-## Корисні команди
+1. Реалізуйте в `backend/validate.py`.
+2. Функція повинна повертати `""` (OK) або `"❌ Error: ..."` (помилка).
+3. Додайте тест у `tests/unit/test_validators/`.
+4. Додайте виклик у `validate_inputs()`, якщо потрібно.
 
-```powershell
-# Запуск бекенду
-py -3 -m backend.main
+---
 
-# Запуск конкретного тест-файлу через unittest
-py -3 -u tests\test_main.py
+## Типові проблеми
 
-# Запуск тестів через pytest з виводом print
-py -3 -m pytest -q -s tests/test_main.py
-```
-
-## Коректура та контриб'юція
-- Відкривайте pull-request з описом змін та, за можливості, додайте/оновіть тести.
+- `"Python was not found"` → використайте `py -3` або додайте Python до PATH.
+- Тести не знаходять `backend` → запускайте pytest з кореня проєкту.
+- `pytest` не встановлено → `py -3 -m pip install pytest pytest-benchmark`.
 
 ## Контакти
-Якщо потрібна допомога — відкрий issue в репозиторії з описом проблеми.
+
+Відкривайте issue в репозиторії з описом проблеми або pull request.

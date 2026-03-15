@@ -1,0 +1,7 @@
+!
+{% if nat_type == 'PAT' and local_network and wildcard_mask %}
+access-list 1 permit {{ local_network }} {{ wildcard_mask }}
+ip nat inside source list 1 interface {{ nat_outside }} overload
+{% elif nat_type == 'Static' and nat_inside_local and nat_inside_global %}
+ip nat inside source static {{ nat_inside_local }} {{ nat_inside_global }}
+{% endif %}

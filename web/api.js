@@ -17,7 +17,6 @@ async function sendToPython(configData) {
                 downloadBtn.classList.remove("hidden");
             } else {
                 downloadBtn.classList.add("hidden");
-                if (responseDiv) responseDiv.innerText = "❌ Error: " + res;
             }
         }
 

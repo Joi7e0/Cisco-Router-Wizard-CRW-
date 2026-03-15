@@ -1,0 +1,10 @@
+!
+router rip
+ version 2
+{% for net_ip in rip_networks %}
+ network {{ net_ip }}
+{% endfor %}
+{% if no_auto_summary %}
+ no auto-summary
+{% endif %}
+ exit

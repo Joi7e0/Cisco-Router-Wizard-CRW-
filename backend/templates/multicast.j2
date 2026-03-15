@@ -1,0 +1,9 @@
+{% if ip_multicast %}
+!
+ip multicast-routing
+{% for intf in pim_interfaces %}
+interface {{ intf }}
+ ip pim sparse-dense-mode
+ exit
+{% endfor %}
+{% endif %}

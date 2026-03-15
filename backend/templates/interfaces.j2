@@ -1,0 +1,19 @@
+{% for intf in interface_data %}
+interface {{ intf.name }}
+{% if intf.description %}
+ description {{ intf.description }}
+{% endif %}
+ ip address {{ intf.ip }} {{ intf.mask }}
+{% if intf.no_shutdown %}
+ no shutdown
+{% endif %}
+{% if intf.is_nat_inside %}
+ ip nat inside
+{% elif intf.is_nat_outside %}
+ ip nat outside
+{% endif %}
+{% if intf.isis %}
+ ip router isis
+{% endif %}
+ exit
+{% endfor %}

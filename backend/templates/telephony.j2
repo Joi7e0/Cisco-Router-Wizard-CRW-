@@ -1,0 +1,30 @@
+{% if telephony_enabled %}
+!
+telephony-service
+ max-ephones {{ max_ephones }}
+ max-dn {{ max_dn }}
+ ip source-address {{ ip_source_address }} port 2000
+ auto assign {{ auto_assign_range }}
+ exit
+!
+{% for dn in dn_list %}
+{% if dn.number %}
+ephone-dn {{ dn.idx }}
+ number {{ dn.number }}
+ exit
+!
+{% endif %}
+{% if dn.user or dn.mac %}
+ephone {{ dn.idx }}
+{% if dn.mac %}
+ mac-address {{ dn.mac }}
+{% endif %}
+{% if dn.user %}
+ name {{ dn.user }}
+{% endif %}
+ button 1:{{ dn.idx }}
+ exit
+!
+{% endif %}
+{% endfor %}
+{% endif %}
