@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>backend.main API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>backend.main</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="backend.main.process_text"><code class="name flex">
+<span>def <span class="ident">process_text</span></span>(<span>config_data: dict = None) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@eel.expose
+def process_text(config_data: dict = None) -&gt; str:
+    if config_data is None:
+        config_data = {}
+
+    try:
+        # Екстрагування значень із JSON об&#39;єкта
+        routing_protocol = config_data.get(&#34;routingProtocol&#34;, &#34;&#34;)
+        router_id = config_data.get(&#34;routerId&#34;, &#34;&#34;)
+        ip_multicast = config_data.get(&#34;ipMulticast&#34;, False)
+        telephony_enabled = config_data.get(&#34;telephonyEnabled&#34;, False)
+        dn_list = config_data.get(&#34;dnList&#34;, [])
+        enable_ssh = config_data.get(&#34;enableSsh&#34;, False)
+        hostname = config_data.get(&#34;hostname&#34;, &#34;&#34;)
+        enable_secret = config_data.get(&#34;enableSecret&#34;, &#34;&#34;)
+        console_password = config_data.get(&#34;consolePassword&#34;, &#34;&#34;)
+        admin_username = config_data.get(&#34;adminUsername&#34;, &#34;admin&#34;)
+        admin_password = config_data.get(&#34;adminPassword&#34;, &#34;&#34;)
+        domain_name = config_data.get(&#34;domainName&#34;, &#34;local.lab&#34;)
+        dhcp_network = config_data.get(&#34;dhcpNetwork&#34;, &#34;&#34;)
+        dhcp_mask = config_data.get(&#34;dhcpMask&#34;, &#34;&#34;)
+        dhcp_gateway = config_data.get(&#34;dhcpGateway&#34;, &#34;&#34;)
+        dhcp_dns = config_data.get(&#34;dhcpDns&#34;, &#34;&#34;)
+        interfaces = config_data.get(&#34;interfaces&#34;, [])
+        networks = config_data.get(&#34;networks&#34;, [])
+        no_shutdown_interfaces = config_data.get(&#34;noShutdownInterfaces&#34;, [])
+        descriptions = config_data.get(&#34;descriptions&#34;, [])
+        max_ephones = config_data.get(&#34;maxEphones&#34;, 3)
+        max_dn = config_data.get(&#34;maxDn&#34;, 3)
+        auto_assign_range = config_data.get(&#34;autoAssignRange&#34;, &#34;1 to 3&#34;)
+        
+        # Dynamic calculations for 2.5
+        ip_source_address = dhcp_gateway if dhcp_gateway else &#34;&#34;
+        if not ip_source_address and interfaces:
+            # Fallback to the first configured interface IP if available
+            for ip, mask in networks:
+                if ip:
+                    ip_source_address = ip
+                    break
+        if not ip_source_address:
+            ip_source_address = &#34;10.0.0.1&#34;  # ultimate fallback
+
+        dhcp_excluded = config_data.get(&#34;dhcpExcluded&#34;, [])
+        dhcp_excluded_from = config_data.get(&#34;dhcpExcludedFrom&#34;, &#34;&#34;).strip()
+        dhcp_excluded_to = config_data.get(&#34;dhcpExcludedTo&#34;, &#34;&#34;).strip()
+        dhcp_option150 = config_data.get(&#34;dhcpOption150&#34;, &#34;&#34;).strip()
+        cme_source_ip_raw = config_data.get(&#34;cmeSourceIp&#34;, &#34;&#34;).strip()
+        # Build dhcp_excluded from explicit From/To UI fields (overrides old logic)
+        if dhcp_excluded_from and dhcp_excluded_to:
+            dhcp_excluded = [dhcp_excluded_from, dhcp_excluded_to]
+        elif dhcp_excluded_from:
+            dhcp_excluded = [dhcp_excluded_from]
+        elif not dhcp_excluded and dhcp_gateway:
+            # Legacy auto-derive: gateway to gateway+9
+            try:
+                octets = dhcp_gateway.split(&#39;.&#39;)
+                last_octet = int(octets[-1])
+                if last_octet &lt;= 245:
+                    end_ip = f&#34;{octets[0]}.{octets[1]}.{octets[2]}.{last_octet + 9}&#34;
+                    dhcp_excluded = [dhcp_gateway, end_ip]
+                else:
+                    dhcp_excluded = [dhcp_gateway]
+            except (ValueError, IndexError):
+                dhcp_excluded = [dhcp_gateway]
+
+        # CME source IP: use explicit field, fallback to DHCP gateway
+        cme_source_ip = cme_source_ip_raw or dhcp_gateway or ip_source_address or &#34;10.0.0.1&#34;
+
+        nat_type = config_data.get(&#34;natType&#34;, &#34;None&#34;)
+        nat_inside = config_data.get(&#34;natInside&#34;, &#34;&#34;)
+        nat_outside = config_data.get(&#34;natOutside&#34;, &#34;&#34;)
+        nat_inside_local = config_data.get(&#34;natInsideLocal&#34;, &#34;&#34;)
+        nat_inside_global = config_data.get(&#34;natInsideGlobal&#34;, &#34;&#34;)
+        snmp_enabled = config_data.get(&#34;snmpEnabled&#34;, False)
+        snmp_community_ro = config_data.get(&#34;snmpCommunityRo&#34;, &#34;&#34;)
+        snmp_community_rw = config_data.get(&#34;snmpCommunityRw&#34;, &#34;&#34;)
+        snmp_location = config_data.get(&#34;snmpLocation&#34;, &#34;&#34;)
+        snmp_contact = config_data.get(&#34;snmpContact&#34;, &#34;&#34;)
+        snmp_trap_host = config_data.get(&#34;snmpTrapHost&#34;, &#34;&#34;)
+        routing_config = config_data.get(&#34;routingConfig&#34;, {})
+
+        # Захист від None
+        if dn_list is None:
+            dn_list = []
+        if interfaces is None:
+            interfaces = []
+        if networks is None:
+            networks = []
+        if no_shutdown_interfaces is None:
+            no_shutdown_interfaces = []
+        if descriptions is None:
+            descriptions = []
+
+        # Мінімальна перевірка
+        if not interfaces:
+            return &#34;❌ Помилка: не передано жодного інтерфейсу&#34;
+
+        # Нормалізація/валідація `networks`
+        if isinstance(networks, int):
+            try:
+                if networks &lt; 0:
+                    raise ValueError(&#34;Networks count cannot be negative&#34;)
+                networks = [(&#34;192.168.1.1&#34;, &#34;255.255.255.0&#34;)] * networks
+            except ValueError as e:
+                return f&#34;❌ Error: {e}&#34;
+
+        elif isinstance(networks, tuple):
+            networks = [networks]
+
+        elif not isinstance(networks, list):
+            return &#34;❌ Error: Некоректний формат параметра `networks` — очікується список або tuple або int&#34;
+
+        # Якщо `networks` не передали — заповнюємо дефолтними значеннями
+        if not networks and interfaces:
+            networks = [(&#34;192.168.1.1&#34;, &#34;255.255.255.0&#34;)] * len(interfaces)
+
+        # Перевірка відповідності довжин
+        try:
+            if len(networks) != len(interfaces):
+                return (
+                    f&#34;❌ кількість мереж ({len(networks)}) не відповідає &#34;
+                    f&#34;кількості інтерфейсів ({len(interfaces)})&#34;
+                )
+        except TypeError:
+            return &#34;❌ Error: Некоректний формат параметра `networks` — очікується список мереж&#34;
+
+        # Базова валідація для OSPF
+        # Захищено: routing_protocol може бути неправильного типу
+        if not isinstance(routing_protocol, str):
+            routing_protocol = str(routing_protocol)
+
+        # Комлексна валідація вхідних даних
+        validation_error = validate_inputs(
+            networks=networks,
+            hostname=hostname.strip() or &#34;R1&#34;,
+            routing_protocol=routing_protocol.strip(),
+            router_id=str(router_id).strip() if router_id else &#34;&#34;,
+            enable_secret=str(enable_secret).strip() if enable_secret else &#34;&#34;,
+            console_password=str(console_password).strip() if console_password else &#34;&#34;,
+            admin_password=str(admin_password).strip() if admin_password else &#34;&#34;,
+            dhcp_network=str(dhcp_network).strip() if dhcp_network else &#34;&#34;,
+            dhcp_mask=str(dhcp_mask).strip() if dhcp_mask else &#34;&#34;,
+            dhcp_gateway=str(dhcp_gateway).strip() if dhcp_gateway else &#34;&#34;,
+            dhcp_dns=str(dhcp_dns).strip() if dhcp_dns else &#34;&#34;
+        )
+        
+        if validation_error:
+            return validation_error
+
+        # Safeguard for max_ephones/max_dn receiving lists due to argument shifts
+        if isinstance(max_ephones, list):
+            max_ephones = 3
+        if isinstance(max_dn, list):
+            max_dn = 3
+
+        # Fallbacks for optional parameters
+        final_ip_source = cme_source_ip if cme_source_ip else (ip_source_address.strip() if ip_source_address else &#34;10.0.0.1&#34;)
+        final_auto_assign = auto_assign_range.strip() if auto_assign_range else &#34;1 to 3&#34;
+        
+        # Ensure dhcp_excluded is at least a tuple of strings
+        if not dhcp_excluded:
+            if dhcp_gateway:
+                final_dhcp_excluded = (dhcp_gateway,)
+            else:
+                final_dhcp_excluded = ()
+        else:
+            final_dhcp_excluded = tuple(str(x).strip() for x in dhcp_excluded)
+
+        # Виклик генерації конфігурації
+        try:
+            config_lines = generate_full_config(
+                hostname=hostname.strip() or &#34;R1&#34;,
+                interfaces=[str(i).strip() for i in interfaces],
+                networks=networks,
+                ip_multicast=bool(ip_multicast),
+                routing_protocol=routing_protocol.strip(),
+                router_id=str(router_id).strip(),
+                telephony_enabled=bool(telephony_enabled),
+                dn_list=dn_list,
+                enable_ssh=bool(enable_ssh),
+                enable_secret=enable_secret.strip(),
+                console_password=console_password.strip(),
+                admin_username=admin_username.strip(),
+                admin_password=admin_password.strip(),
+                domain_name=domain_name.strip(),
+                dhcp_network=dhcp_network.strip(),
+                dhcp_mask=dhcp_mask.strip(),
+                dhcp_gateway=dhcp_gateway.strip(),
+                dhcp_dns=dhcp_dns.strip(),
+                nat_type=nat_type.strip(),
+                nat_inside=nat_inside.strip(),
+                nat_outside=nat_outside.strip(),
+                nat_inside_local=nat_inside_local.strip(),
+                nat_inside_global=nat_inside_global.strip(),
+                snmp_enabled=snmp_enabled,
+                snmp_community_ro=snmp_community_ro.strip(),
+                snmp_community_rw=snmp_community_rw.strip(),
+                snmp_location=snmp_location.strip(),
+                snmp_contact=snmp_contact.strip(),
+                snmp_trap_host=snmp_trap_host.strip(),
+                no_shutdown_interfaces=[str(i).strip() for i in no_shutdown_interfaces],
+                descriptions=[str(d).strip() for d in descriptions],
+                max_ephones=int(max_ephones),
+                max_dn=int(max_dn),
+                ip_source_address=final_ip_source,
+                auto_assign_range=final_auto_assign,
+                dhcp_excluded=final_dhcp_excluded,
+                dhcp_option150=dhcp_option150,
+                routing_config=routing_config
+            )
+
+            return &#34;\n&#34;.join(config_lines)
+
+        except Exception as e:
+            error_details = traceback.format_exc()
+            return (
+                &#34;❌ Критична помилка генерації конфігурації\n\n&#34;
+                f&#34;Повідомлення: {str(e)}\n\n&#34;
+                f&#34;Деталі:\n{error_details}&#34;
+            )
+
+    except Exception as e:
+        error_details = traceback.format_exc()
+        return (
+            &#34;❌ Критична помилка: &#34; + str(e) + &#34;\nДеталі:\n&#34; + error_details
+        )</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="backend" href="index.html">backend</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="backend.main.process_text" href="#backend.main.process_text">process_text</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

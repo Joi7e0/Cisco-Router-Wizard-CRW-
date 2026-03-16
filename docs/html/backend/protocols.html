@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>backend.protocols API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>backend.protocols</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="backend.protocols.generate_protocol_config"><code class="name flex">
+<span>def <span class="ident">generate_protocol_config</span></span>(<span>protocol: str,<br>router_id: str,<br>networks: list,<br>no_auto_summary: bool = True,<br>routing_config: dict = None) ‑> list[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_protocol_config(
+    protocol: str,
+    router_id: str,
+    networks: list,
+    no_auto_summary: bool = True,
+    routing_config: dict = None
+) -&gt; list[str]:
+    &#34;&#34;&#34;Генерує Cisco IOS команди для заданого протоколу маршрутизації.
+
+    Фабрикний метод для всіх підтримуваних протоколів. Визначає потрібний
+    Jinja2-шаблон (наприклад, ``routing/ospf.j2``) і передає ньому
+    контекст з інформацією про мережі, роутер-ID та параметрами
+    протоколу.
+
+    Підтримувані протоколи:
+        - ``RIP`` — RIP v2 з списком мереж цластерних мереж.
+        - ``OSPF`` — single/multi-area OSPF з wildcard masks та area per-network.
+        - ``EIGRP`` — EIGRP з AS number і опціональним wildcard.
+        - ``BGP`` — BGP з списком neighbor і advertised networks.
+        - ``STATIC`` — статичні маршрути з next-hop або exit interface.
+        - ``IS-IS`` — IS-IS з NET-адресою та рівнем маршрутизації.
+
+    Args:
+        protocol (str): Назва протоколу (регістронезалежна).
+            Допустимі значення: ``&#34;RIP&#34;``, ``&#34;OSPF&#34;``, ``&#34;EIGRP&#34;``,
+            ``&#34;BGP&#34;``, ``&#34;STATIC&#34;``, ``&#34;IS-IS&#34;``, ``&#34;None&#34;``.
+        router_id (str): Router ID у форматі IPv4. Обов&#39;язковий для OSPF.
+        networks (list): Список кортежів ``(ip: str, mask: str)``.
+            Використовується для RIP. OSPF/EIGRP/BGP читають з ``routing_config``.
+        no_auto_summary (bool, optional): Додає ``no auto-summary`` для
+            RIP і EIGRP. Defaults to ``True``.
+        routing_config (dict, optional): Розширена конфігурація протоколу.
+            Ключі залежать від протоколу:
+
+            - OSPF: ``{&#34;processId&#34;: str, &#34;routerId&#34;: str,``
+              ``&#34;ospfNetworks&#34;: [{&#34;network&#34;, &#34;wildcard&#34;, &#34;area&#34;}]}``
+            - EIGRP: ``{&#34;asNumber&#34;: str, &#34;eigrpNetworks&#34;: [{&#34;network&#34;, &#34;wildcard&#34;}]}``
+            - BGP: ``{&#34;localAs&#34;: str, &#34;routerId&#34;: str,``
+              ``&#34;bgpNeighbors&#34;: [{&#34;ip&#34;, &#34;remoteAs&#34;}],``
+              ``&#34;bgpAdvertisedNetworks&#34;: [{&#34;network&#34;, &#34;mask&#34;}]}``
+            - STATIC: ``{&#34;staticRoutes&#34;: [{&#34;dest&#34;, &#34;mask&#34;, &#34;nextHop&#34;,``
+              ``&#34;interface&#34;, &#34;ad&#34;, &#34;metric&#34;}]}``
+            - IS-IS: ``{&#34;areaId&#34;: str, &#34;systemId&#34;: str, &#34;routerType&#34;: str}``
+
+    Returns:
+        list[str]: Список Cisco IOS команд. Порожний список, якщо
+            ``protocol`` дорівнює ``&#34;None&#34;`` або порожній.
+
+    Examples:
+        &gt;&gt;&gt; generate_protocol_config(&#34;RIP&#34;, &#34;&#34;, [(&#34;192.168.1.0&#34;, &#34;255.255.255.0&#34;)])
+        [&#39;!&#39;, &#39;router rip&#39;, &#39; version 2&#39;, &#39; network 192.168.1.0&#39;, &#39; no auto-summary&#39;, &#39; exit&#39;]
+        &gt;&gt;&gt; generate_protocol_config(&#34;None&#34;, &#34;&#34;, [])
+        []
+    &#34;&#34;&#34;
+    if not isinstance(protocol, str) or not protocol or protocol.upper() == &#34;NONE&#34;:
+        return []
+
+    proto = protocol.upper().strip()
+    rc = routing_config or {}
+
+    context = {
+        &#39;protocol&#39;: proto,
+        &#39;no_auto_summary&#39;: rc.get(&#34;noAutoSummary&#34;, no_auto_summary)
+    }
+
+    if proto == &#34;STATIC&#34;:
+        static_routes = []
+        routes = rc.get(&#34;staticRoutes&#34;, [])
+        for r in routes:
+            dest = r.get(&#34;dest&#34;)
+            mask = r.get(&#34;mask&#34;, &#34;&#34;)
+            next_hop = r.get(&#34;nextHop&#34;, &#34;&#34;)
+            intf = r.get(&#34;interface&#34;, &#34;&#34;)
+            ad = r.get(&#34;ad&#34;, &#34;&#34;)
+            metric = r.get(&#34;metric&#34;, &#34;&#34;)
+            
+            # Convert prefix to mask if needed
+            if mask.isdigit() or mask.startswith(&#39;/&#39;):
+                m_val = mask[1:] if mask.startswith(&#39;/&#39;) else mask
+                mask_final = _cidr_to_mask(int(m_val))
+            else:
+                mask_final = mask or &#34;255.255.255.0&#34;
+                
+            static_routes.append({
+                &#39;dest&#39;: dest,
+                &#39;mask_final&#39;: mask_final,
+                &#39;nextHop&#39;: next_hop,
+                &#39;interface&#39;: intf,
+                &#39;ad&#39;: ad,
+                &#39;metric&#39;: metric
+            })
+        context[&#39;static_routes&#39;] = static_routes
+
+    elif proto == &#34;RIP&#34;:
+        rip_networks = []
+        manual_rip_networks = rc.get(&#34;ripNetworks&#34;, [])
+        
+        if manual_rip_networks:
+            for net in manual_rip_networks:
+                if net and net != &#34;invalid&#34;:
+                    rip_networks.append(net)
+        else:
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                if net_ip and net_ip != &#34;invalid&#34;:
+                    rip_networks.append(net_ip)
+                    
+        context[&#39;rip_networks&#39;] = rip_networks
+
+    elif proto == &#34;OSPF&#34;:
+        ospf_networks = []
+        manual_ospf_networks = rc.get(&#34;ospfNetworks&#34;, [])
+        if manual_ospf_networks:
+            # Use per-network area from UI table
+            for item in manual_ospf_networks:
+                net_ip = item.get(&#34;network&#34;, &#34;&#34;) if isinstance(item, dict) else &#34;&#34;
+                wildcard = item.get(&#34;wildcard&#34;, &#34;0.0.0.255&#34;) if isinstance(item, dict) else &#34;0.0.0.255&#34;
+                area = item.get(&#34;area&#34;, &#34;0&#34;) if isinstance(item, dict) else &#34;0&#34;
+                if net_ip and net_ip != &#34;invalid&#34;:
+                    ospf_networks.append({&#39;ip&#39;: net_ip, &#39;wildcard&#39;: wildcard, &#39;area&#39;: area})
+        else:
+            # Fallback: derive from interface networks with default area 0
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) &gt; 1 else &#34;24&#34;
+                if net_ip and net_ip != &#34;invalid&#34;:
+                    wildcard = _mask_to_wildcard(net_mask)
+                    ospf_networks.append({&#39;ip&#39;: net_ip, &#39;wildcard&#39;: wildcard, &#39;area&#39;: &#39;0&#39;})
+        context.update({
+            &#39;ospf_pid&#39;: rc.get(&#34;processId&#34;, &#34;1&#34;),
+            &#39;ospf_rid&#39;: rc.get(&#34;routerId&#34;) or router_id,
+            &#39;ospf_networks&#39;: ospf_networks
+        })
+
+    elif proto == &#34;EIGRP&#34;:
+        eigrp_networks = []
+        manual_eigrp_networks = rc.get(&#34;eigrpNetworks&#34;, [])
+        if manual_eigrp_networks:
+            for item in manual_eigrp_networks:
+                net_ip = item.get(&#34;network&#34;, &#34;&#34;) if isinstance(item, dict) else &#34;&#34;
+                wildcard = item.get(&#34;wildcard&#34;, &#34;&#34;) if isinstance(item, dict) else &#34;&#34;
+                if net_ip and net_ip != &#34;invalid&#34;:
+                    eigrp_networks.append({&#39;ip&#39;: net_ip, &#39;wildcard&#39;: wildcard})
+        else:
+            # Fallback: use interface networks (classful, no wildcard)
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                if net_ip and net_ip != &#34;invalid&#34;:
+                    eigrp_networks.append({&#39;ip&#39;: net_ip, &#39;wildcard&#39;: &#39;&#39;})
+        context.update({
+            &#39;eigrp_asn&#39;: rc.get(&#34;asNumber&#34;, rc.get(&#34;eigrpAs&#34;, &#34;100&#34;)),
+            &#39;eigrp_networks&#39;: eigrp_networks
+        })
+
+    elif proto == &#34;BGP&#34;:
+        bgp_neighbors = []
+        manual_neighbors = rc.get(&#34;bgpNeighbors&#34;, [])
+        if manual_neighbors:
+            for nb in manual_neighbors:
+                ip = nb.get(&#34;ip&#34;, &#34;&#34;) if isinstance(nb, dict) else &#34;&#34;
+                remote_as = nb.get(&#34;remoteAs&#34;, &#34;&#34;) if isinstance(nb, dict) else &#34;&#34;
+                if ip and remote_as:
+                    bgp_neighbors.append({&#39;ip&#39;: ip, &#39;remote_as&#39;: remote_as})
+        else:
+            # Fallback: single neighbor from old fields
+            nb_ip = rc.get(&#34;neighborIp&#34;, &#34;&#34;)
+            nb_as = rc.get(&#34;remoteAs&#34;, &#34;&#34;)
+            if nb_ip and nb_as:
+                bgp_neighbors.append({&#39;ip&#39;: nb_ip, &#39;remote_as&#39;: nb_as})
+
+        bgp_adv_networks = []
+        manual_bgp_nets = rc.get(&#34;bgpAdvertisedNetworks&#34;, [])
+        if manual_bgp_nets:
+            for item in manual_bgp_nets:
+                net_ip = item.get(&#34;network&#34;, &#34;&#34;) if isinstance(item, dict) else &#34;&#34;
+                net_mask = item.get(&#34;mask&#34;, &#34;&#34;) if isinstance(item, dict) else &#34;&#34;
+                if net_ip and net_ip != &#34;invalid&#34;:
+                    if net_mask.isdigit():
+                        mask_str = _cidr_to_mask(int(net_mask))
+                    else:
+                        mask_str = net_mask or &#34;255.255.255.0&#34;
+                    bgp_adv_networks.append({&#39;ip&#39;: net_ip, &#39;mask_str&#39;: mask_str})
+        else:
+            # Fallback: derive from interface networks
+            for item in networks:
+                net_ip = item[0] if isinstance(item, (list, tuple)) else item
+                net_mask = item[1] if isinstance(item, (list, tuple)) and len(item) &gt; 1 else &#34;24&#34;
+                if net_ip and net_ip != &#34;invalid&#34;:
+                    if net_mask.isdigit():
+                        mask_str = _cidr_to_mask(int(net_mask))
+                    else:
+                        mask_str = net_mask
+                    bgp_adv_networks.append({&#39;ip&#39;: net_ip, &#39;mask_str&#39;: mask_str})
+        context.update({
+            &#39;bgp_local_as&#39;: rc.get(&#34;localAs&#34;, &#34;65001&#34;),
+            &#39;bgp_rid&#39;: rc.get(&#34;routerId&#34;) or router_id,
+            &#39;bgp_neighbors&#39;: bgp_neighbors,
+            &#39;bgp_networks&#39;: bgp_adv_networks
+        })
+
+    elif proto == &#34;IS-IS&#34;:
+        context.update({
+            &#39;isis_area_id&#39;: rc.get(&#34;areaId&#34;, &#34;49.0001&#34;),
+            &#39;isis_system_id&#39;: rc.get(&#34;systemId&#34;, &#34;0000.0000.0001&#34;),
+            &#39;isis_router_type&#39;: rc.get(&#34;routerType&#34;, &#34;level-1-2&#34;)
+        })
+
+    # Normalize protocol name for template file (IS-IS → isis)
+    template_name = proto.lower().replace(&#39;-&#39;, &#39;&#39;)
+    return render_template_to_lines(f&#39;routing/{template_name}.j2&#39;, context)</code></pre>
+</details>
+<div class="desc"><p>Генерує Cisco IOS команди для заданого протоколу маршрутизації.</p>
+<p>Фабрикний метод для всіх підтримуваних протоколів. Визначає потрібний
+Jinja2-шаблон (наприклад, <code>routing/ospf.j2</code>) і передає ньому
+контекст з інформацією про мережі, роутер-ID та параметрами
+протоколу.</p>
+<p>Підтримувані протоколи:
+- <code>RIP</code> — RIP v2 з списком мереж цластерних мереж.
+- <code>OSPF</code> — single/multi-area OSPF з wildcard masks та area per-network.
+- <code>EIGRP</code> — EIGRP з AS number і опціональним wildcard.
+- <code>BGP</code> — BGP з списком neighbor і advertised networks.
+- <code>STATIC</code> — статичні маршрути з next-hop або exit interface.
+- <code>IS-IS</code> — IS-IS з NET-адресою та рівнем маршрутизації.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>Назва протоколу (регістронезалежна).
+Допустимі значення: <code>"RIP"</code>, <code>"OSPF"</code>, <code>"EIGRP"</code>,
+<code>"BGP"</code>, <code>"STATIC"</code>, <code>"IS-IS"</code>, <code>"None"</code>.</dd>
+<dt><strong><code>router_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Router ID у форматі IPv4. Обов'язковий для OSPF.</dd>
+<dt><strong><code>networks</code></strong> :&ensp;<code>list</code></dt>
+<dd>Список кортежів <code>(ip: str, mask: str)</code>.
+Використовується для RIP. OSPF/EIGRP/BGP читають з <code>routing_config</code>.</dd>
+<dt><strong><code>no_auto_summary</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Додає <code>no auto-summary</code> для
+RIP і EIGRP. Defaults to <code>True</code>.</dd>
+<dt><strong><code>routing_config</code></strong> :&ensp;<code>dict</code>, optional</dt>
+<dd>
+<p>Розширена конфігурація протоколу.
+Ключі залежать від протоколу:</p>
+<ul>
+<li>OSPF: <code>{"processId": str, "routerId": str,</code>
+<code>"ospfNetworks": [{"network", "wildcard", "area"}]}</code></li>
+<li>EIGRP: <code>{"asNumber": str, "eigrpNetworks": [{"network", "wildcard"}]}</code></li>
+<li>BGP: <code>{"localAs": str, "routerId": str,</code>
+<code>"bgpNeighbors": [{"ip", "remoteAs"}],</code>
+<code>"bgpAdvertisedNetworks": [{"network", "mask"}]}</code></li>
+<li>STATIC: <code>{"staticRoutes": [{"dest", "mask", "nextHop",</code>
+<code>"interface", "ad", "metric"}]}</code></li>
+<li>IS-IS: <code>{"areaId": str, "systemId": str, "routerType": str}</code></li>
+</ul>
+</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[str]</code></dt>
+<dd>Список Cisco IOS команд. Порожний список, якщо
+<code>protocol</code> дорівнює <code>"None"</code> або порожній.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; generate_protocol_config(&quot;RIP&quot;, &quot;&quot;, [(&quot;192.168.1.0&quot;, &quot;255.255.255.0&quot;)])
+['!', 'router rip', ' version 2', ' network 192.168.1.0', ' no auto-summary', ' exit']
+&gt;&gt;&gt; generate_protocol_config(&quot;None&quot;, &quot;&quot;, [])
+[]
+</code></pre></div>
+</dd>
+<dt id="backend.protocols.render_template_to_lines"><code class="name flex">
+<span>def <span class="ident">render_template_to_lines</span></span>(<span>template_name, context)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render_template_to_lines(template_name, context):
+    template = env.get_template(template_name)
+    rendered = template.render(**context)
+    return [line for line in rendered.splitlines() if line.strip()]</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="backend" href="index.html">backend</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="backend.protocols.generate_protocol_config" href="#backend.protocols.generate_protocol_config">generate_protocol_config</a></code></li>
+<li><code><a title="backend.protocols.render_template_to_lines" href="#backend.protocols.render_template_to_lines">render_template_to_lines</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>
