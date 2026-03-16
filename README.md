@@ -32,6 +32,7 @@ py -3 -m backend.main
 ### Запуск тестів
 ```powershell
 py -m pytest tests/ -v
+
 ```
 
 ### Перевірка якості документації (Linter)
