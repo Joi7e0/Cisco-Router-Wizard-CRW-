@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crw-deployment
+  labels:
+    app: cisco-router-wizard
+spec:
+  replicas: 2  # Дві репліки для відмовостійкості
+  selector:
+    matchLabels:
+      app: cisco-router-wizard
+  template:
+    metadata:
+      labels:
+        app: cisco-router-wizard
+    spec:
+      containers:
+      - name: crw-app
+        image: registry.gitlab.com/your-org/cisco-router-wizard:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: EEL_MODE
+          value: "None"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

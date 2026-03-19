@@ -1,0 +1,39 @@
+name: CI/CD Pipeline for Cisco Router Wizard
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pyinstaller
+        
+    - name: Run Unit Tests
+      run: python -m pytest tests/ -v
+      
+    - name: Run Documentation Linter
+      run: python scripts/check_docs.py
+      
+    - name: Build Executable with PyInstaller
+      run: python -m eel backend/main.py frontend --onefile --noconsole --name "CiscoRouterWizard"
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: CiscoRouterWizard-Windows
+        path: dist/CiscoRouterWizard.exe

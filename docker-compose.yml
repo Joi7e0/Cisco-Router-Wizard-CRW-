@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  cisco-router-wizard:
+    build: .
+    container_name: crw_app
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    environment:
+      - EEL_MODE=None
+      - EEL_PORT=8000
+    # Прокидання локальних об'ємів для гарячого перезавантаження у Dev-моді
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
