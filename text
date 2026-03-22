@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    actor User as Користувач / Адміністратор
+    participant UI as Frontend (SPA Web UI)
+    participant API as Backend (Python REST API)
+    participant Engine as Jinja2 Template Engine
+
+    User->>UI: Заповнює форму параметрів (IP, протоколи, паролі)
+    User->>UI: Натискає кнопку "Generate Config"
+    UI->>UI: Локальна валідація введених даних (JavaScript)
+
+    alt Форма містить помилки
+        UI-->>User: Відображення тексту помилок біля полів
+    else Дані валідні
+        UI->>API: HTTP POST /api/generate (Payload: JSON config_data)
+        API->>API: Валідація JSON схеми (Pydantic / Marshmallow)
+        
+        alt Некоректні типи даних від клієнта
+            API-->>UI: HTTP 400 Bad Request
+            UI-->>User: Alert: Помилка серверної генерації
+        else Дані успішно перевірені
+            API->>Engine: rendering(templates/config.j2, config_data)
+            Engine-->>API: Згенерований текст (Cisco IOS команди)
+            API-->>UI: HTTP 200 OK (Текст конфігурації)
+            UI-->>User: Виводить готовий конфіг у вікно попереднього перегляду
+        end
+    end
