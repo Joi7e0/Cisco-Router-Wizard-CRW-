@@ -111,5 +111,26 @@
         "prevStep": "< Previous Step",
         "autoFill": "Auto Fill",
         "nextStep": "Next Step >"
+    },
+    "errors": {
+        "title": "Oops! Something went wrong",
+        "errNoInterfaces": "No interfaces provided. Please configure at least one interface.",
+        "errInvalidNetworkCount": "Number of networks is invalid.",
+        "errInvalidNetworkFormat": "Invalid network format.",
+        "errNetworkInterfaceMismatch": "Network and Interface count mismatch.",
+        "errValidationError": "Configuration data did not pass validation.",
+        "errGenerationFailed": "Failed to generate configuration.",
+        "errSystemGlobal": "A global system error occurred.",
+        "errUnknown": "An unknown error occurred.",
+        "instrNoInterfaces": "Go to Step 2 (Basic) and add at least one interface.",
+        "instrCheckForm": "Please check your input fields for errors.",
+        "instrMatchNetworks": "Ensure every interface in Step 2 has a corresponding network defined if applicable.",
+        "instrCheckValidation": "Check hostname, passwords, and IP formats for missing or incorrect values.",
+        "instrContactSupport": "Please try again or contact support if the issue persists.",
+        "lblErrorCode": "Error Code: ",
+        "lblErrorId": "Error Tracking ID: ",
+        "btnDismiss": "Dismiss",
+        "btnReport": "Copy Details",
+        "reportSuccess": "Error details copied to clipboard!"
     }
 }

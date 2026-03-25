@@ -111,5 +111,26 @@
         "prevStep": "< Vorheriger Schritt",
         "autoFill": "Automatisch ausfüllen",
         "nextStep": "Nächster Schritt >"
+    },
+    "errors": {
+        "title": "Hoppla! Etwas ist schiefgelaufen",
+        "errNoInterfaces": "Keine Schnittstellen angegeben. Bitte konfigurieren Sie mindestens eine Schnitstelle.",
+        "errInvalidNetworkCount": "Ungültige Anzahl von Netzwerken.",
+        "errInvalidNetworkFormat": "Ungültiges Netzwerkformat.",
+        "errNetworkInterfaceMismatch": "Menge an Netzwerken und Schnittstellen stimmt nicht überein.",
+        "errValidationError": "Die Konfigurationsdaten haben die Überprüfung nicht bestanden.",
+        "errGenerationFailed": "Fehler beim Erstellen der Konfiguration.",
+        "errSystemGlobal": "Ein globaler Systemfehler ist aufgetreten.",
+        "errUnknown": "Ein unbekannter Fehler ist aufgetreten.",
+        "instrNoInterfaces": "Gehen Sie zu Schritt 2 (Basic) und fügen Sie eine Schnittstelle hinzu.",
+        "instrCheckForm": "Bitte überprüfen Sie Ihre Eingabefelder.",
+        "instrMatchNetworks": "Stellen Sie sicher, dass für jede Schnittstelle in Schritt 2 ein Netzwerk definiert ist.",
+        "instrCheckValidation": "Überprüfen Sie Hostname, Passwörter und IP-Formate auf Fehler.",
+        "instrContactSupport": "Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.",
+        "lblErrorCode": "Fehlercode: ",
+        "lblErrorId": "Fehler-ID: ",
+        "btnDismiss": "Schließen",
+        "btnReport": "Details kopieren",
+        "reportSuccess": "Fehlerdetails in die Zwischenablage kopiert!"
     }
 }

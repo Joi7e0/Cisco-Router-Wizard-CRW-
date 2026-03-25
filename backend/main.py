@@ -1,22 +1,73 @@
 import eel
 import os
 import traceback
+import logging
+from logging.handlers import RotatingFileHandler
+import uuid
+import json
+
+# Налаштування мінімального рівня логування через змінну оточення LOG_LEVEL (за замовчуванням INFO)
+log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
+log_level = getattr(logging, log_level_str, logging.INFO)
+
+# Форматер для логів із розширеним контекстом
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(module)s - [USER:%(user)s] [SESSION:%(session)s] - %(message)s")
+
+# Консольний обробник
+console_handler = logging.StreamHandler()
+console_handler.setLevel(log_level)
+console_handler.setFormatter(formatter)
+
+# Файловий обробник з ротацією за розміром (5 МБ, 3 бекапи)
+# Для ротації за часом можна використати TimedRotatingFileHandler(filename, when="midnight", interval=1, backupCount=7)
+# Це вбудований засіб Python `logging.handlers`, який реалізує ротацію без зовнішніх утиліт (типу logrotate).
+# Якщо ж потрібне масштабування на рівні ОС, можна використовувати звичайний FileHandler і налаштувати logrotate у Linux.
+file_handler = RotatingFileHandler("crw_app.log", maxBytes=5*1024*1024, backupCount=3, encoding="utf-8")
+file_handler.setLevel(log_level)
+file_handler.setFormatter(formatter)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(log_level)
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
+
+# Фільтр для глобальних подій (без конкретного контексту сесії)
+class GlobalContextFilter(logging.Filter):
+    def filter(self, record):
+        if not hasattr(record, 'user'):
+            record.user = 'System'
+        if not hasattr(record, 'session'):
+            record.session = 'Global'
+        return True
+
+logger.addFilter(GlobalContextFilter())
 
 try:
     from .generate import generate_full_config
     from .validate import validate_inputs
+    logger.debug("Успішний імпорт генератора та валідатора (relative)")
 except ImportError:
     from generate import generate_full_config
     from validate import validate_inputs
+    logger.debug("Успішний імпорт генератора та валідатора (absolute)")
 
 
 # Ініціалізація eel
-eel.init(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "web")))
+web_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "web"))
+logger.debug(f"Ініціалізація eel. Директорія web: {web_dir}")
+eel.init(web_dir)
 
 
 @eel.expose
 def process_text(config_data: dict = None) -> str:
+    # Ініціалізація унікальної сесії/запиту та адаптера логування
+    req_id = str(uuid.uuid4()).split('-')[0].upper()
+    admin_user = config_data.get("adminUsername", "GUEST") if config_data else "GUEST"
+    req_logger = logging.LoggerAdapter(logger, {"user": admin_user, "session": req_id})
+
+    req_logger.info("Початок обробки вхідних даних для генерації конфігурації")
     if config_data is None:
+        req_logger.warning("Отримано порожні вхідні дані (None)")
         config_data = {}
 
     try:
@@ -109,22 +160,41 @@ def process_text(config_data: dict = None) -> str:
 
         # Мінімальна перевірка
         if not interfaces:
-            return "❌ Помилка: не передано жодного інтерфейсу"
+            err_code = "ERR-VAL-001"
+            err_id = str(uuid.uuid4()).split('-')[0].upper()
+            req_logger.error(f"[{err_code}] [{err_id}] Помилка генерації: не передано жодного інтерфейсу. Контекст: hostname={hostname}")
+            return json.dumps({
+                "error": True,
+                "code": err_code,
+                "id": err_id,
+                "messageKey": "errNoInterfaces",
+                "defaultMessage": "Не передано жодного інтерфейсу",
+                "instructionsKey": "instrNoInterfaces"
+            })
 
         # Нормалізація/валідація `networks`
         if isinstance(networks, int):
             try:
                 if networks < 0:
-                    raise ValueError("Networks count cannot be negative")
+                    raise ValueError("Кількість мереж не може бути від'ємною")
                 networks = [("192.168.1.1", "255.255.255.0")] * networks
             except ValueError as e:
-                return f"❌ Error: {e}"
-
-        elif isinstance(networks, tuple):
-            networks = [networks]
+                err_code = "ERR-VAL-002"
+                err_id = str(uuid.uuid4()).split('-')[0].upper()
+                req_logger.error(f"[{err_code}] [{err_id}] {e}. Контекст: networks={networks}")
+                return json.dumps({
+                    "error": True, "code": err_code, "id": err_id,
+                    "messageKey": "errInvalidNetworkCount", "defaultMessage": f"{e}", "instructionsKey": "instrCheckForm"
+                })
 
         elif not isinstance(networks, list):
-            return "❌ Error: Некоректний формат параметра `networks` — очікується список або tuple або int"
+            err_code = "ERR-VAL-003"
+            err_id = str(uuid.uuid4()).split('-')[0].upper()
+            req_logger.error(f"[{err_code}] [{err_id}] Некоректний формат параметра `networks`. Type: {type(networks)}")
+            return json.dumps({
+                "error": True, "code": err_code, "id": err_id,
+                "messageKey": "errInvalidNetworkFormat", "defaultMessage": "Некоректний формат параметра `networks`", "instructionsKey": "instrContactSupport"
+            })
 
         # Якщо `networks` не передали — заповнюємо дефолтними значеннями
         if not networks and interfaces:
@@ -133,12 +203,23 @@ def process_text(config_data: dict = None) -> str:
         # Перевірка відповідності довжин
         try:
             if len(networks) != len(interfaces):
-                return (
-                    f"❌ кількість мереж ({len(networks)}) не відповідає "
-                    f"кількості інтерфейсів ({len(interfaces)})"
-                )
+                err_code = "ERR-VAL-004"
+                err_id = str(uuid.uuid4()).split('-')[0].upper()
+                req_logger.error(f"[{err_code}] [{err_id}] Невідповідність кількості мереж ({len(networks)}) та інтерфейсів ({len(interfaces)}). Контекст: interfaces={interfaces}")
+                return json.dumps({
+                    "error": True, "code": err_code, "id": err_id,
+                    "messageKey": "errNetworkInterfaceMismatch", 
+                    "defaultMessage": f"Кількість мереж ({len(networks)}) не відповідає кількості інтерфейсів ({len(interfaces)})",
+                    "instructionsKey": "instrMatchNetworks"
+                })
         except TypeError:
-            return "❌ Error: Некоректний формат параметра `networks` — очікується список мереж"
+            err_code = "ERR-VAL-005"
+            err_id = str(uuid.uuid4()).split('-')[0].upper()
+            req_logger.error(f"[{err_code}] [{err_id}] Некоректний формат параметра `networks` — очікується список мереж")
+            return json.dumps({
+                "error": True, "code": err_code, "id": err_id,
+                "messageKey": "errInvalidNetworkFormat", "defaultMessage": "Некоректний формат параметра `networks`", "instructionsKey": "instrContactSupport"
+            })
 
         # Базова валідація для OSPF
         # Захищено: routing_protocol може бути неправильного типу
@@ -161,7 +242,13 @@ def process_text(config_data: dict = None) -> str:
         )
         
         if validation_error:
-            return validation_error
+            err_code = "ERR-VAL-006"
+            err_id = str(uuid.uuid4()).split('-')[0].upper()
+            req_logger.warning(f"[{err_code}] [{err_id}] Дані не пройшли валідацію: {validation_error}. Контекст: hostname={hostname}")
+            return json.dumps({
+                "error": True, "code": err_code, "id": err_id,
+                "messageKey": "errValidationError", "defaultMessage": validation_error, "instructionsKey": "instrCheckValidation"
+            })
 
         # Safeguard for max_ephones/max_dn receiving lists due to argument shifts
         if isinstance(max_ephones, list):
@@ -184,6 +271,7 @@ def process_text(config_data: dict = None) -> str:
 
         # Виклик генерації конфігурації
         try:
+            req_logger.info(f"Старт генерації конфігурації для пристрою: {hostname.strip() or 'R1'}")
             config_lines = generate_full_config(
                 hostname=hostname.strip() or "R1",
                 interfaces=[str(i).strip() for i in interfaces],
@@ -225,29 +313,51 @@ def process_text(config_data: dict = None) -> str:
                 routing_config=routing_config
             )
 
+            req_logger.info(f"Успішно згенеровано {len(config_lines)} рядків конфігурації")
             return "\n".join(config_lines)
 
         except Exception as e:
+            err_code = "ERR-GEN-001"
+            err_id = str(uuid.uuid4()).split('-')[0].upper()
             error_details = traceback.format_exc()
-            return (
-                "❌ Критична помилка генерації конфігурації\n\n"
-                f"Повідомлення: {str(e)}\n\n"
-                f"Деталі:\n{error_details}"
-            )
+            # Контекст з основними безпечними параметрами
+            safe_context = {
+                "hostname": hostname,
+                "routing_protocol": routing_protocol,
+                "interfaces": interfaces,
+                "telephony_enabled": telephony_enabled
+            }
+            req_logger.error(f"[{err_code}] [{err_id}] Критична помилка генерації: {str(e)}. Контекст: {safe_context}", exc_info=True)
+            return json.dumps({
+                "error": True, "code": err_code, "id": err_id,
+                "messageKey": "errGenerationFailed", "defaultMessage": "Критична помилка генерації конфігурації.", "instructionsKey": "instrContactSupport"
+            })
 
     except Exception as e:
+        err_code = "ERR-SYS-001"
+        err_id = str(uuid.uuid4()).split('-')[0].upper()
         error_details = traceback.format_exc()
-        return (
-            "❌ Критична помилка: " + str(e) + "\nДеталі:\n" + error_details
-        )
+        
+        # Безпечний дамп параметрів для контексту
+        safe_keys = ['hostname', 'routingProtocol', 'interfaces']
+        context_data = {k: config_data.get(k) for k in safe_keys} if isinstance(config_data, dict) else "Invalid config_data format"
+        
+        # Тут не використовуємо req_logger, бо config_data може бути некоректним
+        logger.critical(f"[{err_code}] [{err_id}] Глобальна помилка в process_text: {str(e)}. Контекст: {context_data}", exc_info=True)
+        return json.dumps({
+            "error": True, "code": err_code, "id": err_id,
+            "messageKey": "errSystemGlobal", "defaultMessage": "Глобальна критична помилка системи.", "instructionsKey": "instrContactSupport"
+        })
 
 
 if __name__ == "__main__":
+    logger.info("Запуск Cisco Router Wizard (Backend)")
     window_size = (1180, 920)
 
     # Спробуємо різні режими браузерів
     for mode in ["edge", "chrome", None]:
         try:
+            logger.debug(f"Спроба запуску UI в режимі: {mode}")
             eel.start(
                 "home.html",
                 size=window_size,
@@ -255,8 +365,11 @@ if __name__ == "__main__":
                 port=0,           
                 block=True
             )
+            logger.info("Роботу Eel завершено нормально")
             break
         except Exception as e:
+            logger.warning(f"Не вдалося запустити в режимі {mode}: {e}")
             print(f"Не вдалося запустити в режимі {mode}: {e}")
     else:
+        logger.error("Не вдалося запустити додаток у жодному браузері")
         print("Не вдалося запустити додаток у жодному браузері")
