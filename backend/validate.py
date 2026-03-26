@@ -1,6 +1,16 @@
 import ipaddress
 import re
 
+# Hot spot 2 fix: pre-compile regex patterns once at module load time.
+# Previously re.match(r'...') was called with a literal string inside each
+# function invocation. Python's internal regex cache is limited to 512 entries
+# (CPython 3.x), and string-literal keys may be evicted under heavy load.
+# Using compiled objects guarantees zero re-compilation overhead.
+_RE_HOSTNAME_START = re.compile(r'^[a-zA-Z]')
+_RE_HOSTNAME_FULL  = re.compile(r'^[a-zA-Z0-9\-_\.]+$')
+_RE_DIGIT          = re.compile(r'\d')
+_RE_ALPHA          = re.compile(r'[a-zA-Z]')
+
 # Загальна валідація рядкових полів (дозволяє літери, цифри та основні роздільники)
 def validate_general(value: str) -> str:
     # Перевіряє загальний рядок на допустимі символи.
@@ -59,10 +69,10 @@ def validate_hostname(hostname: str) -> str:
     if len(hostname) > 63:
         return "❌ Error: Hostname занадто довгий (макс. 63 символи)."
 
-    if not re.match(r'^[a-zA-Z]', hostname):
+    if not _RE_HOSTNAME_START.match(hostname):
         return "❌ Error: Hostname повинен починатися з літери."
 
-    if not re.match(r'^[a-zA-Z0-9\-_\.]+$', hostname):
+    if not _RE_HOSTNAME_FULL.match(hostname):
         return f"❌ Error: Hostname '{hostname}' містить недопустимі символи."
 
     return ""
@@ -172,7 +182,7 @@ def validate_password(password: str, field_name: str) -> str:
         return f"❌ Error: {field_name} не може бути порожнім."
     if len(password) < 8 or len(password) > 32:
         return f"❌ Error: {field_name} повинен бути 8-32 символи."
-    if not re.search(r'\d', password) or not re.search(r'[a-zA-Z]', password):
+    if not _RE_DIGIT.search(password) or not _RE_ALPHA.search(password):
         return f"❌ Error: {field_name} повинен містити мінімум 1 цифру та 1 літеру."
     return ""
 
@@ -262,12 +272,16 @@ def validate_inputs(
             if not isinstance(item, (tuple, list)) or len(item) != 2:
                 continue
             ip, mask = item
+            # Hot spot 3 fix: strip once here, then pass the already-stripped
+            # values to validators rather than letting each validator re-strip.
+            ip   = ip.strip()   if isinstance(ip,   str) else ip
+            mask = mask.strip() if isinstance(mask, str) else mask
             if not ip or not mask:
                 return "❌ Error: Будь ласка, заповніть усі поля IP та маски."
-            
+
             error = validate_general(ip) or validate_general(mask)
             if error: return error
-            
+
             error = validate_ip(ip) or validate_mask(mask)
             if error: return error
         

@@ -1,15 +1,5 @@
 from .protocols import generate_protocol_config
-import os
-from jinja2 import Environment, FileSystemLoader
-
-# Set up Jinja2 environment
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-env = Environment(loader=FileSystemLoader(template_dir), trim_blocks=True, lstrip_blocks=True)
-
-def render_template_to_lines(template_name, context):
-    template = env.get_template(template_name)
-    rendered = template.render(**context)
-    return [line for line in rendered.splitlines() if line.strip()]
+from .jinja_env import render_template_to_lines
 
 # Генерація конфігурації інтерфейсів
 def generate_interface_config(
