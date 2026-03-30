@@ -13,11 +13,6 @@ log_level = getattr(logging, log_level_str, logging.INFO)
 # Форматер для логів із розширеним контекстом
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(module)s - [USER:%(user)s] [SESSION:%(session)s] - %(message)s")
 
-# Консольний обробник
-console_handler = logging.StreamHandler()
-console_handler.setLevel(log_level)
-console_handler.setFormatter(formatter)
-
 # Файловий обробник з ротацією за розміром (5 МБ, 3 бекапи)
 # Для ротації за часом можна використати TimedRotatingFileHandler(filename, when="midnight", interval=1, backupCount=7)
 # Це вбудований засіб Python `logging.handlers`, який реалізує ротацію без зовнішніх утиліт (типу logrotate).
@@ -28,7 +23,6 @@ file_handler.setFormatter(formatter)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(log_level)
-logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
 # Фільтр для глобальних подій (без конкретного контексту сесії)
