@@ -1057,4 +1057,21 @@ option.sec-high {
   border-color: var(--danger-red) !important;
   box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.1) !important;
 }
+
+/* Telnet Connection Status Dot */
+.status-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+.status-dot.disconnected {
+  background-color: #aa0000;
+  box-shadow: 0 0 5px rgba(170, 0, 0, 0.5);
+}
+.status-dot.connected {
+  background-color: #00cc00;
+  box-shadow: 0 0 8px rgba(0, 204, 0, 0.8);
+}
 

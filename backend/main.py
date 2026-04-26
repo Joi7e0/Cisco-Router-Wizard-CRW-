@@ -39,11 +39,13 @@ logger.addFilter(GlobalContextFilter())
 try:
     from .generate import generate_full_config
     from .validate import validate_inputs
-    logger.debug("Успішний імпорт генератора та валідатора (relative)")
+    from . import connect as router_connect
+    logger.debug("Успішний імпорт генератора, валідатора та connect (relative)")
 except ImportError:
     from generate import generate_full_config
     from validate import validate_inputs
-    logger.debug("Успішний імпорт генератора та валідатора (absolute)")
+    import connect as router_connect
+    logger.debug("Успішний імпорт генератора, валідатора та connect (absolute)")
 
 
 # Ініціалізація eel
@@ -342,6 +344,86 @@ def process_text(config_data: dict = None) -> str:
             "error": True, "code": err_code, "id": err_id,
             "messageKey": "errSystemGlobal", "defaultMessage": "Глобальна критична помилка системи.", "instructionsKey": "instrContactSupport"
         })
+
+
+@eel.expose
+def connect_router(host: str, port: int = 23, username: str = "", password: str = "", enable_secret: str = "") -> str:
+    # Встановлює Telnet-з'єднання з Cisco роутером.
+    #
+    # Делегує логіку до backend/connect.py.
+    # Викликається з JS через eel.connect_router().
+    #
+    # Args:
+    #     host (str): IP-адреса роутера.
+    #     port (int): Telnet-порт (за замовчуванням 23).
+    #     username (str): Ім'я користувача (може бути порожнім).
+    #     password (str): Пароль VTY-лінії.
+    #     enable_secret (str): Enable secret для privileged exec.
+    #
+    # Returns:
+    #     str: JSON {"ok": bool, "error": str}
+    logger.info(f"[TELNET] Запит на підключення до {host}:{port} (user='{username or 'noauth'}')")
+    try:
+        result = router_connect.connect(
+            host=str(host).strip(),
+            port=int(port),
+            username=str(username).strip(),
+            password=str(password),
+            enable_secret=str(enable_secret).strip()
+        )
+        if result["ok"]:
+            logger.info(f"[TELNET] З'єднання з {host}:{port} встановлено")
+        else:
+            logger.warning(f"[TELNET] Не вдалося підключитися до {host}: {result['error']}")
+        return json.dumps(result)
+    except Exception as e:
+        logger.error(f"[TELNET] Критична помилка connect_router: {e}", exc_info=True)
+        return json.dumps({"ok": False, "error": str(e)})
+
+
+@eel.expose
+def disconnect_router() -> str:
+    # Закриває поточне Telnet-з'єднання з роутером.
+    #
+    # Returns:
+    #     str: JSON {"ok": bool}
+    logger.info("[TELNET] Запит на відключення")
+    try:
+        result = router_connect.disconnect()
+        logger.info("[TELNET] З'єднання закрито")
+        return json.dumps(result)
+    except Exception as e:
+        logger.error(f"[TELNET] Помилка disconnect_router: {e}", exc_info=True)
+        return json.dumps({"ok": False, "error": str(e)})
+
+
+@eel.expose
+def deploy_config(config_text: str) -> str:
+    # Надсилає конфігурацію з текстового поля на підключений роутер.
+    #
+    # Приймає повний текст конфігурації (рядки розділені '\n'),
+    # розбиває на список і передає до router_connect.deploy_config().
+    #
+    # Args:
+    #     config_text (str): Повний текст конфігурації IOS.
+    #
+    # Returns:
+    #     str: JSON {"ok": bool, "output": str, "error": str}
+    logger.info("[TELNET] Запит на деплой конфігурації")
+    try:
+        lines = [line for line in config_text.splitlines() if line.strip()]
+        if not lines:
+            return json.dumps({"ok": False, "output": "", "error": "No configuration to deploy."})
+
+        result = router_connect.deploy_config(lines)
+        if result["ok"]:
+            logger.info(f"[TELNET] Деплой успішний ({len(lines)} команд)")
+        else:
+            logger.warning(f"[TELNET] Деплой не вдався: {result['error']}")
+        return json.dumps(result)
+    except Exception as e:
+        logger.error(f"[TELNET] Критична помилка deploy_config: {e}", exc_info=True)
+        return json.dumps({"ok": False, "output": "", "error": str(e)})
 
 
 if __name__ == "__main__":
