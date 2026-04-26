@@ -1,5 +1,11 @@
+# === Основні залежності ===
 eel
 jinja2
+
+# === Тестування ===
+pytest
 pytest-benchmark
+
+# === Профілювання ===
 memory-profiler
 line-profiler

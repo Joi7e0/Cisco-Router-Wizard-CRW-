@@ -644,6 +644,19 @@ window.toggleSshFields = function () {
     validateStep1();
 };
 
+window.toggleTelephonyFields = function () {
+    const telephonyEnabled = document.getElementById("telephony-checkbox")?.checked;
+    const telephonyFields = document.getElementById("telephony-options");
+
+    if (telephonyFields) {
+        if (telephonyEnabled) {
+            telephonyFields.classList.remove("hidden");
+        } else {
+            telephonyFields.classList.add("hidden");
+        }
+    }
+};
+
 window.validateStep1 = function () {
     // Show inline validation errors. Does NOT block navigation.
     const nextBtn = document.getElementById('next-btn');
@@ -745,6 +758,7 @@ window.autoFillForm = function () {
     toggleSnmpFields();
     toggleSshFields();
     toggleMulticastFields();
+    toggleTelephonyFields();
 
     alert("Default values populated!");
 };
@@ -783,6 +797,7 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleSnmpFields();
     toggleSshFields();
     toggleMulticastFields();
+    toggleTelephonyFields();
 
     // Add real-time validation listeners for Step 1
     // Using event delegation on #step-1 to catch dynamically shown SSH fields too

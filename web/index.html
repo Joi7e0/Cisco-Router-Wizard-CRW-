@@ -619,13 +619,13 @@
                     <div class="form-group">
                         <label class="toggle-group">
                             <div class="switch">
-                                <input type="checkbox" id="telephony-checkbox">
+                                <input type="checkbox" id="telephony-checkbox" onchange="toggleTelephonyFields()">
                                 <span class="slider"></span>
                             </div>
                             <span class="toggle-label" data-i18n="enableTelephony">Enable Telephony Service</span>
                         </label>
                     </div>
-                    <div id="telephony-options">
+                    <div id="telephony-options" class="hidden">
                         <div class="form-group">
                             <label for="cme-source-ip" data-i18n="cmeSourceIp">CME Source IP <span style="font-weight:400; font-size:0.8rem; color:#777;" data-i18n="cmeSourceIpHint">(ip source-address; defaults to Default Gateway)</span></label>
                             <input type="text" id="cme-source-ip" placeholder="192.168.10.1">
